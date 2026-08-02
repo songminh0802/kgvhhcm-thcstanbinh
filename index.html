@@ -580,6 +580,37 @@ ul{list-style:none}
 
 <div class="tc" id="tc" aria-live="polite"></div>
 
+<!-- ── Cloudinary Upload Modal ────────────────── -->
+<div class="cld-ov" id="cld-ov">
+  <div class="cld-box">
+    <div class="cld-hdr">
+      <div class="cld-title">🖼️ Đổi ảnh chuyên mục: <span id="cld-card-name" class="hl">...</span></div>
+      <button class="cld-x" id="cld-x" aria-label="Đóng">✕</button>
+    </div>
+    <div class="cld-body">
+      <div class="cld-preview-wrap">
+        <img id="cld-preview-img" src="" alt="Preview">
+      </div>
+
+      <!-- Vùng thả / Tải lên / Dán Ctrl+V -->
+      <div class="cld-dropzone" id="cld-dropzone" tabindex="0">
+        <div class="cld-dz-ico">☁️</div>
+        <div class="cld-dz-txt">Bấm để chọn file ảnh<br>hoặc <strong>nhấn Ctrl + V</strong> để dán ảnh vào</div>
+        <div class="cld-dz-sub">Tự động tải lên Cloudinary (<span class="hl">dwqtplan3</span> — preset: <span class="hl">canhan</span>)</div>
+        <input type="file" id="cld-file-input" accept="image/*" style="display:none;">
+      </div>
+
+      <!-- Trạng thái -->
+      <div id="cld-status" class="cld-status"></div>
+
+      <div class="cld-actions">
+        <button class="cld-btn-cancel" id="cld-btn-cancel">Đóng</button>
+        <button class="cld-btn-upload" id="cld-btn-choose">📂 Chọn ảnh từ máy...</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
@@ -1097,38 +1128,6 @@ const initModal = () => {
   document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeM(); });
 };
 
-<!-- ── Cloudinary Upload Modal ────────────────── -->
-<div class="cld-ov" id="cld-ov">
-  <div class="cld-box">
-    <div class="cld-hdr">
-      <div class="cld-title">🖼️ Đổi ảnh chuyên mục: <span id="cld-card-name" class="hl">...</span></div>
-      <button class="cld-x" id="cld-x" aria-label="Đóng">✕</button>
-    </div>
-    <div class="cld-body">
-      <div class="cld-preview-wrap">
-        <img id="cld-preview-img" src="" alt="Preview">
-      </div>
-
-      <!-- Vùng thả / Tải lên / Dán Ctrl+V -->
-      <div class="cld-dropzone" id="cld-dropzone" tabindex="0">
-        <div class="cld-dz-ico">☁️</div>
-        <div class="cld-dz-txt">Bấm để chọn file ảnh<br>hoặc <strong>nhấn Ctrl + V</strong> để dán ảnh vào</div>
-        <div class="cld-dz-sub">Tự động tải lên Cloudinary (<span class="hl">dwqtplan3</span> — preset: <span class="hl">canhan</span>)</div>
-        <input type="file" id="cld-file-input" accept="image/*" style="display:none;">
-      </div>
-
-      <!-- Trạng thái -->
-      <div id="cld-status" class="cld-status"></div>
-
-      <div class="cld-actions">
-        <button class="cld-btn-cancel" id="cld-btn-cancel">Đóng</button>
-        <button class="cld-btn-upload" id="cld-btn-choose">📂 Chọn ảnh từ máy...</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<script>
 // ─── CLOUDINARY UPLOAD MODAL ──────────────────
 let currentCldCardId = '';
 const CLD_NAME = 'dwqtplan3';
