@@ -252,18 +252,16 @@ tr:hover td{background:rgba(103,126,234,.04)}
     <div><div class="sb-uname" id="sb-uname">Admin</div><div id="sb-urole"></div></div>
   </div>
   <ul class="sb-nav">
-    <li><a href="index.html"            class="sni"><span class="sni-ico">🏠</span>Trang chủ</a></li>
-    <li><a href="hocsinh.html"          class="sni"><span class="sni-ico">👨‍🎓</span>Học sinh</a></li>
-    <li><a href="diemdanh.html"         class="sni"><span class="sni-ico">📋</span>Điểm danh</a></li>
-    <li><a href="hoctap.html"           class="sni"><span class="sni-ico">📈</span>Học tập</a></li>
-    <li><a href="gopy.html"             class="sni"><span class="sni-ico">💬</span>Góp ý &amp; chia sẻ</a></li>
-    <li><a href="thoikhoabieu.html"     class="sni"><span class="sni-ico">📅</span>Lịch trình</a></li>
-    <li><a href="https://anhlopchunhiem-thaycuong.vercel.app/" target="_blank" class="sni" data-cid="hinhanh"><span class="sni-ico">🖼️</span>Nhật ký ảnh lớp</a></li>
-    <li><a href="tailieu.html"          class="sni"><span class="sni-ico">📁</span>Tài liệu</a></li>
-    <li><a href="thongbao.html"         class="sni"><span class="sni-ico">📢</span>Thông báo</a></li>
-    <li><a href="luutru.html"           class="sni"><span class="sni-ico">🗄️</span>Lưu trữ</a></li>
+    <li><a href="index.html"    class="sni"><span class="sni-ico">🏠</span>Trang chủ</a></li>
+    <li><a href="tulieu.html"   class="sni"><span class="sni-ico">📖</span>Tư liệu về Bác Hồ</a></li>
+    <li><a href="tusach.html"   class="sni"><span class="sni-ico">📚</span>Tủ sách về Bác</a></li>
+    <li><a href="video.html"    class="sni"><span class="sni-ico">🎥</span>Video tư liệu</a></li>
+    <li><a href="hinhanh.html"  class="sni"><span class="sni-ico">🖼️</span>Hình ảnh</a></li>
+    <li><a href="vuonhoa.html"  class="sni"><span class="sni-ico">🌱</span>Vườn hoa nhớ Bác</a></li>
+    <li><a href="baotang.html"  class="sni"><span class="sni-ico">🏛️</span>Bảo tàng về Bác</a></li>
+    <li><a href="thongbao.html" class="sni"><span class="sni-ico">📢</span>Thông báo</a></li>
     <li><div class="sdiv"></div></li>
-    <li><a href="admin.html"            class="sni act"><span class="sni-ico">🛡️</span>Quản trị</a></li>
+    <li><a href="admin.html"    class="sni act"><span class="sni-ico">🛡️</span>Quản trị</a></li>
     <li><div class="sni" id="sb-logout" style="cursor:pointer;color:var(--danger)"><span class="sni-ico">🚶</span>Đăng xuất</div></li>
   </ul>
   <div class="sb-ft">© 2025 NVC Maths</div>
@@ -553,7 +551,7 @@ const ADMIN_EMAIL='songminh138@gmail.com';
 // CUSTOMIZE: Danh sách card (đồng bộ với index.html)
 // ════════════════════════════════════════════
 const CARDS=[
-  {id:'tailieu',emoji:'📖',name:'Tư liệu về Bác Hồ'},
+  {id:'tulieu',emoji:'📖',name:'Tư liệu về Bác Hồ'},
   {id:'tusach',emoji:'📚',name:'Tủ sách về Bác'},
   {id:'video',emoji:'🎥',name:'Video tư liệu'},
   {id:'hinhanh',emoji:'🖼️',name:'Hình ảnh'},
@@ -886,8 +884,8 @@ const loadDefaultCardsSettings = async () => {
   try {
     const snap = await db.collection('settings').doc('default_cards').get();
     const data = snap.exists ? snap.data() : {};
-    const uList = data.unauthenticatedCards || [];
-    const gList = data.guestCards || [];
+    const uList = (data.unauthenticatedCards || []).map(id => id === 'tailieu' ? 'tulieu' : id);
+    const gList = (data.guestCards || []).map(id => id === 'tailieu' ? 'tulieu' : id);
     $('unauth-chk-grid')?.querySelectorAll('.unauth-cb').forEach(cb => cb.checked = uList.includes(cb.value));
     $('guest-chk-grid')?.querySelectorAll('.guest-cb').forEach(cb => cb.checked = gList.includes(cb.value));
   } catch(e) {}
@@ -916,7 +914,7 @@ const editGroup=(id)=>{
   $('edit-grp-subtitle').textContent = g.name || '';
   $('edit-grp-name').value = g.name || '';
   $('edit-grp-desc').value = g.desc || g.description || '';
-  const vc = g.visibleCards || [];
+  const vc = (g.visibleCards || []).map(id => id === 'tailieu' ? 'tulieu' : id);
   $('edit-grp-chk-grid').querySelectorAll('.edit-grp-cb').forEach(cb => cb.checked = vc.includes(cb.value));
   $('edit-grp-mov').classList.add('open');
 };

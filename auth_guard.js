@@ -39,13 +39,15 @@
     const auth = firebase.auth();
     const db = firebase.firestore();
 
+    const norm = list => (list || []).map(id => id === 'tailieu' ? 'tulieu' : id);
+
     auth.onAuthStateChanged(async (user) => {
       if (!user) {
         // Kiểm tra quyền của khách (chưa đăng nhập)
         try {
           const snap = await db.collection('settings').doc('default_cards').get();
           const unauthCards = snap.exists ? (snap.data().unauthenticatedCards || []) : [];
-          if (!unauthCards.includes(targetCardId)) {
+          if (!norm(unauthCards).includes(targetCardId)) {
             blockAccessAndRedirect();
           }
         } catch {
@@ -65,14 +67,14 @@
         if (groupId) {
           const gDoc = await db.collection('groups').doc(groupId).get();
           const visibleCards = (gDoc.exists && gDoc.data().visibleCards) ? gDoc.data().visibleCards : null;
-          if (visibleCards && !visibleCards.includes(targetCardId)) {
+          if (visibleCards && !norm(visibleCards).includes(targetCardId)) {
             blockAccessAndRedirect();
           }
         } else {
           // Khách đăng nhập nhưng chưa vào nhóm
           const snap = await db.collection('settings').doc('default_cards').get();
           const guestCards = snap.exists ? (snap.data().guestCards || []) : [];
-          if (!guestCards.includes(targetCardId)) {
+          if (!norm(guestCards).includes(targetCardId)) {
             blockAccessAndRedirect();
           }
         }

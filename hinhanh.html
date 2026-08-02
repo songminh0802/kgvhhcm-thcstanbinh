@@ -1,0 +1,2101 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🖼️ Hình ảnh - Không gian văn hóa Hồ Chí Minh</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+    ::-webkit-scrollbAar-thumb:hover { background: rgba(255,255,255,0.35); }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    main::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    main::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    .loader {
+      border: 4px solid #f3f3f3; border-top: 4px solid #3498db;
+      border-radius: 50%; width: 40px; height: 40px;
+      animation: spin 1s linear infinite; margin: 20px auto;
+    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    .line-clamp-2 {
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    /* Progress bar transition */
+    #progress-bar-fill { transition: width 0.3s ease-in-out; }
+    /* Sidebar folder tree */
+    .sidebar-folder-item {
+      display: flex; align-items: center; gap: 8px;
+      padding: 7px 12px; border-radius: 8px; cursor: pointer;
+      font-size: 13px; color: rgba(255,255,255,0.75);
+      transition: background 0.2s, color 0.2s;
+    }
+    .sidebar-folder-item:hover { background: rgba(255,255,255,0.12); color: #fff; }
+    .sidebar-folder-item.active { background: rgba(255,255,255,0.18); color: #fff; font-weight: 600; }
+    .sidebar-folder-item i.fa-folder { color: #fbbf24; }
+    .sidebar-folder-item i.fa-folder-open { color: #fbbf24; }
+    /* Breadcrumb path in sidebar */
+    #sidebar-breadcrumb-path {
+      font-size: 11px; color: rgba(255,255,255,0.45);
+      padding: 6px 12px 2px; letter-spacing: 0.03em;
+      display: flex; align-items: center; flex-wrap: wrap; gap: 2px;
+    }
+    #sidebar-breadcrumb-path span { cursor: pointer; }
+    #sidebar-breadcrumb-path span:hover { color: rgba(255,255,255,0.9); text-decoration: underline; }
+    #sidebar-breadcrumb-path span.current { color: #93c5fd; font-weight: 600; cursor: default; }
+    /* Divider in sidebar */
+    .sidebar-divider {
+      height: 1px; background: rgba(255,255,255,0.08);
+      margin: 8px 12px;
+    }
+    /* Section label in sidebar */
+    .sidebar-section-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; color: rgba(255,255,255,0.35);
+      padding: 10px 12px 4px;
+    }
+    /* Folder loading skeleton */
+    @keyframes shimmer {
+      0% { opacity: 0.4; } 50% { opacity: 0.8; } 100% { opacity: 0.4; }
+    }
+    .sidebar-skeleton { animation: shimmer 1.4s infinite; }
+    /* Sidebar context menu */
+    .sb-ctx-menu {
+      position: fixed; z-index: 9999;
+      background: #1e3a5f; border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 10px; overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.45);
+      min-width: 160px; animation: ctxFadeIn 0.12s ease;
+    }
+    @keyframes ctxFadeIn { from { opacity:0; transform: scale(0.95); } to { opacity:1; transform: scale(1); } }
+    .sb-ctx-menu button {
+      display: flex; align-items: center; gap: 10px;
+      width: 100%; padding: 10px 16px;
+      font-size: 13px; color: rgba(255,255,255,0.85);
+      background: none; border: none; cursor: pointer; text-align: left;
+      transition: background 0.15s;
+    }
+    .sb-ctx-menu button:hover { background: rgba(255,255,255,0.1); color: #fff; }
+    .sb-ctx-menu button.danger:hover { background: rgba(239,68,68,0.2); color: #fca5a5; }
+    .sb-ctx-menu .ctx-divider { height:1px; background: rgba(255,255,255,0.08); margin: 3px 0; }
+    /* Inline confirm modal */
+    #folder-modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+      z-index: 10000; display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none; transition: opacity 0.2s;
+    }
+    #folder-modal-overlay.show { opacity: 1; pointer-events: all; }
+    #folder-modal {
+      background: #fff; border-radius: 16px; padding: 28px 32px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.25); max-width: 380px; width: 90%;
+      transform: translateY(12px); transition: transform 0.2s;
+    }
+    #folder-modal-overlay.show #folder-modal { transform: translateY(0); }
+    #folder-modal h3 { font-size: 16px; font-weight: 700; color: #1e3a5f; margin-bottom: 8px; }
+    #folder-modal p { font-size: 14px; color: #64748b; margin-bottom: 20px; }
+    #folder-modal input {
+      width: 100%; border: 1.5px solid #cbd5e1; border-radius: 8px;
+      padding: 9px 13px; font-size: 14px; outline: none; margin-bottom: 20px;
+      transition: border-color 0.2s;
+    }
+    #folder-modal input:focus { border-color: #3b82f6; }
+    #folder-modal .modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
+    #folder-modal .btn-cancel {
+      padding: 8px 18px; border-radius: 8px; border: 1.5px solid #e2e8f0;
+      color: #64748b; font-size: 13px; cursor: pointer; background: #fff;
+      transition: background 0.15s;
+    }
+    #folder-modal .btn-cancel:hover { background: #f1f5f9; }
+    #folder-modal .btn-ok {
+      padding: 8px 20px; border-radius: 8px; border: none;
+      font-size: 13px; font-weight: 600; cursor: pointer; transition: background 0.15s;
+    }
+    #folder-modal .btn-ok.primary { background: #2563eb; color: #fff; }
+    #folder-modal .btn-ok.primary:hover { background: #1d4ed8; }
+    #folder-modal .btn-ok.danger { background: #ef4444; color: #fff; }
+    #folder-modal .btn-ok.danger:hover { background: #dc2626; }
+    /* Action btn on folder item */
+    .folder-action-btn {
+      opacity: 0.35; margin-left: auto; flex-shrink: 0;
+      background: rgba(255,255,255,0.08); border: none; border-radius: 6px;
+      color: rgba(255,255,255,0.8); cursor: pointer; padding: 3px 8px;
+      font-size: 12px; transition: opacity 0.15s, background 0.15s;
+      line-height: 1.4;
+    }
+    .sidebar-folder-item:hover .folder-action-btn { opacity: 1; background: rgba(255,255,255,0.15); }
+    .folder-action-btn:hover { background: rgba(255,255,255,0.25) !important; color: #fff; }
+    /* Header tab navigation */
+    .header-tab {
+      color: #64748b; background: transparent; border: none; cursor: pointer;
+      border-bottom: 2px solid transparent; border-radius: 0;
+      padding: 0 12px; height: 60px;
+      display: flex; align-items: center; gap: 8px;
+      font-size: 14px; font-weight: 600;
+      transition: color 0.15s, border-color 0.15s;
+      white-space: nowrap;
+    }
+    .header-tab:hover { color: #1d4ed8; background: transparent; }
+    .header-tab.active { color: #1d4ed8; border-bottom: 2px solid #2563eb; }
+    /* ===== LIGHTBOX ===== */
+    #lightbox-overlay {
+      position: fixed; inset: 0; z-index: 99999;
+      background: rgba(0,0,0,0.93);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none; transition: opacity 0.22s;
+    }
+    #lightbox-overlay.show { opacity: 1; pointer-events: all; }
+    #lb-img {
+      max-width: min(92vw, 1200px); max-height: 80vh;
+      object-fit: contain; border-radius: 8px;
+      box-shadow: 0 20px 80px rgba(0,0,0,0.55);
+    }
+    #lb-iframe {
+      width: min(90vw, 1000px); height: 76vh;
+      border: none; border-radius: 8px;
+      box-shadow: 0 20px 80px rgba(0,0,0,0.55);
+    }
+    .lb-nav-btn {
+      position: fixed; top: 50%; transform: translateY(-50%);
+      background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.18);
+      color: #fff; cursor: pointer; border-radius: 50%;
+      width: 50px; height: 50px; display: flex; align-items: center; justify-content: center;
+      transition: background 0.18s, transform 0.18s; z-index: 10; font-size: 18px;
+    }
+    .lb-nav-btn:hover { background: rgba(255,255,255,0.22); transform: translateY(-50%) scale(1.08); }
+    #lb-prev { left: 14px; } #lb-next { right: 14px; }
+    #lb-close-btn {
+      position: fixed; top: 14px; right: 18px;
+      background: rgba(255,255,255,0.1); border: none; color: #fff;
+      font-size: 18px; cursor: pointer; border-radius: 50%;
+      width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;
+      transition: background 0.18s; z-index: 10;
+    }
+    #lb-close-btn:hover { background: rgba(239,68,68,0.65); }
+    #lb-counter-pill {
+      position: fixed; top: 16px; left: 50%; transform: translateX(-50%);
+      background: rgba(0,0,0,0.45); border: 1px solid rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.65); font-size: 12px; font-weight: 600;
+      padding: 4px 14px; border-radius: 20px; z-index: 10;
+    }
+    #lb-bottom-bar {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.9) 60%, transparent);
+      padding: 28px 24px 18px;
+      display: flex; align-items: flex-end; justify-content: space-between; gap: 16px;
+    }
+    /* ===== PHOTO CARD ===== */
+    .photo-card {
+      border-radius: 10px; overflow: hidden; background: #fff;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      transition: transform 0.2s, box-shadow 0.2s; cursor: pointer;
+    }
+    .photo-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.13); }
+    .photo-thumb-wrap { position: relative; overflow: hidden; background: #f1f5f9; aspect-ratio: 1/1; }
+    .photo-thumb { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.3s; }
+    .photo-card:hover .photo-thumb { transform: scale(1.06); }
+    .video-overlay-btn { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; }
+    .video-play-circle { width: 48px; height: 48px; background: rgba(0,0,0,0.52); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid rgba(255,255,255,0.65); }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans flex h-screen overflow-hidden">
+
+  <!-- Mobile Sidebar Overlay -->
+  <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-40 hidden md:hidden transition-opacity" onclick="toggleSidebar()"></div>
+
+  <!-- Left Sidebar (Menu) -->
+  <aside id="sidebar" class="w-72 bg-teal-900 text-white flex-shrink-0 flex flex-col shadow-xl z-50 transition-all duration-300 absolute md:relative h-full -translate-x-full md:translate-x-0">
+    <div class="p-4 md:p-5 flex items-center justify-start space-x-3 cursor-pointer border-b border-blue-800 bg-blue-950" onclick="window.location.href='index.html'">
+      <i class="fa-solid fa-house text-3xl"></i>
+      <h1 class="text-xl font-bold uppercase tracking-wider">HÌNH ẢNH</h1>
+    </div>
+    
+    <!-- Folder Tree Section -->
+    <div id="sidebar-folder-section" class="flex flex-col flex-1 overflow-hidden border-t border-blue-800 mt-1">
+      <div class="sidebar-section-label flex items-center gap-2 pt-3 pr-2">
+        <i class="fa-solid fa-sitemap text-blue-400"></i>
+        <span class="flex-1">Cây Thư Mục</span>
+        <button id="btn-add-root-folder" onclick="sidebarAddFolder()" title="Tạo thư mục mới tại đây"
+          class="flex items-center gap-1 bg-teal-600 hover:bg-teal-500 text-white rounded-md px-2 py-1 text-[10px] font-bold transition">
+          <i class="fa-solid fa-plus"></i> Thêm
+        </button>
+      </div>
+
+      <!-- Current path breadcrumb -->
+      <div id="sidebar-breadcrumb-path" class="hidden">
+        <!-- populated by JS -->
+      </div>
+
+      <!-- Folder tree list -->
+      <div id="sidebar-folder-tree" class="flex-1 overflow-y-auto px-2 pb-4 space-y-0.5">
+        <!-- skeleton loading -->
+        <div class="sidebar-skeleton flex items-center gap-2 px-3 py-2">
+          <div class="w-4 h-4 rounded bg-white/10"></div>
+          <div class="h-3 rounded bg-white/10 flex-1"></div>
+        </div>
+        <div class="sidebar-skeleton flex items-center gap-2 px-3 py-2">
+          <div class="w-4 h-4 rounded bg-white/10"></div>
+          <div class="h-3 rounded bg-white/10 w-3/4"></div>
+        </div>
+        <div class="sidebar-skeleton flex items-center gap-2 px-3 py-2">
+          <div class="w-4 h-4 rounded bg-white/10"></div>
+          <div class="h-3 rounded bg-white/10 w-1/2"></div>
+        </div>
+      </div>
+    </div>
+    <div class="p-4 border-t border-blue-800 text-xs text-blue-400 text-center bg-teal-900">
+      © 2026 Không gian văn hóa HCM
+    </div>
+  </aside>
+
+  <!-- Context Menu (global, hidden by default) -->
+  <div id="sb-ctx-menu" class="sb-ctx-menu hidden"></div>
+
+  <!-- Folder Action Modal -->
+  <div id="folder-modal-overlay">
+    <div id="folder-modal">
+      <h3 id="modal-title">Tạo thư mục</h3>
+      <p id="modal-desc"></p>
+      <input id="modal-input" type="text" placeholder="Tên thư mục..." style="display:none">
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeModal()">Hủy</button>
+        <button id="modal-ok" class="btn-ok primary" onclick="modalOk()">Xác nhận</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content Wrapper -->
+  <div class="flex-1 flex flex-col h-screen overflow-hidden bg-gray-50 relative">
+    
+    <!-- Header -->
+    <header class="bg-white shadow-sm z-40 sticky top-0 border-b border-gray-200">
+      <div class="px-4 md:px-6 flex items-center gap-2 md:gap-4 h-[60px]">
+        
+        <!-- Hamburger Button -->
+        <button onclick="toggleSidebar()" class="text-gray-500 hover:text-teal-600 focus:outline-none p-2 rounded-lg hover:bg-gray-100 transition-colors mr-2">
+          <i class="fa-solid fa-bars text-xl"></i>
+        </button>
+
+        <!-- Nút về trang chủ -->
+        <a href="index.html" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-semibold bg-teal-50 text-teal-700 hover:bg-teal-100 transition mr-1">
+          <i class="fa-solid fa-house"></i>
+          <span class="hidden sm:inline">Trang chủ</span>
+        </a>
+
+        <!-- Tab Navigation (left side) -->
+        <nav class="flex items-center gap-1 flex-shrink-0">
+          <button onclick="switchTab('library')" id="btn-library"
+            class="header-tab active flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold transition">
+            <i class="fa-solid fa-folder-open"></i>
+            <span class="hidden sm:inline">Thư Viện Ảnh</span>
+          </button>
+
+          <button onclick="switchTab('upload')" id="btn-upload"
+            class="header-tab flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold transition">
+            <i class="fa-solid fa-cloud-arrow-up text-teal-500"></i>
+            <span class="hidden sm:inline">Đóng Góp</span>
+          </button>
+          <button onclick="sessionStorage.clear(); window.location.reload();" title="Tải lại dữ liệu mới nhất"
+            class="header-tab flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold transition text-gray-600 hover:text-green-600 hover:bg-green-50 ml-1">
+            <i class="fa-solid fa-rotate-right"></i>
+            <span class="hidden md:inline">Tải lại</span>
+          </button>
+          <button onclick="loginAdmin()" id="btn-admin" title="Quản trị viên"
+            class="header-tab flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold transition text-gray-400 hover:text-red-600 hover:bg-red-50 ml-1">
+            <i class="fa-solid fa-lock" id="icon-admin"></i>
+          </button>
+        </nav>
+
+        <!-- Divider -->
+        <div class="hidden sm:block w-px h-7 bg-gray-200 flex-shrink-0"></div>
+
+        <!-- Search Bar -->
+        <div class="relative flex-1 max-w-lg">
+          <input type="text" id="search-input" placeholder="Tìm kiếm ảnh/video..." 
+            class="w-full pl-10 pr-24 py-2 rounded-full text-gray-700 bg-gray-100 border-none focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-inner transition-all text-sm"
+            onkeypress="handleEnterSearch(event)" oninput="handleLiveSearch()">
+          <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-2.5 text-gray-400 text-sm"></i>
+          <button onclick="executeSearch()" class="absolute right-1 top-1 bg-teal-600 hover:bg-teal-700 text-white rounded-full py-1.5 px-3 text-xs font-semibold shadow transition">Tìm kiếm</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Scrollable Main Container -->
+    <main class="flex-1 overflow-y-auto w-full px-4 py-6 md:px-8 pb-20">
+      <div class="container mx-auto">
+    
+    <!-- === TAB 1: LIBRARY === -->
+    <div id="tab-library" class="block">
+      <!-- Main Breadcrumbs -->
+      <div id="breadcrumbs" class="hidden flex flex-wrap items-center gap-2 mb-6 text-sm bg-white py-3 px-4 rounded-lg shadow-sm border border-gray-200"></div>
+
+      <!-- Search Result Title -->
+      <div id="search-result-title" class="hidden mb-4 text-lg font-bold text-teal-700 flex items-center">
+        <i class="fa-solid fa-filter mr-2"></i> Kết quả tìm kiếm: <span id="search-query" class="ml-1 text-black"></span>
+        <button onclick="clearSearch()" class="ml-4 text-xs text-red-500 underline hover:text-red-700">Xóa tìm kiếm</button>
+      </div>
+
+      <div id="library-loader" class="loader hidden"></div>
+
+      <!-- Content Area -->
+      <div id="library-content" class="flex flex-col lg:flex-row gap-4">
+        <div id="main-list-area" class="w-full lg:w-full transition-all duration-300 overflow-hidden" style="flex: 1 1 auto;">
+          <!-- Folders Grid (hidden – folders shown in sidebar tree) -->
+          <div id="folder-container" class="hidden"></div>
+
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-4 border-l-4 border-teal-600 pl-3 gap-3">
+            <h2 id="files-title" class="text-lg font-bold text-gray-700">Danh Sách Ảnh</h2>
+            <div class="flex flex-wrap items-center gap-2">
+              <select id="filter-select" onchange="applySortAndFilter()" class="text-sm bg-gray-50 border border-gray-200 text-gray-700 py-1.5 px-2 rounded-lg focus:outline-none focus:border-blue-500 cursor-pointer shadow-sm">
+                <option value="all">Tất cả ảnh/video</option>
+                <option value="jpg">Ảnh JPG/PNG</option>
+                <option value="mp4">Video MP4</option>
+              </select>
+
+              <select id="sort-select" onchange="applySortAndFilter()" class="text-sm bg-gray-50 border border-gray-200 text-gray-700 py-1.5 px-2 rounded-lg focus:outline-none focus:border-blue-500 cursor-pointer shadow-sm">
+                <option value="newest">Mới nhất</option>
+                <option value="oldest">Cũ nhất</option>
+                <option value="downloads">Tải nhiều nhất</option>
+                <option value="name">Tên A-Z</option>
+              </select>
+
+              <div class="flex bg-gray-100 rounded-lg p-1 shadow-inner border border-gray-200">
+                <button onclick="setViewMode('list')" id="btn-view-list" class="p-1 px-2.5 rounded-md text-gray-500 hover:text-teal-600 transition" title="Xem dạng danh sách">
+                  <i class="fa-solid fa-list text-sm"></i>
+                </button>
+                <button onclick="setViewMode('grid')" id="btn-view-grid" class="p-1 px-2.5 rounded-md text-gray-500 hover:text-teal-600 transition" title="Xem dạng lưới">
+                  <i class="fa-solid fa-grip text-sm"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Files List -->
+          <div id="file-container" class="grid grid-cols-1 gap-4">
+            <!-- Render Cards -->
+          </div>
+          
+          <div id="empty-msg" class="hidden text-center text-gray-400 py-10">
+            <i class="fa-solid fa-box-open text-4xl mb-3"></i>
+            <p>Không tìm thấy dữ liệu</p>
+          </div>
+
+          <!-- Trigger cho Infinite Scroll -->
+          <div id="scroll-trigger" class="hidden py-6 flex justify-center text-gray-400">
+             <i class="fa-solid fa-spinner fa-spin text-2xl"></i>
+          </div>
+        </div>
+
+        <!-- Resizer -->
+        <div id="resizer" class="hidden lg:hidden w-2 cursor-col-resize hover:bg-blue-400 active:bg-teal-600 rounded transition-colors self-stretch bg-gray-200"></div>
+
+        <div id="preview-pane" class="hidden w-full lg:w-1/2 bg-white p-4 rounded-lg shadow-md border border-gray-200 sticky top-24 h-[calc(100vh-120px)] flex-col shrink-0">
+           <div class="flex justify-between items-center mb-3">
+             <h3 class="font-bold text-blue-800 truncate pr-2 flex-grow" id="preview-title">Xem trước</h3>
+             <div class="flex items-center gap-3 shrink-0">
+               <a id="preview-drive-btn" href="#" target="_blank" class="text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-1.5 px-3 rounded border transition flex items-center shadow-sm" title="Mở bằng Google Drive">
+                 <i class="fa-brands fa-google-drive mr-1.5 text-green-600"></i> Mở Drive
+               </a>
+               <button onclick="closePreview()" class="text-gray-500 hover:text-red-500"><i class="fa-solid fa-xmark text-xl"></i></button>
+             </div>
+           </div>
+           <div class="flex-grow w-full relative bg-gray-100 rounded flex items-center justify-center overflow-hidden">
+              <iframe id="preview-iframe" class="w-full h-full border-0 absolute top-0 left-0 hidden" onload="const loader = document.getElementById('preview-loader'); if(loader) { loader.classList.add('hidden'); } this.classList.remove('hidden');"></iframe>
+              <div id="preview-loader" class="text-gray-400 flex flex-col items-center"><i class="fa-solid fa-spinner fa-spin text-3xl mb-2"></i><p>Đang tải...</p></div>
+           </div>
+           <div class="mt-4 flex gap-2">
+              <a id="preview-download-btn" href="#" target="_blank" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded text-center shadow transition flex items-center justify-center"><i class="fa-solid fa-download mr-2"></i>Tải về</a>
+           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- === TAB 2: UPLOAD === -->
+    <div id="tab-upload" class="hidden max-w-3xl mx-auto bg-white p-8 rounded-xl shadow-md mt-6">
+      <h2 class="text-2xl font-bold text-blue-800 mb-6 text-center border-b pb-4">Đóng Góp Ảnh/Video Mới</h2>
+      
+      <form id="upload-form" onsubmit="handleBatchUpload(event)">
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <!-- Cột Trái -->
+          <div class="space-y-4">
+             <div>
+              <label class="block text-gray-700 text-sm font-bold mb-2">1. Chọn thư mục lưu trữ *</label>
+              <div class="flex gap-2">
+                <div class="relative flex-grow" id="upload-folder-dropdown">
+                  <button type="button" onclick="toggleUploadFolderTree(event)" id="upload-folder-btn" class="w-full bg-white border border-gray-300 text-gray-700 py-2.5 px-3 rounded-lg flex justify-between items-center focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 shadow-sm transition">
+                    <span id="upload-folder-text" class="truncate font-medium text-sm"><i class="fa-solid fa-spinner fa-spin mr-2 text-gray-400"></i> Đang tải danh sách...</span>
+                    <i class="fa-solid fa-chevron-down text-xs text-gray-500"></i>
+                  </button>
+                  <input type="hidden" id="folder-select" value="">
+                  <div id="upload-folder-tree-container" class="hidden absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-xl max-h-72 overflow-y-auto">
+                     <div id="upload-folder-tree" class="p-2 text-sm">
+                        <!-- Tree will be rendered here -->
+                     </div>
+                  </div>
+                </div>
+                <button type="button" onclick="handleCreateFolder(this)" 
+                        class="bg-green-600 hover:bg-green-700 text-white px-3 rounded shadow transition flex-shrink-0" 
+                        title="Tạo thư mục con trong thư mục đang chọn">
+                  <i class="fa-solid fa-folder-plus"></i>
+                </button>
+              </div>
+              <p class="text-xs text-gray-500 mt-1 italic">Mẹo: Chọn thư mục cha ở danh sách rồi bấm nút (+) màu xanh để tạo thư mục con.</p>
+            </div>
+
+            <div>
+              <label class="block text-gray-700 text-sm font-bold mb-2">2. Loại ảnh/video *</label>
+              <select id="file-type" class="block w-full bg-gray-50 border border-gray-300 text-gray-700 py-2.5 px-3 rounded focus:outline-none focus:border-blue-500">
+                <option value="Hoạt động ngoại khóa">Hoạt động ngoại khóa</option>
+                <option value="Lễ khai giảng/Tổng kết">Lễ khai giảng/Tổng kết</option>
+                <option value="Sinh hoạt lớp">Sinh hoạt lớp</option>
+                <option value="Du lịch/Dã ngoại">Du lịch/Dã ngoại</option>
+                <option value="Văn nghệ/Thể thao">Văn nghệ/Thể thao</option>
+                <option value="Ảnh thẻ/Ảnh chân dung">Ảnh thẻ/Ảnh chân dung</option>
+                <option value="Ảnh cá nhân/Nhóm">Ảnh cá nhân/Nhóm</option>
+                <option value="Kỷ niệm khác">Kỷ niệm khác</option>
+              </select>
+            </div>
+            
+            <div>
+              <label class="block text-gray-700 text-sm font-bold mb-2">3. Tên hiển thị (Tiêu đề) *</label>
+              <input type="text" id="display-name" placeholder="VD: Hội trại xuân 2024" 
+                class="border rounded w-full py-2.5 px-3 text-gray-700 focus:outline-none focus:border-blue-500">
+              <p class="text-xs text-gray-500 mt-1 italic">Nếu upload nhiều file, tên này sẽ áp dụng cho tất cả hoặc để trống để dùng tên file gốc.</p>
+            </div>
+          </div>
+
+          <!-- Cột Phải -->
+          <div class="space-y-4">
+            <div>
+              <label class="block text-gray-700 text-sm font-bold mb-2">4. Thông tin người đăng *</label>
+              <input type="text" id="uploader-name" required placeholder="Nickname của bạn" 
+                class="border rounded w-full py-2 px-3 text-gray-700 mb-2 focus:outline-none focus:border-blue-500">
+              <input type="email" id="uploader-email" placeholder="Email (để ẩn)"
+                class="border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:border-blue-500">
+            </div>
+
+            <div>
+              <label class="block text-gray-700 text-sm font-bold mb-2">5. Ghi chú thêm (Tùy chọn)</label>
+              <textarea id="file-desc" rows="3" placeholder="Mô tả nội dung, đáp án, lưu ý..." 
+                class="border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:border-blue-500"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- File Input Multiple -->
+        <div class="mb-6">
+          <label class="block text-gray-700 text-sm font-bold mb-2">6. Chọn ảnh/video (Hỗ trợ kéo thả Thư mục)</label>
+          <div class="flex flex-col gap-3">
+            <label id="drop-zone" class="flex flex-col items-center justify-center w-full h-32 border-2 border-blue-300 border-dashed rounded-lg bg-teal-50 hover:bg-blue-100 transition relative">
+              <div class="flex flex-col items-center justify-center pt-5 pb-6 pointer-events-none">
+                <i class="fa-solid fa-cloud-arrow-up text-3xl text-teal-500 mb-2"></i>
+                <p class="text-sm text-gray-500"><span class="font-semibold">Kéo thả File hoặc Thư mục vào đây</span></p>
+                <p id="file-count-display" class="text-xs text-gray-400 mt-1">Chưa chọn ảnh/video</p>
+              </div>
+            </label>
+            <div class="flex gap-2">
+              <label for="file-upload" class="flex-1 text-center bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 py-2.5 rounded-lg shadow-sm cursor-pointer transition font-semibold text-sm">
+                <i class="fa-regular fa-file mr-1"></i> Chọn File
+              </label>
+              <label for="folder-upload" class="flex-1 text-center bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 py-2.5 rounded-lg shadow-sm cursor-pointer transition font-semibold text-sm">
+                <i class="fa-solid fa-folder-open mr-1 text-yellow-500"></i> Chọn Thư Mục
+              </label>
+            </div>
+            <!-- Remove "required" from input so we can handle validation via JS -->
+            <input id="file-upload" type="file" class="hidden" multiple onchange="handleFileInputChange(this)" />
+            <input id="folder-upload" type="file" class="hidden" webkitdirectory directory multiple onchange="handleFileInputChange(this)" />
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" id="btn-submit" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 px-4 rounded shadow-lg transform transition hover:-translate-y-0.5 flex justify-center items-center">
+          <span><i class="fa-solid fa-upload mr-2"></i>Tải Lên Hệ Thống</span>
+        </button>
+
+        <!-- Progress Bar Container (Hidden by default) -->
+        <div id="progress-container" class="hidden mt-6 bg-gray-50 p-4 rounded-lg border border-gray-200">
+           <div class="flex justify-between items-center mb-1">
+              <span id="progress-text" class="text-sm font-semibold text-blue-800">Đang chuẩn bị...</span>
+              <span id="progress-percent" class="text-sm font-bold text-blue-800">0%</span>
+           </div>
+           <div class="w-full bg-gray-200 rounded-full h-3">
+              <div id="progress-bar-fill" class="bg-teal-600 h-3 rounded-full" style="width: 0%"></div>
+           </div>
+           <p id="progress-detail" class="text-xs text-gray-500 mt-2 italic">Đang tải lên, vui lòng không tắt trình duyệt...</p>
+        </div>
+
+      </form>
+    </div>
+
+
+    
+      </div>
+
+      <!-- Footer Brand -->
+      <footer class="mt-16 mb-2">
+        <div class="max-w-3xl mx-auto bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow duration-300">
+          <div class="h-1.5 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500"></div>
+          <div class="p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div class="flex items-center gap-5">
+              <div class="w-16 h-16 rounded-full bg-teal-50 flex items-center justify-center flex-shrink-0 shadow-inner border border-teal-100 relative">
+                <i class="fa-solid fa-camera-retro text-2xl text-teal-600"></i>
+                <div class="absolute -bottom-1 -right-1 bg-green-500 w-4 h-4 rounded-full border-2 border-white"></div>
+              </div>
+              <div class="text-center sm:text-left">
+                <h3 class="text-xl font-extrabold text-gray-800 mb-1 tracking-tight">Hình ảnh hoạt động</h3>
+                <p class="text-sm text-gray-500 font-medium">Hình ảnh hoạt động giáo dục và phong trào</p>
+              </div>
+            </div>
+            
+            <div class="flex flex-col items-center sm:items-end">
+              <a href="https://zalo.me/0788095095" target="_blank" class="group flex items-center gap-2.5 bg-teal-50 hover:bg-teal-600 text-teal-700 hover:text-white px-5 py-2.5 rounded-full transition-all duration-300 font-bold shadow-sm border border-blue-200 hover:border-teal-600">
+                <div class="bg-teal-600 group-hover:bg-white text-white group-hover:text-teal-600 w-6 h-6 rounded-full flex items-center justify-center text-xs transition-colors">
+                  <i class="fa-solid fa-phone"></i>
+                </div>
+                Zalo: 078.809.5095
+              </a>
+              <p class="text-[11px] text-gray-400 mt-2.5 font-medium flex items-center gap-1">
+                <i class="fa-solid fa-headset"></i> Hỗ trợ & Đóng góp ảnh
+              </p>
+            </div>
+          </div>
+        </div>
+      </footer>
+
+    </main>
+  </div>
+
+  <div id="toast" class="fixed bottom-5 right-5 bg-gray-800 text-white px-6 py-3 rounded shadow-lg transform translate-y-20 transition duration-300 opacity-0 z-50"></div>
+
+  <script>
+    // =========================================================================
+    // LƯU Ý QUAN TRỌNG:
+    // Bạn hãy thay thế URL bên dưới bằng URL có đuôi /exec sau khi Deploy Web App.
+    // Dưới đây chỉ là URL ví dụ để bạn biết cấu trúc.
+    // =========================================================================
+    const LINK_GAS = "https://script.google.com/macros/s/AKfycbycYnFiVe7GoRrnLE_uqFPubHHxb2wvYe0gZ--i0jgMpmJSrUcCUln_39gSVHOWAm5U/exec";
+
+    window.adminPassword = sessionStorage.getItem('adminPassword') || "";
+    window.isAdmin = !!window.adminPassword;
+
+    window.addEventListener('DOMContentLoaded', () => {
+       if (window.isAdmin) {
+          document.getElementById('btn-admin').classList.add('text-red-600', 'bg-red-50');
+          document.getElementById('btn-admin').classList.remove('text-gray-400');
+          document.getElementById('icon-admin').classList.replace('fa-lock', 'fa-unlock');
+       }
+    });
+
+    async function gasCall(action, params = {}) {
+      try {
+        const payload = { action, ...params };
+        const res = await fetch(LINK_GAS, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'text/plain;charset=utf-8'
+          },
+          body: JSON.stringify(payload),
+          redirect: 'follow' // BẮT BUỘC ĐỐI VỚI GOOGLE APPS SCRIPT ĐỂ KHÔNG BỊ LỖI FETCH
+        });
+        
+        if (!res.ok) {
+           throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        return await res.json();
+      } catch (err) {
+        console.error("Lỗi gasCall:", err);
+        // Cảnh báo người dùng nếu gặp lỗi CORS (Failed to fetch)
+        if (err.message.includes('Failed to fetch') || err.message.includes('Network Error')) {
+          throw new Error('Lỗi kết nối. Vui lòng chắc chắn bạn đã Deploy Web App với quyền truy cập "Anyone" (Bất kỳ ai) thay vì "Anyone with Google account".');
+        }
+        throw new Error(err.message || 'Lỗi mạng không xác định');
+      }
+    }
+
+    let currentFolderId = null;
+
+    // --- INIT ---
+    window.onload = function() {
+      const cachedFolders = sessionStorage.getItem('tvsm_folders');
+      const cachedLib = sessionStorage.getItem('tvsm_library_root');
+      let usedCache = false;
+
+      if (cachedFolders && cachedLib) {
+         try { 
+             renderFolderTrees(JSON.parse(cachedFolders)); 
+             renderLibrary(JSON.parse(cachedLib));
+             document.getElementById('library-loader').classList.add('hidden');
+             document.getElementById('library-content').classList.remove('opacity-50');
+             usedCache = true;
+         } catch(e) {}
+      }
+      
+      if (!usedCache) {
+         document.getElementById('library-loader').classList.remove('hidden');
+         document.getElementById('library-content').classList.add('opacity-50');
+      }
+
+      // Gọi hàm gộp để giảm cold-start từ 10s xuống 4-5s
+      gasCall('getInitialData').then(res => {
+         if (res.success) {
+            const data = res.data;
+            if (data.folders) {
+               sessionStorage.setItem('tvsm_folders', JSON.stringify(data.folders));
+               renderFolderTrees(data.folders);
+            }
+            if (data.library) {
+               const libRes = {success: true, data: data.library};
+               sessionStorage.setItem('tvsm_library_root', JSON.stringify(libRes));
+               renderLibrary(libRes);
+            }
+         } else {
+            // Fallback nếu chưa update Code.gs
+            if(!usedCache) { loadLibrary(null); loadFolderTree(); }
+         }
+      }).catch(err => {
+         if(!usedCache) { loadLibrary(null); loadFolderTree(); }
+      });
+
+      loadUserInfo();
+    };
+
+    function switchTab(tab) {
+      document.getElementById('tab-library').classList.toggle('hidden', tab !== 'library');
+      document.getElementById('tab-upload').classList.toggle('hidden', tab !== 'upload');
+
+      ['btn-library','btn-upload'].forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.classList.remove('active');
+      });
+      const activeId = 'btn-' + tab;
+      const activeEl = document.getElementById(activeId);
+      if (activeEl) activeEl.classList.add('active');
+    }
+
+    function goHome() {
+      switchTab('library');
+      document.getElementById('search-input').value = '';
+      document.getElementById('breadcrumbs').classList.remove('hidden');
+      document.getElementById('search-result-title').classList.add('hidden');
+      document.getElementById('files-title').innerText = "Danh Sách Ảnh";
+      closePreview();
+      loadLibrary(null);
+      if (window.innerWidth < 768) {
+        const sidebar = document.getElementById('sidebar');
+        if (sidebar && !sidebar.classList.contains('-translate-x-full')) {
+          toggleSidebar();
+        }
+      }
+    }
+
+    // --- CHUNKED & DIRECT UPLOAD LOGIC ---
+    function handleFileInputChange(inputElement) {
+      const fileCountDisplay = document.getElementById('file-count-display');
+      if (inputElement.files && inputElement.files.length > 0) {
+        const dt = new DataTransfer();
+        for(let i=0; i<inputElement.files.length; i++) {
+           dt.items.add(inputElement.files[i]);
+        }
+        document.getElementById('file-upload').files = dt.files;
+        
+        fileCountDisplay.innerText = `Đã chọn ${dt.files.length} file`;
+        fileCountDisplay.classList.add("text-teal-600", "font-bold");
+      }
+    }
+
+    async function handleBatchUpload(e) {
+      e.preventDefault();
+      const files = document.getElementById('file-upload').files;
+      if (files.length === 0) { showToast("Chưa chọn file!"); return; }
+
+      const folderId = document.getElementById('folder-select').value;
+      const uploaderName = document.getElementById('uploader-name').value;
+      const uploaderEmail = document.getElementById('uploader-email').value;
+      const fileType = document.getElementById('file-type').value;
+      const desc = document.getElementById('file-desc').value;
+      const customNameInput = document.getElementById('display-name').value;
+
+      saveUserInfo(uploaderName, uploaderEmail);
+
+      const btn = document.getElementById('btn-submit');
+      const originalBtnText = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-2"></i> Đang xử lý...`;
+      
+      // Show progress container
+      const progressContainer = document.getElementById('progress-container');
+      progressContainer.classList.remove('hidden');
+
+      for (let i = 0; i < files.length; i++) {
+        try {
+          const file = files[i];
+          let finalDisplayName = customNameInput;
+          if (!finalDisplayName) {
+             // Lấy tên file bỏ phần mở rộng
+             finalDisplayName = file.name.replace(/\.[^/.]+$/, "");
+          } else if (files.length > 1) {
+             finalDisplayName = `${customNameInput} (${i+1})`;
+          }
+          
+          const meta = {
+            folderId, uploaderName, uploaderEmail, fileType, description: desc, displayName: finalDisplayName
+          };
+
+          // Upload duy nhất 1 luồng mượt mà, hỗ trợ mọi dung lượng file
+          await uploadFileToDrive(file, i+1, files.length, meta);
+
+        } catch (err) {
+          console.error(err);
+          showToast(`Lỗi upload file ${i+1}: ${err}`);
+        }
+      }
+
+      // Reset UI
+      btn.innerHTML = originalBtnText;
+      btn.disabled = false;
+      progressContainer.classList.add('hidden');
+      
+      showToast(`Hoàn tất! Đã tải lên ${files.length} file.`);
+      document.getElementById('upload-form').reset();
+      document.getElementById('file-count-display').innerText = "Chưa chọn file";
+      goHome();
+    }
+
+    async function uploadFileToDrive(file, currentIdx, totalFiles, meta) {
+      const progressBar = document.getElementById('progress-bar-fill');
+      const progressText = document.getElementById('progress-text');
+      const progressPercent = document.getElementById('progress-percent');
+      const progressDetail = document.getElementById('progress-detail');
+
+      progressText.innerText = `File ${currentIdx}/${totalFiles}: ${file.name}`;
+      progressDetail.innerText = "Đang lấy token xác thực...";
+      progressBar.style.width = '5%';
+      progressPercent.innerText = '5%';
+
+      // 1. Lấy OAuth Token từ GAS (không dùng UrlFetchApp)
+      const tokenRes = await gasCall('getOAuthToken', { folderId: meta.folderId });
+      if (!tokenRes.success) throw new Error(tokenRes.error || "Không lấy được token xác thực");
+      const token = tokenRes.token;
+      const folderId = tokenRes.folderId;
+
+      progressDetail.innerText = "Đang khởi tạo phiên tải lên...";
+      progressBar.style.width = '10%';
+      progressPercent.innerText = '10%';
+
+      // 2. Trình duyệt tự gọi Google Drive API để lấy Resumable URL (không qua GAS)
+      const initRes = await fetch(
+        'https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable', {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer ' + token,
+          'Content-Type': 'application/json',
+          'X-Upload-Content-Type': file.type || 'application/octet-stream',
+          'X-Upload-Content-Length': file.size
+        },
+        body: JSON.stringify({
+          name: file.name,
+          mimeType: file.type || 'application/octet-stream',
+          parents: [folderId]
+        })
+      });
+
+      if (!initRes.ok) {
+        const errText = await initRes.text();
+        throw new Error("Lỗi khởi tạo upload (HTTP " + initRes.status + "): " + errText);
+      }
+      const uploadUrl = initRes.headers.get('Location');
+      if (!uploadUrl) throw new Error("Không nhận được link upload từ Google Drive");
+
+      progressBar.style.width = '15%';
+      progressPercent.innerText = '15%';
+
+      // 3. Đẩy file trực tiếp lên Google Drive bằng XMLHttpRequest
+      return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open('PUT', uploadUrl, true);
+
+        xhr.upload.onprogress = (e) => {
+          if (e.lengthComputable) {
+            const percent = 15 + Math.round((e.loaded / e.total) * 80);
+            progressBar.style.width = percent + '%';
+            progressPercent.innerText = percent + '%';
+            const loadedMB = (e.loaded / 1024 / 1024).toFixed(1);
+            const totalMB = (e.total / 1024 / 1024).toFixed(1);
+            progressDetail.innerText = `Đang tải lên trực tiếp... ${loadedMB}MB / ${totalMB}MB`;
+          }
+        };
+
+        xhr.onload = async () => {
+          if (xhr.status === 200 || xhr.status === 201) {
+            progressDetail.innerText = "Đang lưu thông tin metadata...";
+            progressBar.style.width = '96%';
+            progressPercent.innerText = '96%';
+            try {
+              const responseData = JSON.parse(xhr.responseText);
+              const fileId = responseData.id;
+              const saveRes = await gasCall('saveFileMetadata', {
+                fileId: fileId,
+                meta: meta
+              });
+              if (saveRes.success) {
+                progressBar.style.width = '100%';
+                progressPercent.innerText = '100%';
+                progressDetail.innerText = "Hoàn tất.";
+                resolve();
+              } else {
+                reject(saveRes.error);
+              }
+            } catch (err) {
+              reject("Lỗi xử lý phản hồi từ Google Drive: " + err.message);
+            }
+          } else {
+            reject("Upload thất bại với mã lỗi HTTP: " + xhr.status);
+          }
+        };
+
+        xhr.onerror = () => reject("Lỗi kết nối mạng trong quá trình tải file");
+        xhr.send(file);
+      });
+    }
+
+
+    // --- FOLDER MANAGEMENT (Sidebar) ---
+    let _modalCallback = null;
+
+    function showModal({ title, desc, inputPlaceholder, okLabel, okClass, callback }) {
+      document.getElementById('modal-title').innerText = title;
+      document.getElementById('modal-desc').innerText = desc || '';
+      const inp = document.getElementById('modal-input');
+      if (inputPlaceholder !== undefined) {
+        inp.style.display = 'block';
+        inp.placeholder = inputPlaceholder;
+        inp.value = '';
+        setTimeout(() => inp.focus(), 80);
+      } else {
+        inp.style.display = 'none';
+      }
+      const okBtn = document.getElementById('modal-ok');
+      okBtn.innerText = okLabel || 'Xác nhận';
+      okBtn.className = 'btn-ok ' + (okClass || 'primary');
+      _modalCallback = callback;
+      const overlay = document.getElementById('folder-modal-overlay');
+      overlay.classList.add('show');
+    }
+
+    function closeModal() {
+      document.getElementById('folder-modal-overlay').classList.remove('show');
+      _modalCallback = null;
+    }
+
+    function modalOk() {
+      const inp = document.getElementById('modal-input');
+      const val = inp.style.display !== 'none' ? inp.value.trim() : null;
+      if (inp.style.display !== 'none' && !val) {
+        inp.focus(); inp.style.borderColor='#ef4444';
+        setTimeout(() => inp.style.borderColor='', 800);
+        return;
+      }
+      // QUAN TRỌNG: lưu callback trước khi closeModal() đặt nó về null
+      const cb = _modalCallback;
+      closeModal();
+      if (cb) cb(val);
+    }
+
+    // Press Enter in modal input = confirm
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && document.getElementById('folder-modal-overlay').classList.contains('show')) modalOk();
+      if (e.key === 'Escape') { closeModal(); closeCtxMenu(); }
+    });
+    document.getElementById('folder-modal-overlay').addEventListener('click', function(e) {
+      if (e.target === this) closeModal();
+    });
+
+    // --- Sidebar Toggle Logic ---
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('sidebar-overlay');
+      
+      if (window.innerWidth < 768) {
+        // Mobile: toggle translation and overlay
+        sidebar.classList.toggle('-translate-x-full');
+        overlay.classList.toggle('hidden');
+      } else {
+        // Desktop: toggle negative margin
+        sidebar.classList.toggle('md:-ml-72');
+      }
+    }
+
+    // ---- Context Menu ----
+    // Dùng biến toàn cục để tránh vấn đề với tên thư mục có ký tự đặc biệt
+    let _ctxFolderId = null;
+    let _ctxFolderName = null;
+
+    function openFolderCtx(event, folderId, folderName) {
+      _ctxFolderId = folderId;
+      _ctxFolderName = folderName;
+
+      const menu = document.getElementById('sb-ctx-menu');
+      menu.innerHTML = `
+        <button data-ctx-action="add-sub"><i class="fa-solid fa-folder-plus w-4 text-blue-400"></i> Thêm thư mục con</button>
+        <button data-ctx-action="rename"><i class="fa-solid fa-pen w-4 text-yellow-400"></i> Đổi tên</button>
+        <div class="ctx-divider"></div>
+        <button class="danger" data-ctx-action="delete"><i class="fa-solid fa-trash w-4"></i> Xóa thư mục</button>
+      `;
+      menu.classList.remove('hidden');
+
+      const x = Math.min(event.clientX, window.innerWidth - 185);
+      const y = Math.min(event.clientY + 5, window.innerHeight - 170);
+      menu.style.left = x + 'px';
+      menu.style.top  = y + 'px';
+
+      setTimeout(() => document.addEventListener('click', closeCtxMenu, { once: true }), 10);
+    }
+
+    function closeCtxMenu() {
+      document.getElementById('sb-ctx-menu').classList.add('hidden');
+    }
+
+    // Event delegation cho context menu (an toàn với mọi tên thư mục)
+    document.getElementById('sb-ctx-menu').addEventListener('click', function(e) {
+      const btn = e.target.closest('button[data-ctx-action]');
+      if (!btn || !_ctxFolderId) return;
+      const action = btn.dataset.ctxAction;
+      const fid  = _ctxFolderId;
+      const name = _ctxFolderName;
+      closeCtxMenu();
+      if (action === 'add-sub')  sidebarAddSubFolder(fid, name);
+      if (action === 'rename')   sidebarRenameFolder(fid, name);
+      if (action === 'delete')   sidebarDeleteFolder(fid, name);
+    });
+
+    // ---- Sidebar Add Folder (at current level) ----
+    function sidebarAddFolder() {
+      const parentId = currentFolderId || null;
+      const parentLabel = parentId ? 'thư mục hiện tại' : 'thư mục gốc';
+      showModal({
+        title: 'Tạo thư mục mới',
+        desc: `Tạo trong ${parentLabel}`,
+        inputPlaceholder: 'Tên thư mục...',
+        okLabel: 'Tạo',
+        okClass: 'primary',
+        callback: (name) => _doCreateFolder(parentId, name)
+      });
+    }
+
+    function sidebarAddSubFolder(parentId, parentName) {
+      closeCtxMenu();
+      showModal({
+        title: 'Thêm thư mục con',
+        desc: `Tạo bên trong "${parentName}"`,
+        inputPlaceholder: 'Tên thư mục con...',
+        okLabel: 'Tạo',
+        okClass: 'primary',
+        callback: (name) => _doCreateFolder(parentId, name)
+      });
+    }
+
+    function _doCreateFolder(parentId, folderName) {
+      if (!folderName) return;
+      showToast('Đang tạo thư mục...');
+      gasCall('createFolder', { parentId, folderName }).then(res => {
+        if (res.success) {
+          showToast('✅ Đã tạo: ' + folderName);
+          loadFolderTree();
+          loadLibrary(currentFolderId);
+        } else showToast('Lỗi: ' + res.error);
+      }).catch(showError);
+    }
+
+    // ---- Rename ----
+    function sidebarRenameFolder(folderId, oldName) {
+      closeCtxMenu();
+      showModal({
+        title: 'Đổi tên thư mục',
+        desc: `Tên hiện tại: "${oldName}"`,
+        inputPlaceholder: 'Tên mới...',
+        okLabel: 'Lưu',
+        okClass: 'primary',
+        callback: (newName) => {
+          if (!newName || newName === oldName) return;
+          showToast('Đang đổi tên...');
+          gasCall('renameFolder', { folderId, newName, adminPassword: window.adminPassword }).then(res => {
+            if (res.success) {
+              showToast('✅ Đã đổi thành: ' + newName);
+              loadFolderTree();
+              loadLibrary(currentFolderId);
+            } else showToast('Lỗi: ' + res.error);
+          }).catch(showError);
+        }
+      });
+    }
+
+    // ---- Delete ----
+    function sidebarDeleteFolder(folderId, folderName) {
+      closeCtxMenu();
+      showModal({
+        title: '⚠️ Xóa thư mục',
+        desc: `Bạn có chắc muốn xóa "${folderName}"? Toàn bộ ảnh/video bên trong sẽ bị xóa vĩnh viễn!`,
+        okLabel: 'Xóa vĩnh viễn',
+        okClass: 'danger',
+        callback: () => {
+          showToast('Đang xóa...');
+          gasCall('deleteFolder', { folderId, adminPassword: window.adminPassword }).then(res => {
+            if (res.success) {
+              showToast('🗑️ Đã xóa: ' + folderName);
+              loadFolderTree();
+              // If we were inside the deleted folder, go home
+              if (currentFolderId === folderId) { loadLibrary(null); } 
+              else { loadLibrary(currentFolderId); }
+            } else showToast('Lỗi: ' + res.error);
+          }).catch(showError);
+        }
+      });
+    }
+
+    // ---- Rename File ----
+    window.renameFileUI = function(e, fileId, oldName) {
+      e.stopPropagation();
+      const newName = prompt('Nhập tên ảnh/video mới (không bao gồm đuôi file):', oldName);
+      if (!newName || newName === oldName) return;
+      showToast('Đang đổi tên ảnh/video...');
+      gasCall('renameFile', { fileId, newName, adminPassword: window.adminPassword }).then(res => {
+        if (res.success) {
+          showToast('✅ Đã đổi tên ảnh/video!');
+          loadLibrary(currentFolderId); // Tải lại danh sách hiện tại để refresh tên mới
+        } else showToast('Lỗi: ' + res.error);
+      }).catch(showError);
+    };
+
+    // ---- Delete File ----
+    window.deleteFileUI = function(e, fileId, fileName) {
+      e.stopPropagation();
+      if (!confirm(`⚠️ XÓA VĨNH VIỄN ẢNH/VIDEO\n\nBạn có chắc muốn xóa "${fileName}"? Thao tác này không thể hoàn tác!`)) return;
+      showToast('Đang xóa ảnh/video...');
+      gasCall('deleteFile', { fileId, adminPassword: window.adminPassword }).then(res => {
+        if (res.success) {
+          showToast('🗑️ Đã xóa ảnh/video: ' + fileName);
+          loadLibrary(currentFolderId);
+        } else showToast('Lỗi: ' + res.error);
+      }).catch(showError);
+    };
+
+    // --- OTHER LOGIC (Giữ nguyên) ---
+    function handleCreateFolder(btnElement) {
+      const parentId = document.getElementById('folder-select').value;
+      if (!parentId) { showToast("Vui lòng chọn thư mục cha!"); return; }
+      const folderName = prompt("Nhập tên thư mục mới:");
+      if (!folderName || folderName.trim() === "") return;
+
+      const originalHtml = btnElement.innerHTML;
+      btnElement.disabled = true;
+      btnElement.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+
+      const timeoutId = setTimeout(() => {
+         if (btnElement.disabled) {
+           btnElement.innerHTML = originalHtml;
+           btnElement.disabled = false;
+           showToast("Server phản hồi chậm, hãy kiểm tra lại sau.");
+         }
+      }, 15000);
+
+      gasCall('createFolder', { parentId, folderName }).then(res => {
+          clearTimeout(timeoutId);
+          btnElement.innerHTML = originalHtml;
+          btnElement.disabled = false;
+          if(res.success) { showToast("Đã tạo thư mục: " + folderName); loadFolderTree(); } 
+          else showToast("Lỗi: " + res.error);
+      }).catch(err => { clearTimeout(timeoutId); btnElement.innerHTML=originalHtml; btnElement.disabled=false; showError(err); });
+    }
+
+    let searchDebounceTimeout = null;
+    window.currentSearchQuery = "";
+    
+    function removeVietnameseTones(str) {
+      if(!str) return "";
+      str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
+      str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
+      str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
+      str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o");
+      str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u");
+      str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
+      str = str.replace(/đ/g, "d");
+      str = str.replace(/À|Á|Ạ|Ả|Ã|Â|Ầ|Ấ|Ậ|Ẩ|Ẫ|Ă|Ằ|Ắ|Ặ|Ẳ|Ẵ/g, "A");
+      str = str.replace(/È|É|Ẹ|Ẻ|Ẽ|Ê|Ề|Ế|Ệ|Ể|Ễ/g, "E");
+      str = str.replace(/Ì|Í|Ị|Ỉ|Ĩ/g, "I");
+      str = str.replace(/Ò|Ó|Ọ|Ỏ|Õ|Ô|Ồ|Ố|Ộ|Ổ|Ỗ|Ơ|Ờ|Ớ|Ợ|Ở|Ỡ/g, "O");
+      str = str.replace(/Ù|Ú|Ụ|Ủ|Ũ|Ư|Ừ|Ứ|Ự|Ử|Ữ/g, "U");
+      str = str.replace(/Ỳ|Ý|Ỵ|Ỷ|Ỹ/g, "Y");
+      str = str.replace(/Đ/g, "D");
+      return str;
+    }
+
+    function highlightText(text, keyword) {
+        if (!keyword || !text) return text;
+        const noTonesText = removeVietnameseTones(text).toLowerCase();
+        const noTonesKeyword = removeVietnameseTones(keyword).toLowerCase();
+        let result = '';
+        let currentIndex = 0;
+        
+        let matchIndex = noTonesText.indexOf(noTonesKeyword, currentIndex);
+        if (matchIndex === -1) return text;
+
+        while (matchIndex !== -1) {
+            result += text.substring(currentIndex, matchIndex);
+            const originalMatched = text.substring(matchIndex, matchIndex + keyword.length);
+            result += `<mark class="bg-yellow-300 text-black px-0.5 rounded shadow-sm">` + originalMatched + `</mark>`;
+            currentIndex = matchIndex + keyword.length;
+            matchIndex = noTonesText.indexOf(noTonesKeyword, currentIndex);
+        }
+        result += text.substring(currentIndex);
+        return result;
+    }
+
+    function handleLiveSearch() {
+      clearTimeout(searchDebounceTimeout);
+      searchDebounceTimeout = setTimeout(() => {
+        executeSearch();
+      }, 500); // 500ms delay
+    }
+
+    function handleEnterSearch(e) { if (e.key === 'Enter') { clearTimeout(searchDebounceTimeout); executeSearch(); } }
+
+    function loginAdmin() {
+      if (window.isAdmin) {
+        if(confirm("Bạn đang là Admin. Bạn có muốn thoát (Đăng xuất)?")) {
+          window.adminPassword = "";
+          window.isAdmin = false;
+          sessionStorage.removeItem('adminPassword');
+          document.getElementById('btn-admin').classList.remove('text-red-600', 'bg-red-50');
+          document.getElementById('btn-admin').classList.add('text-gray-400');
+          document.getElementById('icon-admin').classList.replace('fa-unlock', 'fa-lock');
+          showToast("Đã thoát chế độ Quản trị");
+          if(currentFolderId) loadLibrary(currentFolderId);
+          loadFolderTree();
+        }
+      } else {
+        const pass = prompt("Nhập mật khẩu Quản trị (Admin Password):");
+        if(pass) {
+          window.adminPassword = pass;
+          window.isAdmin = true;
+          sessionStorage.setItem('adminPassword', pass);
+          document.getElementById('btn-admin').classList.add('text-red-600', 'bg-red-50');
+          document.getElementById('btn-admin').classList.remove('text-gray-400');
+          document.getElementById('icon-admin').classList.replace('fa-lock', 'fa-unlock');
+          showToast("Đã kích hoạt chế độ Quản trị!");
+          if(currentFolderId) loadLibrary(currentFolderId);
+          loadFolderTree();
+        }
+      }
+    }
+    
+    function executeSearch() {
+      const query = document.getElementById('search-input').value.trim();
+      window.currentSearchQuery = query;
+      if (!query) { clearSearch(); return; }
+      document.getElementById('library-loader').classList.remove('hidden');
+      document.getElementById('library-content').classList.add('opacity-50');
+      document.getElementById('search-result-title').classList.remove('hidden');
+      document.getElementById('search-query').innerText = `"${query}"`;
+      document.getElementById('folder-container').innerHTML = ''; 
+      document.getElementById('files-title').innerText = "Kết quả tìm được";
+      // Clear sidebar tree active highlight on search
+      const treeEl = document.getElementById('sidebar-folder-tree');
+      if (treeEl) treeEl.querySelectorAll('.sidebar-folder-item').forEach(el => el.classList.remove('active'));
+      const sbBc = document.getElementById('sidebar-breadcrumb-path');
+      if (sbBc) sbBc.classList.add('hidden');
+      const bc = document.getElementById('breadcrumbs');
+      if (bc) bc.classList.add('hidden');
+      gasCall('searchFiles', { query }).then(renderSearchResults).catch(showError);
+    }
+    function clearSearch() {
+      document.getElementById('search-input').value = '';
+      window.currentSearchQuery = '';
+      document.getElementById('search-result-title').classList.add('hidden');
+      document.getElementById('files-title').innerText = "Danh Sách Ảnh";
+      loadLibrary(currentFolderId);
+    }
+    function renderSearchResults(res) {
+      document.getElementById('library-loader').classList.add('hidden');
+      document.getElementById('library-content').classList.remove('opacity-50');
+      if(!res.success) { showToast(res.error); return; }
+      renderFiles(res.files);
+    }
+    let currentNextPageToken = null;
+    let isLoadingMore = false;
+
+    function loadLibrary(folderId) {
+      document.getElementById('library-loader').classList.remove('hidden');
+      document.getElementById('library-content').classList.add('opacity-50');
+
+      currentNextPageToken = null;
+
+      const cacheKey = 'tvsm_library_' + (folderId || 'root');
+      const cached = sessionStorage.getItem(cacheKey);
+      if (cached) {
+         try {
+             renderLibrary(JSON.parse(cached));
+         } catch(e) {}
+      }
+
+      gasCall('getData', { folderId }).then(res => {
+         if (res.success) {
+            sessionStorage.setItem(cacheKey, JSON.stringify(res));
+         }
+         renderLibrary(res);
+      }).catch(showError);
+    }
+    function renderLibrary(response) {
+      document.getElementById('library-loader').classList.add('hidden');
+      document.getElementById('library-content').classList.remove('opacity-50');
+      if (!response.success) { showToast("Lỗi: " + response.error); return; }
+      const data = response.data;
+      currentFolderId = data.currentFolderId;
+      
+      currentNextPageToken = data.nextPageToken || null;
+      const filesTitle = document.getElementById('files-title');
+      // Fix ReferenceError here
+      if (!currentFolderId || currentFolderId === 'root' || (data.breadcrumbs && data.breadcrumbs.length > 0 && currentFolderId === data.breadcrumbs[0].id)) {
+         filesTitle.innerText = "20 Ảnh Mới Nhất Hệ Thống";
+      } else {
+         filesTitle.innerText = "Danh Sách Ảnh";
+      }
+
+      // ---- Render Sidebar Breadcrumb Path ----
+      const sbBc = document.getElementById('sidebar-breadcrumb-path');
+      if (data.breadcrumbs && data.breadcrumbs.length > 1) {
+        sbBc.classList.remove('hidden');
+        sbBc.innerHTML = data.breadcrumbs.map((c, i) => {
+          const last = i === data.breadcrumbs.length - 1;
+          return `<span class="${last ? 'current' : ''}" onclick="${last ? '' : "loadLibrary('" + c.id + "')"}">` + c.name + `</span>` +
+                 (last ? '' : `<i class="fa-solid fa-chevron-right text-[9px] mx-0.5 opacity-40"></i>`);
+        }).join('');
+      } else {
+        sbBc.classList.add('hidden');
+        sbBc.innerHTML = '';
+      }
+
+      // ---- Highlight Active Folder in Sidebar Tree ----
+      highlightActiveSidebarFolder();
+
+      // ---- Render Main Breadcrumb Path ----
+      const bc = document.getElementById('breadcrumbs');
+      if (data.breadcrumbs && data.breadcrumbs.length > 0) {
+        bc.classList.remove('hidden');
+        bc.innerHTML = data.breadcrumbs.map((c, i) => {
+          const last = i === data.breadcrumbs.length - 1;
+          const isRoot = (i === 0);
+          const icon = isRoot ? '<i class="fa-solid fa-house mr-1.5"></i>' : '';
+          
+          if (last) {
+            return `<span class="text-teal-700 font-bold flex items-center" data-id="${c.id}">${icon}${c.name}</span>`;
+          } else {
+            return `<span class="text-gray-500 hover:text-teal-600 cursor-pointer transition flex items-center" data-id="${c.id}" onclick="loadLibrary('${c.id}')">${icon}${c.name}</span>
+                    <i class="fa-solid fa-chevron-right text-[10px] text-gray-400 mt-0.5"></i>`;
+          }
+        }).join('');
+      } else {
+        bc.classList.add('hidden');
+        bc.innerHTML = '';
+      }
+
+      // Folder container stays hidden (folders are in sidebar now)
+      document.getElementById('folder-container').innerHTML = '';
+      renderFiles(data.files);
+    }
+    let currentViewMode = localStorage.getItem('lib_view_mode') || 'list';
+    
+    function setViewMode(mode) {
+      currentViewMode = mode;
+      localStorage.setItem('lib_view_mode', mode);
+      
+      const btnList = document.getElementById('btn-view-list');
+      const btnGrid = document.getElementById('btn-view-grid');
+      if (btnList && btnGrid) {
+        btnList.className = `p-1.5 px-2.5 rounded-md transition ${mode === 'list' ? 'bg-white shadow-sm text-teal-600 font-bold' : 'text-gray-500 hover:text-teal-600'}`;
+        btnGrid.className = `p-1.5 px-2.5 rounded-md transition ${mode === 'grid' ? 'bg-white shadow-sm text-teal-600 font-bold' : 'text-gray-500 hover:text-teal-600'}`;
+      }
+      
+      if (window.currentFilesData) {
+        applySortAndFilter();
+      }
+    }
+
+    let pinnedFiles = JSON.parse(localStorage.getItem('lib_pinned_files') || '[]');
+
+    function togglePin(e, fileId) {
+      e.stopPropagation();
+      if (pinnedFiles.includes(fileId)) {
+        pinnedFiles = pinnedFiles.filter(id => id !== fileId);
+      } else {
+        pinnedFiles.push(fileId);
+      }
+      localStorage.setItem('lib_pinned_files', JSON.stringify(pinnedFiles));
+      if (window.currentFilesData) applySortAndFilter();
+    }
+
+    function applySortAndFilter() {
+      if (!window.currentFilesData) return;
+      let files = [...window.currentFilesData];
+      
+      const filterMode = document.getElementById('filter-select') ? document.getElementById('filter-select').value : 'all';
+      const sortMode = document.getElementById('sort-select') ? document.getElementById('sort-select').value : 'newest';
+
+      // 1. Filter
+      if (filterMode !== 'all') {
+        files = files.filter(f => {
+          const mime = (f.mimeType || '').toLowerCase();
+          if (filterMode === 'pdf') return mime.includes('pdf');
+          if (filterMode === 'word') return mime.includes('word') || mime.includes('document');
+          return true;
+        });
+      }
+
+      // 2. Sort
+      files.sort((a, b) => {
+        if (sortMode === 'newest') return a._origIdx - b._origIdx;
+        if (sortMode === 'oldest') return b._origIdx - a._origIdx;
+        if (sortMode === 'downloads') return (parseInt(b.downloads)||0) - (parseInt(a.downloads)||0);
+        if (sortMode === 'name') return (a.displayName || '').localeCompare(b.displayName || '');
+        return 0;
+      });
+
+      // 3. Pinning (pinned files go first)
+      files.sort((a, b) => {
+        const aPinned = pinnedFiles.includes(a.id) ? 1 : 0;
+        const bPinned = pinnedFiles.includes(b.id) ? 1 : 0;
+        return bPinned - aPinned;
+      });
+
+      renderFilesCore(files);
+    }
+
+    function renderFiles(files) {
+      if (files) {
+        window.currentFilesData = files.map((f, i) => ({...f, _origIdx: i}));
+      }
+      applySortAndFilter();
+    }
+
+    let currentFilteredFiles = [];
+    let currentRenderPage = 1;
+    const RENDER_PAGE_SIZE = 30;
+    let renderObserver = null;
+
+    function renderFilesCore(files) {
+      currentFilteredFiles = files;
+      currentRenderPage = 1;
+
+      const container = document.getElementById('file-container');
+      const emptyMsg = document.getElementById('empty-msg');
+      const trigger = document.getElementById('scroll-trigger');
+
+      if (!files || files.length === 0) { 
+        container.innerHTML = ''; 
+        emptyMsg.classList.remove('hidden'); 
+        trigger.classList.add('hidden');
+        return; 
+      }
+      emptyMsg.classList.add('hidden');
+      
+      // Update container layout based on view mode
+      if (currentViewMode === 'grid') {
+        container.className = "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3";
+      } else {
+        container.className = "grid grid-cols-1 gap-3";
+      }
+
+      // Render trang đầu tiên
+      const filesToRender = files.slice(0, RENDER_PAGE_SIZE);
+      container.innerHTML = generateFilesHTML(filesToRender);
+
+      setupRenderObserver();
+    }
+
+    function setupRenderObserver() {
+      const trigger = document.getElementById('scroll-trigger');
+      if (renderObserver) renderObserver.disconnect();
+
+      // Hiện trigger nếu còn file trong RAM hoặc còn file trên Server
+      if (currentFilteredFiles.length > currentRenderPage * RENDER_PAGE_SIZE || currentNextPageToken) {
+        trigger.classList.remove('hidden');
+        renderObserver = new IntersectionObserver((entries) => {
+          if (entries[0].isIntersecting) {
+            loadMoreFiles();
+          }
+        }, { rootMargin: '150px' });
+        renderObserver.observe(trigger);
+      } else {
+        trigger.classList.add('hidden');
+      }
+    }
+
+    function loadMoreFiles() {
+      // 1. Nếu còn file trong RAM (Frontend Lazy Render)
+      if (currentFilteredFiles.length > currentRenderPage * RENDER_PAGE_SIZE) {
+        currentRenderPage++;
+        const startIndex = (currentRenderPage - 1) * RENDER_PAGE_SIZE;
+        const endIndex = currentRenderPage * RENDER_PAGE_SIZE;
+        const filesToRender = currentFilteredFiles.slice(startIndex, endIndex);
+
+        const container = document.getElementById('file-container');
+        container.insertAdjacentHTML('beforeend', generateFilesHTML(filesToRender));
+
+        setupRenderObserver(); // Cập nhật lại trạng thái trigger
+      } 
+      // 2. Nếu đã hết RAM nhưng còn Server (Backend Pagination)
+      else if (currentNextPageToken && !isLoadingMore) {
+        isLoadingMore = true;
+        const trigger = document.getElementById('scroll-trigger');
+        trigger.classList.remove('hidden');
+
+        gasCall('getData', { folderId: currentFolderId, pageToken: currentNextPageToken }).then(res => {
+isLoadingMore = false;
+          if (res.success && res.data.files) {
+             currentNextPageToken = res.data.nextPageToken || null;
+             // Thêm vào mảng gốc
+             const newFiles = res.data.files.map((f, i) => ({...f, _origIdx: window.currentFilesData.length + i}));
+             window.currentFilesData = window.currentFilesData.concat(newFiles);
+             currentFilteredFiles = currentFilteredFiles.concat(newFiles);
+             
+             // Append trực tiếp vào DOM thay vì gọi applySortAndFilter() để tránh giật scroll
+             const container = document.getElementById('file-container');
+             container.insertAdjacentHTML('beforeend', generateFilesHTML(newFiles));
+             
+             setupRenderObserver();
+          }
+        });
+      }
+    }
+
+    function generateFilesHTML(filesList) {
+      return filesList.map(f => {
+        const icon = getFileIcon(f.mimeType);
+        const folderInfo = f.folderName ? `<div class="mb-1"><span class="bg-gray-100 text-gray-600 text-[10px] px-2 py-1 rounded-full"><i class="fa-solid fa-folder-tree mr-1"></i>${f.folderName}</span></div>` : '';
+        const isPinned = pinnedFiles.includes(f.id);
+        const pinClass = isPinned ? 'border-yellow-400 bg-yellow-50 shadow-md' : 'border-gray-200 bg-white hover:shadow-md';
+        const isImage = f.mimeType && f.mimeType.includes('image');
+        const isVideo = f.mimeType && (f.mimeType.includes('video') || f.mimeType.includes('quicktime') || f.mimeType.includes('mp4'));
+        const hasThumb = isImage || isVideo;
+        const thumbUrl = `https://drive.google.com/thumbnail?id=${f.id}&sz=w400`;
+        const safeDisplayName = String(f.displayName || '').replace(/'/g, "\\'");
+        
+        if (currentViewMode === 'grid') {
+          // ===== GRID VIEW: PHOTO CARD WITH THUMBNAIL =====
+          return `
+          <div class="photo-card group" onclick="openLightbox('${f.id}')">
+            <div class="photo-thumb-wrap">
+              ${hasThumb ?
+                `<img src="${thumbUrl}" class="photo-thumb" loading="lazy"
+                     onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                 <div style="display:none;position:absolute;inset:0;align-items:center;justify-content:center;background:#f1f5f9;">
+                   <i class="${icon} text-5xl"></i>
+                 </div>`
+                : `<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#f1f5f9;">
+                     <i class="${icon} text-5xl"></i>
+                   </div>`
+              }
+              ${isVideo ? `
+                <div class="video-overlay-btn">
+                  <div class="video-play-circle"><i class="fa-solid fa-play text-white text-lg ml-1"></i></div>
+                </div>` : ''}
+              ${isPinned ? `<div style="position:absolute;top:7px;left:8px;"><i class="fa-solid fa-thumbtack -rotate-45 text-yellow-400 drop-shadow text-sm"></i></div>` : ''}
+              ${window.isAdmin ? `
+                <div class="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                  <button onclick="event.stopPropagation();renameFileUI(event,'${f.id}','${safeDisplayName}')"
+                    class="w-7 h-7 bg-white/90 rounded-full flex items-center justify-center shadow text-teal-600 hover:bg-teal-600 hover:text-white transition" title="Đổi tên">
+                    <i class="fa-solid fa-pen text-xs"></i></button>
+                  <button onclick="event.stopPropagation();deleteFileUI(event,'${f.id}','${safeDisplayName}')"
+                    class="w-7 h-7 bg-white/90 rounded-full flex items-center justify-center shadow text-red-500 hover:bg-red-500 hover:text-white transition" title="Xóa">
+                    <i class="fa-solid fa-trash text-xs"></i></button>
+                </div>` : ''}
+            </div>
+            <div class="flex items-center gap-2 px-2.5 py-2 border-t border-gray-100">
+              <i class="${icon} text-sm flex-shrink-0"></i>
+              <span class="text-xs font-semibold text-gray-700 truncate flex-1" title="${f.name}">${highlightText(f.displayName || f.name, window.currentSearchQuery)}</span>
+              <button onclick="event.stopPropagation();togglePin(event,'${f.id}')"
+                class="transition flex-shrink-0 ${isPinned ? 'text-yellow-500 opacity-100' : 'text-gray-300 opacity-0 group-hover:opacity-60 hover:!opacity-100 hover:text-yellow-500'}" title="${isPinned ? 'Bỏ ghim':'Ghim'}">
+                <i class="fa-solid fa-thumbtack text-sm ${isPinned ? '-rotate-45':''}"></i>
+              </button>
+            </div>
+          </div>`;
+        } else {
+          // ===== LIST VIEW WITH THUMBNAIL =====
+          return `
+          <div class="rounded-lg shadow-sm border transition flex gap-0 relative group ${pinClass} cursor-pointer overflow-hidden" onclick="openLightbox('${f.id}')">
+            ${window.isAdmin ? `
+              <div class="absolute top-3 right-3 flex gap-2 transition-opacity opacity-0 group-hover:opacity-100 z-20">
+                <button onclick="event.stopPropagation();renameFileUI(event,'${f.id}','${safeDisplayName}')"
+                  class="text-teal-500 hover:text-teal-700 p-1.5 bg-white rounded-full shadow border" title="Đổi tên"><i class="fa-solid fa-pen text-sm"></i></button>
+                <button onclick="event.stopPropagation();deleteFileUI(event,'${f.id}','${safeDisplayName}')"
+                  class="text-red-500 hover:text-red-700 p-1.5 bg-white rounded-full shadow border" title="Xóa"><i class="fa-solid fa-trash text-sm"></i></button>
+              </div>` : ''}
+            <div class="flex-shrink-0 w-24 sm:w-28 relative overflow-hidden ${isPinned ? 'bg-yellow-50':'bg-gray-100'}" style="min-height:96px;">
+              ${hasThumb ?
+                `<img src="${thumbUrl}" class="absolute inset-0 w-full h-full object-cover" loading="lazy"
+                     onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                 <div style="display:none;position:absolute;inset:0;align-items:center;justify-content:center;background:#f1f5f9;">
+                   <i class="${icon} text-3xl"></i>
+                 </div>`
+                : `<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+                     <i class="${icon} text-3xl"></i>
+                   </div>`
+              }
+              ${isVideo ? `
+                <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.28);">
+                  <i class="fa-solid fa-play text-white text-sm"></i>
+                </div>` : ''}
+            </div>
+            <div class="flex-grow min-w-0 py-3 px-3">
+              ${folderInfo}
+              <h3 class="font-bold text-teal-700 text-base truncate pr-14 group-hover:underline" title="${f.displayName}">${highlightText(f.displayName, window.currentSearchQuery)}</h3>
+              <p class="text-xs text-gray-500 mb-1"><i class="fa-regular fa-file"></i> ${highlightText(f.name, window.currentSearchQuery)} - ${f.size}</p>
+              ${f.description ? `<p class="text-sm text-gray-600 italic ${isPinned ? 'bg-white border border-yellow-100':'bg-yellow-50'} p-2 rounded mb-2 line-clamp-2"><i class="fa-solid fa-quote-left text-xs text-gray-400 mr-1"></i>${highlightText(f.description, window.currentSearchQuery)}</p>` : ''}
+              <div class="flex flex-wrap items-center gap-2 mt-1">
+                <span class="text-teal-700 font-bold text-xs ${isPinned?'bg-white':'bg-teal-50'} px-2 py-0.5 rounded border ${isPinned?'border-yellow-200':'border-teal-100'} shadow-sm"><i class="fa-solid fa-user-pen mr-1"></i>${f.uploader}</span>
+                <span class="text-gray-500 text-xs flex items-center gap-1"><i class="fa-solid fa-download"></i>${f.downloads}</span>
+                <button onclick="event.stopPropagation();togglePin(event,'${f.id}')" class="transition ${isPinned?'text-yellow-500 opacity-100':'text-gray-300 opacity-0 group-hover:opacity-60 hover:!opacity-100 hover:text-yellow-500'}" title="${isPinned?'Bỏ ghim':'Ghim'}"><i class="fa-solid fa-thumbtack text-sm ${isPinned?'-rotate-45':''}"></i></button>
+                <a href="${f.downloadUrl}" target="_blank" onclick="event.stopPropagation();trackDownload('${f.id}')"
+                   class="text-teal-600 hover:text-white hover:bg-teal-600 text-[11px] font-bold py-1 px-2.5 rounded border border-teal-600 transition flex items-center">
+                  <i class="fa-solid fa-download mr-1"></i> Tải
+                </a>
+              </div>
+            </div>
+          </div>`;
+
+        }
+      }).join('');
+    }
+    function getFileIcon(mime) {
+      if (mime.includes('pdf')) return 'fa-solid fa-file-pdf text-red-500';
+      if (mime.includes('word') || mime.includes('document')) return 'fa-solid fa-file-word text-blue-500';
+      if (mime.includes('sheet') || mime.includes('excel')) return 'fa-solid fa-file-excel text-green-500';
+      if (mime.includes('presentation')) return 'fa-solid fa-file-powerpoint text-orange-500';
+      if (mime.includes('image')) return 'fa-solid fa-file-image text-purple-500';
+      if (mime.includes('compressed') || mime.includes('zip') || mime.includes('rar')) return 'fa-solid fa-file-zipper text-yellow-600';
+      return 'fa-solid fa-file-lines text-gray-500';
+    }
+
+    function trackDownload(id) { gasCall('incrementDownload', { fileId: id }); }
+    function renderFolderTrees(list) {
+        // Xây dựng cây thả xuống cho sidebar
+        const treeHtml = renderTreeNodes(list, true);
+        const treeEl = document.getElementById('sidebar-folder-tree');
+        if (treeEl) {
+          treeEl.innerHTML = treeHtml || '<p class="text-xs px-3 py-3 text-white/30 italic">Chưa có thư mục</p>';
+          highlightActiveSidebarFolder();
+        }
+
+        // Xây dựng cây cho dropdown lúc đóng góp
+        const uploadTreeEl = document.getElementById('upload-folder-tree');
+        if (uploadTreeEl) {
+          uploadTreeEl.innerHTML = renderUploadTreeNodes(list, true);
+          
+          if (!document.getElementById('folder-select').value && list.length > 0) {
+             document.getElementById('folder-select').value = list[0].id;
+             const textSpan = document.getElementById('upload-folder-text');
+             textSpan.innerHTML = `<i class="fa-solid fa-folder-open text-teal-500 mr-2"></i>${list[0].name}`;
+             textSpan.title = list[0].name;
+          }
+        }
+    }
+
+    function loadFolderTree() {
+      const cached = sessionStorage.getItem('tvsm_folders');
+      if (cached) {
+          try {
+             renderFolderTrees(JSON.parse(cached));
+          } catch(e) {}
+      }
+
+      gasCall('getAllFolders').then(res => {
+        if (!res.success) return;
+        sessionStorage.setItem('tvsm_folders', JSON.stringify(res.data));
+        renderFolderTrees(res.data);
+      }).catch(console.error);
+    }
+
+    function toggleUploadFolderTree(e) {
+      if(e) e.stopPropagation();
+      const container = document.getElementById('upload-folder-tree-container');
+      if (container) container.classList.toggle('hidden');
+    }
+
+    document.addEventListener('click', (e) => {
+      const container = document.getElementById('upload-folder-tree-container');
+      const btn = document.getElementById('upload-folder-btn');
+      if (container && !container.classList.contains('hidden') && btn && !btn.contains(e.target) && !container.contains(e.target)) {
+        container.classList.add('hidden');
+      }
+    });
+
+    function renderUploadTreeNodes(nodes, isRoot = false) {
+      if (!nodes || nodes.length === 0) return '';
+      let html = isRoot ? '' : '<div class="folder-children ml-3 pl-3 border-l border-gray-200 space-y-1 hidden mt-1">';
+      nodes.forEach(node => {
+        const hasChildren = node.hasSubfolders !== false;
+        html += `
+          <div class="upload-folder-wrapper" data-fid="${node.id}">
+            <div class="flex items-center text-gray-700 py-1.5 px-2 transition-colors hover:bg-gray-100 rounded group">
+              ${hasChildren ? '<button type="button" class="upload-tree-toggle w-6 h-6 flex items-center justify-center text-gray-400 hover:text-teal-600 transition-transform duration-200"><i class="fa-solid fa-chevron-right text-[10px]"></i></button>' : '<div class="w-6 h-6 flex items-center justify-center"><i class="fa-solid fa-folder text-teal-300"></i></div>'}
+              <div class="flex-grow cursor-pointer pl-1 folder-select-item" data-id="${node.id}" data-name="${node.name}">
+                <span class="truncate font-medium group-hover:text-teal-600" title="${node.name}">${node.name}</span>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+      html += isRoot ? '' : '</div>';
+      return html;
+    }
+
+    function renderTreeNodes(nodes, isRoot = false) {
+      if (!nodes || !nodes.length) return '';
+      return `<div class="folder-children ${isRoot ? 'space-y-0.5' : 'hidden pl-4 space-y-0.5 mt-0.5'}">` + 
+        nodes.map(n => {
+          const safeName = n.name.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+          const hasChildren = n.hasSubfolders !== false;
+          return `
+          <div class="sidebar-folder-wrapper relative" data-fid="${n.id}">
+            <div class="sidebar-folder-item flex items-center justify-between group" 
+                 data-fid="${n.id}" data-fname="${safeName}">
+              <div class="flex items-center flex-1 min-w-0 pr-1">
+                ${hasChildren 
+                  ? `<button class="tree-toggle w-6 h-6 flex flex-shrink-0 items-center justify-center -ml-1 text-white/50 hover:text-white transition-colors" title="Mở/Đóng">
+                       <i class="fa-solid fa-chevron-right text-[10px] transition-transform duration-200"></i>
+                     </button>`
+                  : `<div class="w-6 flex-shrink-0 -ml-1"></div>`
+                }
+                <i class="fa-solid fa-folder w-4 text-sm flex-shrink-0 text-teal-300 mr-1.5"></i>
+                <span class="truncate flex-1 text-[13px] folder-nav-target cursor-pointer" title="${n.name}">${n.name}</span>
+              </div>
+              ${window.isAdmin ? `
+              <button class="folder-action-btn folder-ctx-btn" title="Tùy chọn">
+                <i class="fa-solid fa-ellipsis-vertical"></i>
+              </button>
+              ` : ''}
+            </div>
+          </div>`;
+        }).join('') + `</div>`;
+    }
+
+    function highlightActiveSidebarFolder() {
+      const treeEl = document.getElementById('sidebar-folder-tree');
+      if (!treeEl) return;
+      
+      treeEl.querySelectorAll('.sidebar-folder-item').forEach(el => {
+        el.classList.remove('active');
+      });
+      
+      if (!currentFolderId) return;
+      
+      const activeItem = treeEl.querySelector(`.sidebar-folder-item[data-fid="${currentFolderId}"]`);
+      if (activeItem) {
+        activeItem.classList.add('active');
+        
+        // Mở các thư mục cha
+        let parentWrapper = activeItem.closest('.folder-children');
+        while (parentWrapper) {
+          parentWrapper.classList.remove('hidden');
+          const toggleIcon = parentWrapper.parentElement.querySelector(':scope > .sidebar-folder-item .tree-toggle i');
+          if (toggleIcon) toggleIcon.classList.add('rotate-90');
+          parentWrapper = parentWrapper.parentElement.closest('.folder-children');
+        }
+      }
+    }
+    function saveUserInfo(n, e) { localStorage.setItem('lib_uploader_name', n); localStorage.setItem('lib_uploader_email', e); }
+    function loadUserInfo() {
+      const n = localStorage.getItem('lib_uploader_name'), e = localStorage.getItem('lib_uploader_email');
+      if(n) document.getElementById('uploader-name').value = n; if(e) document.getElementById('uploader-email').value = e;
+    }
+    function showToast(m) { const t = document.getElementById('toast'); t.innerText = m; t.classList.remove('translate-y-20', 'opacity-0'); setTimeout(() => t.classList.add('translate-y-20', 'opacity-0'), 3000); }
+    function showError(e) { showToast("Lỗi: " + e); document.getElementById('library-loader').classList.add('hidden'); }
+
+    function openPreview(id, name, viewUrl, downloadUrl) {
+       let previewUrl = viewUrl.replace(/\/view.*$/, '/preview');
+       document.getElementById('preview-title').innerText = name;
+       document.getElementById('preview-title').title = name;
+       document.getElementById('preview-download-btn').href = downloadUrl;
+       document.getElementById('preview-download-btn').onclick = () => trackDownload(id);
+       document.getElementById('preview-drive-btn').href = viewUrl;
+       
+       const iframe = document.getElementById('preview-iframe');
+       const loader = document.getElementById('preview-loader');
+       
+       iframe.classList.add('hidden');
+       loader.classList.remove('hidden');
+       iframe.src = previewUrl;
+       
+       document.getElementById('main-list-area').classList.remove('lg:w-full');
+       document.getElementById('preview-pane').style.width = '50%';
+       document.getElementById('preview-pane').classList.remove('hidden');
+       document.getElementById('preview-pane').classList.add('flex');
+       document.getElementById('resizer').classList.remove('lg:hidden');
+       document.getElementById('resizer').classList.add('lg:block');
+    }
+    
+    function closePreview() {
+       document.getElementById('preview-pane').classList.add('hidden');
+       document.getElementById('preview-pane').classList.remove('flex');
+       document.getElementById('preview-pane').style.width = '';
+       document.getElementById('preview-iframe').src = '';
+       document.getElementById('main-list-area').classList.add('lg:w-full');
+       document.getElementById('resizer').classList.remove('lg:block');
+       document.getElementById('resizer').classList.add('lg:hidden');
+    }
+
+
+    let isResizing = false;
+    let startX, startWidthPreview;
+    
+    document.addEventListener('DOMContentLoaded', () => {
+       // ---- Resizer for preview pane ----
+       const resizer = document.getElementById('resizer');
+       const previewPane = document.getElementById('preview-pane');
+       const libraryContent = document.getElementById('library-content');
+
+       if (resizer) {
+         resizer.addEventListener('mousedown', function(e) {
+           isResizing = true;
+           startX = e.clientX;
+           startWidthPreview = previewPane.getBoundingClientRect().width;
+           document.body.style.cursor = 'col-resize';
+           document.body.style.userSelect = 'none';
+           const iframe = document.getElementById('preview-iframe');
+           if(iframe) iframe.style.pointerEvents = 'none';
+         });
+
+         document.addEventListener('mousemove', function(e) {
+           if (!isResizing) return;
+           const dx = startX - e.clientX;
+           let newWidth = startWidthPreview + dx;
+           const containerWidth = libraryContent.getBoundingClientRect().width;
+           if (newWidth < containerWidth * 0.25) newWidth = containerWidth * 0.25;
+           if (newWidth > containerWidth * 0.75) newWidth = containerWidth * 0.75;
+           previewPane.style.width = `${newWidth}px`;
+         });
+
+         document.addEventListener('mouseup', function(e) {
+           if (isResizing) {
+             isResizing = false;
+             document.body.style.cursor = '';
+             document.body.style.userSelect = '';
+             const iframe = document.getElementById('preview-iframe');
+             if(iframe) iframe.style.pointerEvents = 'auto';
+           }
+         });
+       }
+
+       // ---- Initialize View Mode ----
+       setViewMode(currentViewMode);
+
+       // ---- Initialize Sidebar Tree ----
+       loadFolderTree();
+
+       // ---- Drag and Drop Upload ----
+       const dropZone = document.getElementById('drop-zone');
+       const fileInput = document.getElementById('file-upload');
+       if (dropZone && fileInput) {
+         ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+           dropZone.addEventListener(eventName, e => { e.preventDefault(); e.stopPropagation(); }, false);
+         });
+         ['dragenter', 'dragover'].forEach(eventName => {
+           dropZone.addEventListener(eventName, () => dropZone.classList.add('bg-blue-200', 'border-blue-500'), false);
+         });
+         ['dragleave', 'drop'].forEach(eventName => {
+           dropZone.addEventListener(eventName, () => dropZone.classList.remove('bg-blue-200', 'border-blue-500'), false);
+         });
+          dropZone.addEventListener('drop', async (e) => {
+            const dt = e.dataTransfer;
+            const fileInput = document.getElementById('file-upload');
+            const fileCountDisplay = document.getElementById('file-count-display');
+            
+            if (!dt) return;
+
+            let hasDir = false;
+            if (dt.items) {
+               for (let i = 0; i < dt.items.length; i++) {
+                  const item = dt.items[i];
+                  if (item.kind === 'file' && item.webkitGetAsEntry) {
+                     const entry = item.webkitGetAsEntry();
+                     if (entry && entry.isDirectory) hasDir = true;
+                  }
+               }
+            }
+
+            if (hasDir) {
+               fileCountDisplay.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1"></i> Đang quét thư mục...`;
+               try {
+                 async function readEntriesPromise(dirReader) {
+                     let entries = [];
+                     let readResult;
+                     do {
+                         readResult = await new Promise(resolve => dirReader.readEntries(resolve));
+                         entries.push(...readResult);
+                     } while (readResult.length > 0);
+                     return entries;
+                 }
+
+                 async function traverseFileTree(item) {
+                     if (item.isFile) {
+                         return await new Promise(resolve => item.file(resolve));
+                     } else if (item.isDirectory) {
+                         const dirReader = item.createReader();
+                         const entries = await readEntriesPromise(dirReader);
+                         const files = [];
+                         for (const entry of entries) {
+                             const subFiles = await traverseFileTree(entry);
+                             if (Array.isArray(subFiles)) files.push(...subFiles);
+                             else files.push(subFiles);
+                         }
+                         return files;
+                     }
+                     return [];
+                 }
+
+                 const allFiles = [];
+                 for (let i = 0; i < dt.items.length; i++) {
+                     const entry = dt.items[i].webkitGetAsEntry();
+                     if (entry) {
+                         const result = await traverseFileTree(entry);
+                         if (Array.isArray(result)) allFiles.push(...result);
+                         else if (result) allFiles.push(result);
+                     }
+                 }
+                 
+                 const dataTransfer = new DataTransfer();
+                 allFiles.forEach(f => { if(f && f.name) dataTransfer.items.add(f); });
+                 fileInput.files = dataTransfer.files;
+               } catch (err) {
+                 console.error("Lỗi khi quét thư mục:", err);
+                 showToast("Không thể đọc cấu trúc thư mục này bằng kéo thả. Hãy dùng nút Chọn Thư Mục.");
+               }
+            } else if (dt.files && dt.files.length > 0) {
+               fileInput.files = dt.files;
+            }
+            
+            if(fileInput.files && fileInput.files.length > 0) {
+              fileCountDisplay.innerText = `Đã chọn ${fileInput.files.length} file`;
+              fileCountDisplay.classList.add("text-teal-600", "font-bold");
+            } else {
+              fileCountDisplay.innerText = "Chưa chọn ảnh/video";
+              fileCountDisplay.classList.remove("text-teal-600", "font-bold");
+            }
+          }, false);
+       }
+
+       // ---- Event Delegation: Sidebar Folder Tree ----
+       // Dùng event delegation để tránh lỗi ký tự đặc biệt trong tên thư mục
+       const sidebarTree = document.getElementById('sidebar-folder-tree');
+       if (sidebarTree) {
+         sidebarTree.addEventListener('click', function(e) {
+           // Click nút mở/đóng (Accordion)
+           const toggleBtn = e.target.closest('.tree-toggle');
+           if (toggleBtn) {
+             e.stopPropagation();
+             const wrapper = toggleBtn.closest('.sidebar-folder-wrapper');
+             const childrenDiv = wrapper.querySelector(':scope > .folder-children');
+             const icon = toggleBtn.querySelector('i');
+             
+             if (childrenDiv) {
+               childrenDiv.classList.toggle('hidden');
+               if (childrenDiv.classList.contains('hidden')) icon.classList.remove('rotate-90');
+               else icon.classList.add('rotate-90');
+             } else {
+               // DO LAZY LOAD
+               icon.className = "fa-solid fa-spinner fa-spin text-[10px] text-blue-400";
+               const fid = wrapper.dataset.fid;
+               gasCall('getSubfolders', { folderId: fid }).then(res => {
+                  if (!res.success || !res.data || res.data.length === 0) {
+                     icon.className = "fa-solid fa-chevron-right text-[10px] transition-transform duration-200";
+                     toggleBtn.classList.add('hidden'); // No children actually exist
+                     return;
+                  }
+                  icon.className = "fa-solid fa-chevron-right text-[10px] transition-transform duration-200 rotate-90";
+                  const html = renderTreeNodes(res.data, false);
+                  wrapper.insertAdjacentHTML('beforeend', html);
+                  wrapper.querySelector(':scope > .folder-children').classList.remove('hidden');
+               }).catch(err => {
+                  icon.className = "fa-solid fa-chevron-right text-[10px] transition-transform duration-200";
+               });
+             }
+             return;
+           }
+
+           // Click nút ⋮ (context menu)
+           const ctxBtn = e.target.closest('.folder-ctx-btn');
+           if (ctxBtn) {
+             e.stopPropagation();
+             const item = ctxBtn.closest('.sidebar-folder-item[data-fid]');
+             if (!item) return;
+             const fid   = item.dataset.fid;
+             const fname = item.dataset.fname
+                             .replace(/&amp;/g, '&')
+                             .replace(/&quot;/g, '"')
+                             .replace(/&lt;/g, '<')
+                             .replace(/&gt;/g, '>');
+             openFolderCtx(e, fid, fname);
+             return;
+           }
+
+           // Click tên thư mục → điều hướng
+           const navTarget = e.target.closest('.sidebar-folder-item[data-fid]');
+           if (navTarget && !e.target.closest('.folder-ctx-btn')) {
+             const fid = navTarget.dataset.fid;
+             if (fid) {
+               loadLibrary(fid);
+               if (window.innerWidth < 768) toggleSidebar();
+             }
+           }
+         });
+       }
+
+       // ---- Event Delegation: Upload Folder Tree ----
+       const uploadTree = document.getElementById('upload-folder-tree');
+       if (uploadTree) {
+         uploadTree.addEventListener('click', function(e) {
+           const toggleBtn = e.target.closest('.upload-tree-toggle');
+           if (toggleBtn) {
+             e.stopPropagation();
+             const wrapper = toggleBtn.closest('.upload-folder-wrapper');
+             let childrenDiv = wrapper.querySelector(':scope > .folder-children');
+             const icon = toggleBtn.querySelector('i');
+             
+             if (childrenDiv) {
+               childrenDiv.classList.toggle('hidden');
+               if (childrenDiv.classList.contains('hidden')) icon.classList.remove('rotate-90');
+               else icon.classList.add('rotate-90');
+             } else {
+               icon.className = "fa-solid fa-spinner fa-spin text-[10px] text-blue-400";
+               const fid = wrapper.dataset.fid;
+               gasCall('getSubfolders', { folderId: fid }).then(res => {
+                  if (!res.success || !res.data || res.data.length === 0) {
+                     icon.className = "fa-solid fa-chevron-right text-[10px] transition-transform duration-200";
+                     toggleBtn.classList.add('hidden');
+                     return;
+                  }
+                  icon.className = "fa-solid fa-chevron-right text-[10px] transition-transform duration-200 rotate-90";
+                  const html = renderUploadTreeNodes(res.data, false);
+                  wrapper.insertAdjacentHTML('beforeend', html);
+                  wrapper.querySelector(':scope > .folder-children').classList.remove('hidden');
+               }).catch(err => {
+                  icon.className = "fa-solid fa-chevron-right text-[10px] transition-transform duration-200";
+               });
+             }
+             return;
+           }
+
+           const selectItem = e.target.closest('.folder-select-item');
+           if (selectItem) {
+             const id = selectItem.getAttribute('data-id');
+             const name = selectItem.getAttribute('data-name');
+             document.getElementById('folder-select').value = id;
+             const textSpan = document.getElementById('upload-folder-text');
+             textSpan.innerHTML = `<i class="fa-solid fa-folder-open text-teal-500 mr-2"></i>${name}`;
+             textSpan.title = name;
+             document.getElementById('upload-folder-tree-container').classList.add('hidden');
+           }
+         });
+       }
+    });
+    // ===== openPreview: redirect to lightbox =====
+    function openPreview(id) { openLightbox(id); }
+  </script>
+
+  <!-- ===== LIGHTBOX MODAL ===== -->
+  <div id="lightbox-overlay" onclick="handleLbOverlayClick(event)">
+    <button id="lb-close-btn" onclick="closeLightbox()" title="Đóng (Esc)"><i class="fa-solid fa-xmark"></i></button>
+    <div id="lb-counter-pill"></div>
+    <div id="lb-media-wrap" style="max-width:92vw;max-height:80vh;display:flex;align-items:center;justify-content:center;">
+      <div id="lb-loader"><i class="fa-solid fa-spinner fa-spin" style="font-size:40px;color:rgba(255,255,255,0.35)"></i></div>
+      <img id="lb-img" class="hidden" alt="">
+      <iframe id="lb-iframe" class="hidden" allowfullscreen></iframe>
+    </div>
+    <button class="lb-nav-btn" id="lb-prev" onclick="prevLightbox()"><i class="fa-solid fa-chevron-left"></i></button>
+    <button class="lb-nav-btn" id="lb-next" onclick="nextLightbox()"><i class="fa-solid fa-chevron-right"></i></button>
+    <div id="lb-bottom-bar">
+      <div style="overflow:hidden;flex:1;">
+        <p id="lb-title" style="color:#fff;font-size:15px;font-weight:700;margin:0 0 3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></p>
+        <p id="lb-uploader" style="color:rgba(255,255,255,0.5);font-size:12px;margin:0;"></p>
+      </div>
+      <a id="lb-dl-btn" href="#" target="_blank"
+         style="background:#0d9488;color:#fff;font-weight:700;padding:9px 18px;border-radius:8px;font-size:13px;text-decoration:none;display:flex;align-items:center;gap:7px;white-space:nowrap;flex-shrink:0;">
+        <i class="fa-solid fa-download"></i> Tải về
+      </a>
+    </div>
+  </div>
+
+  <script>
+    // ===== LIGHTBOX LOGIC =====
+    let _lbFiles = [], _lbIdx = 0;
+
+    function openLightbox(fileId) {
+      _lbFiles = currentFilteredFiles && currentFilteredFiles.length > 0 ? currentFilteredFiles : (window.currentFilesData || []);
+      _lbIdx = _lbFiles.findIndex(f => f.id === fileId);
+      if (_lbIdx === -1) _lbIdx = 0;
+      _showLbItem(_lbIdx);
+      document.getElementById('lightbox-overlay').classList.add('show');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function _showLbItem(idx) {
+      const f = _lbFiles[idx]; if (!f) return;
+      _lbIdx = idx;
+      const isImage = f.mimeType && f.mimeType.includes('image');
+      document.getElementById('lb-title').innerText = f.displayName || f.name;
+      document.getElementById('lb-uploader').innerText = f.uploader ? '\uD83D\uDC64 ' + f.uploader : '';
+      const dlBtn = document.getElementById('lb-dl-btn');
+      dlBtn.href = f.downloadUrl;
+      dlBtn.onclick = () => trackDownload(f.id);
+      document.getElementById('lb-counter-pill').innerText = (idx + 1) + ' / ' + _lbFiles.length;
+      const img = document.getElementById('lb-img');
+      const iframe = document.getElementById('lb-iframe');
+      const loader = document.getElementById('lb-loader');
+      img.classList.add('hidden'); img.src = '';
+      iframe.classList.add('hidden'); iframe.src = '';
+      loader.style.display = 'flex';
+      if (isImage) {
+        img.onload = () => { loader.style.display='none'; img.classList.remove('hidden'); };
+        img.onerror = () => { loader.style.display='none'; img.classList.remove('hidden'); };
+        img.src = `https://drive.google.com/thumbnail?id=${f.id}&sz=w1600`;
+      } else {
+        iframe.onload = () => { loader.style.display='none'; iframe.classList.remove('hidden'); };
+        iframe.src = `https://drive.google.com/file/d/${f.id}/preview`;
+      }
+      document.getElementById('lb-prev').style.visibility = idx === 0 ? 'hidden' : 'visible';
+      document.getElementById('lb-next').style.visibility = idx === _lbFiles.length - 1 ? 'hidden' : 'visible';
+    }
+
+    function closeLightbox() {
+      document.getElementById('lightbox-overlay').classList.remove('show');
+      document.body.style.overflow = '';
+      setTimeout(() => { document.getElementById('lb-img').src=''; document.getElementById('lb-iframe').src=''; }, 220);
+    }
+    function prevLightbox() { if (_lbIdx > 0) _showLbItem(_lbIdx - 1); }
+    function nextLightbox() { if (_lbIdx < _lbFiles.length - 1) _showLbItem(_lbIdx + 1); }
+    function handleLbOverlayClick(e) { if (e.target.id === 'lightbox-overlay') closeLightbox(); }
+
+    document.addEventListener('keydown', function(e) {
+      const overlay = document.getElementById('lightbox-overlay');
+      if (!overlay || !overlay.classList.contains('show')) return;
+      if (e.key === 'ArrowLeft') prevLightbox();
+      else if (e.key === 'ArrowRight') nextLightbox();
+      else if (e.key === 'Escape') closeLightbox();
+    });
+
+    // Swipe support (mobile)
+    let _lbTX = 0;
+    document.addEventListener('DOMContentLoaded', () => {
+      const ov = document.getElementById('lightbox-overlay');
+      ov.addEventListener('touchstart', e => { _lbTX = e.touches[0].clientX; }, {passive:true});
+      ov.addEventListener('touchend', e => {
+        const dx = e.changedTouches[0].clientX - _lbTX;
+        if (Math.abs(dx) > 55) { if (dx > 0) prevLightbox(); else nextLightbox(); }
+      }, {passive:true});
+    });
+  </script>
+</body>
+</html>

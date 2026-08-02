@@ -210,15 +210,15 @@ body.is-admin .card:hover .c-edit-img-btn, body.is-admin .c-edit-img-btn.always-
 .card:hover .c-btn{background:var(--p1);color:#fff;box-shadow:0 4px 12px rgba(29,78,216,.25)}
 
 /* Card hover overlays */
-[data-cid=hocsinh]::before{background:linear-gradient(135deg,rgba(67,233,123,.07),rgba(56,249,215,.07))}
+[data-cid=video]::before{background:linear-gradient(135deg,rgba(67,233,123,.07),rgba(56,249,215,.07))}
 [data-cid=diemdanh]::before{background:linear-gradient(135deg,rgba(252,92,125,.07),rgba(106,48,147,.07))}
-[data-cid=hoctap]::before{background:linear-gradient(135deg,rgba(79,172,254,.07),rgba(0,242,254,.07))}
-[data-cid=gopy]::before,[data-cid=phuhuynh]::before{background:linear-gradient(135deg,rgba(240,147,251,.07),rgba(245,87,108,.07))}
+[data-cid=tusach]::before{background:linear-gradient(135deg,rgba(79,172,254,.07),rgba(0,242,254,.07))}
+[data-cid=vuonhoa]::before,[data-cid=phuhuynh]::before{background:linear-gradient(135deg,rgba(240,147,251,.07),rgba(245,87,108,.07))}
 [data-cid=thoikhoabieu]::before{background:linear-gradient(135deg,rgba(250,112,154,.07),rgba(254,225,64,.07))}
 [data-cid=quylop]::before{background:linear-gradient(135deg,rgba(255,215,0,.07),rgba(255,140,0,.07))}
-[data-cid=tailieu]::before{background:linear-gradient(135deg,rgba(168,237,234,.07),rgba(254,214,227,.07))}
+[data-cid=tulieu]::before{background:linear-gradient(135deg,rgba(168,237,234,.07),rgba(254,214,227,.07))}
 [data-cid=thongbao]::before{background:linear-gradient(135deg,rgba(102,126,234,.07),rgba(118,75,162,.07))}
-[data-cid=luutru]::before{background:linear-gradient(135deg,rgba(17,153,142,.07),rgba(56,239,125,.07))}
+[data-cid=baotang]::before{background:linear-gradient(135deg,rgba(17,153,142,.07),rgba(56,239,125,.07))}
 
 /* ── FOOTER ──────────────────────────────── */
 .ftr{background:var(--bg2);border-top:1px solid var(--bd);padding:22px 18px}
@@ -323,12 +323,12 @@ body.is-admin .card:hover .c-edit-img-btn, body.is-admin .c-edit-img-btn.always-
     Mỗi mục gồm: emoji icon + tên hiển thị + href trang
     ══════════════════════════════════════════ -->
     <li><a href="index.html"    class="sni act"><span class="sni-ico">🏠</span><span data-i18n="nav_home">Trang chủ</span></a></li>
-    <li><a href="tailieu.html"  class="sni"><span class="sni-ico">📖</span><span data-i18n="c_doc_title">Tư liệu về Bác Hồ</span></a></li>
-    <li><a href="hoctap.html"   class="sni"><span class="sni-ico">📚</span><span data-i18n="c_book_title">Tủ sách về Bác</span></a></li>
-    <li><a href="hocsinh.html"  class="sni"><span class="sni-ico">🎥</span><span data-i18n="c_video_title">Video tư liệu</span></a></li>
+    <li><a href="tulieu.html"   class="sni"><span class="sni-ico">📖</span><span data-i18n="c_doc_title">Tư liệu về Bác Hồ</span></a></li>
+    <li><a href="tusach.html"   class="sni"><span class="sni-ico">📚</span><span data-i18n="c_book_title">Tủ sách về Bác</span></a></li>
+    <li><a href="video.html"    class="sni"><span class="sni-ico">🎥</span><span data-i18n="c_video_title">Video tư liệu</span></a></li>
     <li><a href="hinhanh.html"  class="sni"><span class="sni-ico">🖼️</span><span data-i18n="c_image_title">Hình ảnh</span></a></li>
-    <li><a href="gopy.html"     class="sni"><span class="sni-ico">🌱</span><span data-i18n="c_garden_title">Vườn hoa nhớ Bác</span></a></li>
-    <li><a href="luutru.html"   class="sni"><span class="sni-ico">🏛️</span><span data-i18n="c_museum_title">Bảo tàng về Bác</span></a></li>
+    <li><a href="vuonhoa.html"  class="sni"><span class="sni-ico">🌱</span><span data-i18n="c_garden_title">Vườn hoa nhớ Bác</span></a></li>
+    <li><a href="baotang.html"  class="sni"><span class="sni-ico">🏛️</span><span data-i18n="c_museum_title">Bảo tàng về Bác</span></a></li>
     <li><a href="thongbao.html" class="sni"><span class="sni-ico">📢</span><span data-i18n="nav_announcement">Thông báo</span></a></li>
     <!-- Thêm mục mới:
     <li><a href="trang-moi.html" class="sni"><span class="sni-ico">🎯</span>Tên mục</a></li>
@@ -437,40 +437,40 @@ body.is-admin .card:hover .c-edit-img-btn, body.is-admin .c-edit-img-btn.always-
     -->
     <div class="cards-grid" id="cards-grid">
 
-      <a href="tailieu.html" class="card" data-cid="tailieu">
+      <a href="tulieu.html" class="card" data-cid="tulieu">
         <div class="c-img-wrap">
-          <button class="c-edit-img-btn" title="Đổi ảnh bằng Cloudinary (Tải lên hoặc Ctrl+V)" onclick="openCloudinaryModal(event, 'tailieu', '📖 Tư liệu về Bác Hồ')">📷 Đổi ảnh</button>
+          <button class="c-edit-img-btn" title="Đổi ảnh bằng Cloudinary (Tải lên hoặc Ctrl+V)" onclick="openCloudinaryModal(event, 'tulieu', '📖 Tư liệu về Bác Hồ')">📷 Đổi ảnh</button>
           <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/Ho_Chi_Minh_1946.jpg/800px-Ho_Chi_Minh_1946.jpg" alt="Tư liệu về Bác Hồ" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
           <div class="c-fallback" style="display:none; width:100%; height:100%; background:linear-gradient(135deg,#c62828,#ffb300); align-items:center; justify-content:center; font-size:3.5rem;">📖</div>
         </div>
         <div class="c-content">
-          <h3 class="c-title" data-i18n="c_doc_title">📖 Tư liệu về Bác Hồ</h3>
+          <h3 class="c-title">📖 <span data-i18n="c_doc_title">Tư liệu về Bác Hồ</span></h3>
           <p class="c-desc" data-i18n="c_doc_desc">Tìm hiểu cuộc đời, sự nghiệp và tư tưởng Hồ Chí Minh.</p>
           <span class="c-btn" data-i18n="c_explore_btn">Mở chuyên mục</span>
         </div>
       </a>
 
-      <a href="hoctap.html" class="card" data-cid="tusach">
+      <a href="tusach.html" class="card" data-cid="tusach">
         <div class="c-img-wrap">
           <button class="c-edit-img-btn" title="Đổi ảnh bằng Cloudinary (Tải lên hoặc Ctrl+V)" onclick="openCloudinaryModal(event, 'tusach', '📚 Tủ sách về Bác')">📷 Đổi ảnh</button>
           <img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800&auto=format&fit=crop&q=80" alt="Tủ sách về Bác" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
           <div class="c-fallback" style="display:none; width:100%; height:100%; background:linear-gradient(135deg,#1e40af,#3b82f6); align-items:center; justify-content:center; font-size:3.5rem;">📚</div>
         </div>
         <div class="c-content">
-          <h3 class="c-title" data-i18n="c_book_title">📚 Tủ sách về Bác</h3>
+          <h3 class="c-title">📚 <span data-i18n="c_book_title">Tủ sách về Bác</span></h3>
           <p class="c-desc" data-i18n="c_book_desc">Kho học liệu số phục vụ giáo viên và học sinh.</p>
           <span class="c-btn" data-i18n="c_explore_btn">Mở chuyên mục</span>
         </div>
       </a>
 
-      <a href="hocsinh.html" class="card" data-cid="video">
+      <a href="video.html" class="card" data-cid="video">
         <div class="c-img-wrap">
           <button class="c-edit-img-btn" title="Đổi ảnh bằng Cloudinary (Tải lên hoặc Ctrl+V)" onclick="openCloudinaryModal(event, 'video', '🎥 Video tư liệu')">📷 Đổi ảnh</button>
           <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Ho_Chi_Minh_with_children.jpg/800px-Ho_Chi_Minh_with_children.jpg" alt="Video tư liệu" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
           <div class="c-fallback" style="display:none; width:100%; height:100%; background:linear-gradient(135deg,#b45309,#f59e0b); align-items:center; justify-content:center; font-size:3.5rem;">🎥</div>
         </div>
         <div class="c-content">
-          <h3 class="c-title" data-i18n="c_video_title">🎥 Video tư liệu</h3>
+          <h3 class="c-title">🎥 <span data-i18n="c_video_title">Video tư liệu</span></h3>
           <p class="c-desc" data-i18n="c_video_desc">Các video tuyên truyền, giáo dục và học tập.</p>
           <span class="c-btn" data-i18n="c_explore_btn">Mở chuyên mục</span>
         </div>
@@ -483,33 +483,33 @@ body.is-admin .card:hover .c-edit-img-btn, body.is-admin .c-edit-img-btn.always-
           <div class="c-fallback" style="display:none; width:100%; height:100%; background:linear-gradient(135deg,#047857,#10b981); align-items:center; justify-content:center; font-size:3.5rem;">🖼️</div>
         </div>
         <div class="c-content">
-          <h3 class="c-title" data-i18n="c_image_title">🖼️ Hình ảnh</h3>
+          <h3 class="c-title">🖼️ <span data-i18n="c_image_title">Hình ảnh</span></h3>
           <p class="c-desc" data-i18n="c_image_desc">Hình ảnh hoạt động giáo dục và phong trào nhà trường.</p>
           <span class="c-btn" data-i18n="c_explore_btn">Mở chuyên mục</span>
         </div>
       </a>
 
-      <a href="gopy.html" class="card" data-cid="vuonhoa">
+      <a href="vuonhoa.html" class="card" data-cid="vuonhoa">
         <div class="c-img-wrap">
           <button class="c-edit-img-btn" title="Đổi ảnh bằng Cloudinary (Tải lên hoặc Ctrl+V)" onclick="openCloudinaryModal(event, 'vuonhoa', '🌱 Vườn hoa nhớ Bác')">📷 Đổi ảnh</button>
           <img src="https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=800&auto=format&fit=crop&q=80" alt="Vườn hoa nhớ Bác" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
           <div class="c-fallback" style="display:none; width:100%; height:100%; background:linear-gradient(135deg,#ec4899,#f472b6); align-items:center; justify-content:center; font-size:3.5rem;">🌱</div>
         </div>
         <div class="c-content">
-          <h3 class="c-title" data-i18n="c_garden_title">🌱 Vườn hoa nhớ Bác</h3>
+          <h3 class="c-title">🌱 <span data-i18n="c_garden_title">Vườn hoa nhớ Bác</span></h3>
           <p class="c-desc" data-i18n="c_garden_desc">Không gian xanh giáo dục truyền thống và ý thức bảo vệ môi trường.</p>
           <span class="c-btn" data-i18n="c_explore_btn">Mở chuyên mục</span>
         </div>
       </a>
 
-      <a href="luutru.html" class="card" data-cid="baotang">
+      <a href="baotang.html" class="card" data-cid="baotang">
         <div class="c-img-wrap">
           <button class="c-edit-img-btn" title="Đổi ảnh bằng Cloudinary (Tải lên hoặc Ctrl+V)" onclick="openCloudinaryModal(event, 'baotang', '🏛️ Bảo tàng về Bác')">📷 Đổi ảnh</button>
           <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Ho_Chi_Minh_Museum_Hanoi.jpg/800px-Ho_Chi_Minh_Museum_Hanoi.jpg" alt="Bảo tàng về Bác" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
           <div class="c-fallback" style="display:none; width:100%; height:100%; background:linear-gradient(135deg,#991b1b,#dc2626); align-items:center; justify-content:center; font-size:3.5rem;">🏛️</div>
         </div>
         <div class="c-content">
-          <h3 class="c-title" data-i18n="c_museum_title">🏛️ Bảo tàng về Bác</h3>
+          <h3 class="c-title">🏛️ <span data-i18n="c_museum_title">Bảo tàng về Bác</span></h3>
           <p class="c-desc" data-i18n="c_museum_desc">Bảo tàng là nơi lưu giữ, trưng bày hiện vật và tư liệu về cuộc đời, sự nghiệp về Bác.</p>
           <span class="c-btn" data-i18n="c_explore_btn">Mở chuyên mục</span>
         </div>
@@ -522,14 +522,14 @@ body.is-admin .card:hover .c-edit-img-btn, body.is-admin .c-edit-img-btn.always-
   <!-- CUSTOMIZE [14]: Cập nhật các liên kết footer -->
   <footer class="ftr">
     <div class="ftr-inner">
-      <a href="index.html"   data-i18n="nav_home">🏠 Trang chủ</a>
-      <a href="tailieu.html" data-i18n="c_doc_title">📖 Tư liệu về Bác Hồ</a>
-      <a href="hoctap.html"  data-i18n="c_book_title">📚 Tủ sách về Bác</a>
-      <a href="hocsinh.html" data-i18n="c_video_title">🎥 Video tư liệu</a>
-      <a href="hinhanh.html" data-i18n="c_image_title">🖼️ Hình ảnh</a>
-      <a href="gopy.html"    data-i18n="c_garden_title">🌱 Vườn hoa nhớ Bác</a>
-      <a href="luutru.html"  data-i18n="c_museum_title">🏛️ Bảo tàng về Bác</a>
-      <a href="thongbao.html" data-i18n="nav_announcement">📢 Thông báo</a>
+      <a href="index.html">🏠 <span data-i18n="nav_home">Trang chủ</span></a>
+      <a href="tulieu.html">📖 <span data-i18n="c_doc_title">Tư liệu về Bác Hồ</span></a>
+      <a href="tusach.html">📚 <span data-i18n="c_book_title">Tủ sách về Bác</span></a>
+      <a href="video.html">🎥 <span data-i18n="c_video_title">Video tư liệu</span></a>
+      <a href="hinhanh.html">🖼️ <span data-i18n="c_image_title">Hình ảnh</span></a>
+      <a href="vuonhoa.html">🌱 <span data-i18n="c_garden_title">Vườn hoa nhớ Bác</span></a>
+      <a href="baotang.html">🏛️ <span data-i18n="c_museum_title">Bảo tàng về Bác</span></a>
+      <a href="thongbao.html">📢 <span data-i18n="nav_announcement">Thông báo</span></a>
     </div>
   </footer>
 
@@ -668,28 +668,28 @@ const UI_DICT = {
     sec_tag: '🪷 KHÁM PHÁ CHUYÊN MỤC',
     sec_title: 'Không gian văn hóa Hồ Chí Minh',
     sec_sub: 'Kho học liệu số, tư liệu lịch sử, hình ảnh và hoạt động truyền thống về Bác',
-    c_doc_title: '📖 Tư liệu về Bác Hồ',
+    c_doc_title: 'Tư liệu về Bác Hồ',
     c_doc_desc: 'Tìm hiểu cuộc đời, sự nghiệp và tư tưởng Hồ Chí Minh.',
-    c_book_title: '📚 Tủ sách về Bác',
+    c_book_title: 'Tủ sách về Bác',
     c_book_desc: 'Kho học liệu số phục vụ giáo viên và học sinh.',
-    c_video_title: '🎥 Video tư liệu',
+    c_video_title: 'Video tư liệu',
     c_video_desc: 'Các video tuyên truyền, giáo dục và học tập.',
-    c_image_title: '🖼️ Hình ảnh',
+    c_image_title: 'Hình ảnh',
     c_image_desc: 'Hình ảnh hoạt động giáo dục và phong trào nhà trường.',
-    c_garden_title: '🌱 Vườn hoa nhớ Bác',
+    c_garden_title: 'Vườn hoa nhớ Bác',
     c_garden_desc: 'Không gian xanh giáo dục truyền thống và ý thức bảo vệ môi trường.',
-    c_museum_title: '🏛️ Bảo tàng về Bác',
+    c_museum_title: 'Bảo tàng về Bác',
     c_museum_desc: 'Bảo tàng là nơi lưu giữ, trưng bày hiện vật và tư liệu về cuộc đời, sự nghiệp về Bác.',
     c_explore_btn: 'MỞ CHUYÊN MỤC',
-    ft_student: '🎥 Video tư liệu',
-    ft_attendance: '📖 Tư liệu về Bác Hồ',
-    ft_grades: '📚 Tủ sách về Bác',
-    ft_parent: '🌱 Vườn hoa nhớ Bác',
-    ft_schedule: '📅 Lịch trình',
-    ft_finance: '🖼️ Hình ảnh',
-    ft_documents: '📖 Tư liệu về Bác Hồ',
-    ft_announcement: '📢 Thông báo',
-    ft_archive: '🏛️ Bảo tàng về Bác',
+    ft_student: 'Video tư liệu',
+    ft_attendance: 'Tư liệu về Bác Hồ',
+    ft_grades: 'Tủ sách về Bác',
+    ft_parent: 'Vườn hoa nhớ Bác',
+    ft_schedule: 'Lịch trình',
+    ft_finance: 'Hình ảnh',
+    ft_documents: 'Tư liệu về Bác Hồ',
+    ft_announcement: 'Thông báo',
+    ft_archive: 'Bảo tàng về Bác',
     m_welcome: 'Chào mừng! 👋',
     m_sub: 'Đăng nhập để trải nghiệm đầy đủ tính năng',
     m_tab_login: 'Đăng nhập',
@@ -725,28 +725,28 @@ const UI_DICT = {
     sec_tag: '🪷 EXPLORE SECTIONS',
     sec_title: 'Ho Chi Minh Cultural Space',
     sec_sub: 'Digital repository of learning materials, archives, photos, and traditional activities about Uncle Ho',
-    c_doc_title: '📖 Ho Chi Minh Archives',
+    c_doc_title: 'Ho Chi Minh Archives',
     c_doc_desc: 'Learn about the life, career, and ideology of President Ho Chi Minh.',
-    c_book_title: '📚 Books on Uncle Ho',
+    c_book_title: 'Books on Uncle Ho',
     c_book_desc: 'Digital repository of learning materials for teachers and students.',
-    c_video_title: '🎥 Video Archives',
+    c_video_title: 'Video Archives',
     c_video_desc: 'Educational and promotional video materials for learning and reference.',
-    c_image_title: '🖼️ Photo Album',
+    c_image_title: 'Photo Album',
     c_image_desc: 'Photos of school educational activities and traditional movements.',
-    c_garden_title: '🌱 Memorial Garden',
+    c_garden_title: 'Memorial Garden',
     c_garden_desc: 'Green educational space promoting tradition and environmental protection.',
-    c_museum_title: '🏛️ Ho Chi Minh Museum',
+    c_museum_title: 'Ho Chi Minh Museum',
     c_museum_desc: 'A place preserving and displaying artifacts and archives about the life and career of Uncle Ho.',
     c_explore_btn: 'OPEN SECTION',
-    ft_student: '🎥 Video Archives',
-    ft_attendance: '📖 Ho Chi Minh Archives',
-    ft_grades: '📚 Books on Uncle Ho',
-    ft_parent: '🌱 Memorial Garden',
-    ft_schedule: '📅 Schedule',
-    ft_finance: '🖼️ Photo Album',
-    ft_documents: '📖 Ho Chi Minh Archives',
-    ft_announcement: '📢 Announcements',
-    ft_archive: '🏛️ Ho Chi Minh Museum',
+    ft_student: 'Video Archives',
+    ft_attendance: 'Ho Chi Minh Archives',
+    ft_grades: 'Books on Uncle Ho',
+    ft_parent: 'Memorial Garden',
+    ft_schedule: 'Schedule',
+    ft_finance: 'Photo Album',
+    ft_documents: 'Ho Chi Minh Archives',
+    ft_announcement: 'Announcements',
+    ft_archive: 'Ho Chi Minh Museum',
     m_welcome: 'Welcome! 👋',
     m_sub: 'Sign in to access all features',
     m_tab_login: 'Sign in',
@@ -942,8 +942,9 @@ db.collection('settings').doc('default_cards').onSnapshot(snap => {
 
 const applyCardVisibility = allowedList => {
   if(!allowedList || !allowedList.length) { showAll(); return; }
+  const normalizedList = allowedList.map(id => id === 'tailieu' ? 'tulieu' : id);
   document.querySelectorAll('.card').forEach(c => {
-    c.style.display = allowedList.includes(c.dataset.cid) ? 'flex' : 'none';
+    c.style.display = normalizedList.includes(c.dataset.cid) ? 'flex' : 'none';
   });
   document.querySelectorAll('.sb-nav a, .ft-links a').forEach(link => {
     let cid = link.dataset.cid;
@@ -954,7 +955,7 @@ const applyCardVisibility = allowedList => {
       }
     }
     if (cid) {
-      const isAllowed = allowedList.includes(cid);
+      const isAllowed = normalizedList.includes(cid);
       link.style.display = isAllowed ? '' : 'none';
       if (link.parentElement && link.parentElement.tagName === 'LI') {
         link.parentElement.style.display = isAllowed ? '' : 'none';
@@ -1020,7 +1021,8 @@ document.addEventListener('click', e => {
   }
 
   if (cid && currentAllowedCards !== null && Array.isArray(currentAllowedCards)) {
-    if (!currentAllowedCards.includes(cid)) {
+    const normalizedCards = currentAllowedCards.map(id => id === 'tailieu' ? 'tulieu' : id);
+    if (!normalizedCards.includes(cid)) {
       e.preventDefault();
       e.stopPropagation();
       toast('⛔ Bạn không có quyền truy cập!', 'e');
