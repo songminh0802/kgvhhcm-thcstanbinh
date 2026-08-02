@@ -927,8 +927,9 @@ const applyCardVisibility = allowedList => {
 
 const filterCards = async ud => {
   if(!ud) {
-    currentAllowedCards = defaultCardSettings.unauthenticatedCards;
-    applyCardVisibility(currentAllowedCards);
+    currentAllowedCards = defaultCardSettings.unauthenticatedCards || [];
+    if (!currentAllowedCards.length) showAll();
+    else applyCardVisibility(currentAllowedCards);
     return;
   }
   if(ud.role === 'admin') {
@@ -952,8 +953,9 @@ const filterCards = async ud => {
     }
     return;
   }
-  currentAllowedCards = defaultCardSettings.guestCards;
-  applyCardVisibility(currentAllowedCards);
+  currentAllowedCards = defaultCardSettings.guestCards || [];
+  if (!currentAllowedCards.length) showAll();
+  else applyCardVisibility(currentAllowedCards);
 };
 const showAll = () => {
   document.querySelectorAll('.card').forEach(c=>c.style.display='flex');
@@ -988,17 +990,32 @@ document.addEventListener('click', e => {
   }
 });
 
+// ─── Loader Helper ────────────────────────────
+const hideLoader = () => {
+  const ldr = $id('ldr');
+  if (ldr && !ldr.classList.contains('gone')) {
+    ldr.classList.add('gone');
+    setTimeout(() => { if (ldr && ldr.parentNode) ldr.remove(); }, 500);
+  }
+};
+setTimeout(hideLoader, 350);
+window.addEventListener('load', hideLoader);
+
 // ─── Auth state listener ──────────────────────
 auth.onAuthStateChanged(async user => {
-  if(user){
-    const isAdmEmail = isEmailAdmin(user);
-    try{ uData=await upsertUser(user); updatePresence(user.uid); }
-    catch{ uData={role:isAdmEmail?'admin':'guest',groupId:null}; }
-    if(isAdmEmail) uData.role='admin';
-    renderUI(user, uData); filterCards(uData);
-  } else { uData=null; renderUI(null,null); filterCards(null); }
-  $id('ldr').classList.add('gone');
-  setTimeout(()=>$id('ldr')?.remove(), 500);
+  try {
+    if(user){
+      const isAdmEmail = isEmailAdmin(user);
+      try{ uData=await upsertUser(user); updatePresence(user.uid); }
+      catch{ uData={role:isAdmEmail?'admin':'guest',groupId:null}; }
+      if(isAdmEmail) uData.role='admin';
+      renderUI(user, uData); filterCards(uData);
+    } else { uData=null; renderUI(null,null); filterCards(null); }
+  } catch(e) {
+    console.warn("Auth state error:", e);
+  } finally {
+    hideLoader();
+  }
 });
 
 // ─── Stagger scroll animation ─────────────────
@@ -1211,15 +1228,17 @@ function initCloudinary() {
   const saved = JSON.parse(localStorage.getItem('hcm_card_images') || '{}');
   applyCardImages(saved);
   if (typeof db !== 'undefined') {
-    db.collection('settings').doc('card_images').onSnapshot(snap => {
-      if (snap.exists) {
-        const data = snap.data();
-        let cur = JSON.parse(localStorage.getItem('hcm_card_images') || '{}');
-        Object.assign(cur, data);
-        localStorage.setItem('hcm_card_images', JSON.stringify(cur));
-        applyCardImages(cur);
-      }
-    });
+    try {
+      db.collection('settings').doc('card_images').onSnapshot(snap => {
+        if (snap.exists) {
+          const data = snap.data();
+          let cur = JSON.parse(localStorage.getItem('hcm_card_images') || '{}');
+          Object.assign(cur, data);
+          localStorage.setItem('hcm_card_images', JSON.stringify(cur));
+          applyCardImages(cur);
+        }
+      }, () => {});
+    } catch(e) {}
   }
 
   const togBtn = $id('toggle-cld-btn');
