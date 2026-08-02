@@ -4,1974 +4,775 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>🏛️ Bảo tàng về Bác - Không gian văn hóa Hồ Chí Minh</title>
+  
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  
+  <!-- Script bảo vệ trang bằng phân quyền -->
+  <script src="auth_guard.js" data-card-id="baotang"></script>
+
   <style>
-    /* Custom Scrollbar */
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
-    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
-    ::-webkit-scrollbAar-thumb:hover { background: rgba(255,255,255,0.35); }
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Merriweather:wght@700;900&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+    .font-serif-title { font-family: 'Merriweather', serif; }
+    
+    /* Smooth transition for cards */
+    .link-card {
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .link-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 24px -10px rgba(185, 28, 28, 0.2);
+    }
+    
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: #f1f5f9; }
-    main::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-    main::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-    .loader {
-      border: 4px solid #f3f3f3; border-top: 4px solid #10b981;
-      border-radius: 50%; width: 40px; height: 40px;
-      animation: spin 1s linear infinite; margin: 20px auto;
-    }
-    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    .line-clamp-2 {
-      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
-    }
-    /* Progress bar transition */
-    #progress-bar-fill { transition: width 0.3s ease-in-out; }
-    /* Sidebar folder tree */
-    .sidebar-folder-item {
-      display: flex; align-items: center; gap: 8px;
-      padding: 7px 12px; border-radius: 8px; cursor: pointer;
-      font-size: 13px; color: rgba(255,255,255,0.75);
-      transition: background 0.2s, color 0.2s;
-    }
-    .sidebar-folder-item:hover { background: rgba(255,255,255,0.12); color: #fff; }
-    .sidebar-folder-item.active { background: rgba(255,255,255,0.18); color: #fff; font-weight: 600; }
-    .sidebar-folder-item i.fa-folder { color: #fbbf24; }
-    .sidebar-folder-item i.fa-folder-open { color: #fbbf24; }
-    /* Breadcrumb path in sidebar */
-    #sidebar-breadcrumb-path {
-      font-size: 11px; color: rgba(255,255,255,0.45);
-      padding: 6px 12px 2px; letter-spacing: 0.03em;
-      display: flex; align-items: center; flex-wrap: wrap; gap: 2px;
-    }
-    #sidebar-breadcrumb-path span { cursor: pointer; }
-    #sidebar-breadcrumb-path span:hover { color: rgba(255,255,255,0.9); text-decoration: underline; }
-    #sidebar-breadcrumb-path span.current { color: #6ee7b7; font-weight: 600; cursor: default; }
-    /* Divider in sidebar */
-    .sidebar-divider {
-      height: 1px; background: rgba(255,255,255,0.08);
-      margin: 8px 12px;
-    }
-    /* Section label in sidebar */
-    .sidebar-section-label {
-      font-size: 10px; font-weight: 700; letter-spacing: 0.08em;
-      text-transform: uppercase; color: rgba(255,255,255,0.35);
-      padding: 10px 12px 4px;
-    }
-    /* Folder loading skeleton */
-    @keyframes shimmer {
-      0% { opacity: 0.4; } 50% { opacity: 0.8; } 100% { opacity: 0.4; }
-    }
-    .sidebar-skeleton { animation: shimmer 1.4s infinite; }
-    /* Sidebar context menu */
-    .sb-ctx-menu {
-      position: fixed; z-index: 9999;
-      background: #064e3b; border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 10px; overflow: hidden;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.45);
-      min-width: 160px; animation: ctxFadeIn 0.12s ease;
-    }
-    @keyframes ctxFadeIn { from { opacity:0; transform: scale(0.95); } to { opacity:1; transform: scale(1); } }
-    .sb-ctx-menu button {
-      display: flex; align-items: center; gap: 10px;
-      width: 100%; padding: 10px 16px;
-      font-size: 13px; color: rgba(255,255,255,0.85);
-      background: none; border: none; cursor: pointer; text-align: left;
-      transition: background 0.15s;
-    }
-    .sb-ctx-menu button:hover { background: rgba(255,255,255,0.1); color: #fff; }
-    .sb-ctx-menu button.danger:hover { background: rgba(239,68,68,0.2); color: #fca5a5; }
-    .sb-ctx-menu .ctx-divider { height:1px; background: rgba(255,255,255,0.08); margin: 3px 0; }
-    /* Inline confirm modal */
-    #folder-modal-overlay {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.5);
-      z-index: 10000; display: flex; align-items: center; justify-content: center;
-      opacity: 0; pointer-events: none; transition: opacity 0.2s;
-    }
-    #folder-modal-overlay.show { opacity: 1; pointer-events: all; }
-    #folder-modal {
-      background: #fff; border-radius: 16px; padding: 28px 32px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.25); max-width: 380px; width: 90%;
-      transform: translateY(12px); transition: transform 0.2s;
-    }
-    #folder-modal-overlay.show #folder-modal { transform: translateY(0); }
-    #folder-modal h3 { font-size: 16px; font-weight: 700; color: #064e3b; margin-bottom: 8px; }
-    #folder-modal p { font-size: 14px; color: #64748b; margin-bottom: 20px; }
-    #folder-modal input {
-      width: 100%; border: 1.5px solid #cbd5e1; border-radius: 8px;
-      padding: 9px 13px; font-size: 14px; outline: none; margin-bottom: 20px;
-      transition: border-color 0.2s;
-    }
-    #folder-modal input:focus { border-color: #10b981; }
-    #folder-modal .modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
-    #folder-modal .btn-cancel {
-      padding: 8px 18px; border-radius: 8px; border: 1.5px solid #e2e8f0;
-      color: #64748b; font-size: 13px; cursor: pointer; background: #fff;
-      transition: background 0.15s;
-    }
-    #folder-modal .btn-cancel:hover { background: #f1f5f9; }
-    #folder-modal .btn-ok {
-      padding: 8px 20px; border-radius: 8px; border: none;
-      font-size: 13px; font-weight: 600; cursor: pointer; transition: background 0.15s;
-    }
-    #folder-modal .btn-ok.primary { background: #059669; color: #fff; }
-    #folder-modal .btn-ok.primary:hover { background: #047857; }
-    #folder-modal .btn-ok.danger { background: #ef4444; color: #fff; }
-    #folder-modal .btn-ok.danger:hover { background: #dc2626; }
-    /* Action btn on folder item */
-    .folder-action-btn {
-      opacity: 0.35; margin-left: auto; flex-shrink: 0;
-      background: rgba(255,255,255,0.08); border: none; border-radius: 6px;
-      color: rgba(255,255,255,0.8); cursor: pointer; padding: 3px 8px;
-      font-size: 12px; transition: opacity 0.15s, background 0.15s;
-      line-height: 1.4;
-    }
-    .sidebar-folder-item:hover .folder-action-btn { opacity: 1; background: rgba(255,255,255,0.15); }
-    .folder-action-btn:hover { background: rgba(255,255,255,0.25) !important; color: #fff; }
-    /* Header tab navigation */
-    .header-tab {
-      color: #64748b; background: transparent; border: none; cursor: pointer;
-      border-bottom: 2px solid transparent; border-radius: 0;
-      padding: 0 12px; height: 60px;
-      display: flex; align-items: center; gap: 8px;
-      font-size: 14px; font-weight: 600;
-      transition: color 0.15s, border-color 0.15s;
-      white-space: nowrap;
-    }
-    .header-tab:hover { color: #059669; background: transparent; }
-    .header-tab.active { color: #059669; border-bottom: 2px solid #10b981; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
   </style>
 </head>
-<body class="bg-gray-50 text-gray-800 font-sans flex h-screen overflow-hidden">
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
 
-  <!-- Mobile Sidebar Overlay -->
-  <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-40 hidden md:hidden transition-opacity" onclick="toggleSidebar()"></div>
-
-  <!-- Left Sidebar (Menu) -->
-  <aside id="sidebar" class="w-72 bg-emerald-950 text-white flex-shrink-0 flex flex-col shadow-xl z-50 transition-all duration-300 absolute md:relative h-full -translate-x-full md:translate-x-0">
-    <div class="p-4 md:p-5 flex items-center justify-start space-x-3 cursor-pointer border-b border-emerald-800 bg-emerald-950" onclick="window.location.href='index.html'">
-      <i class="fa-solid fa-house text-3xl text-emerald-300"></i>
-      <h1 class="text-xl font-bold uppercase tracking-wider">BẢO TÀNG VỀ BÁC</h1>
-    </div>
-    
-    <!-- Folder Tree Section -->
-    <div id="sidebar-folder-section" class="flex flex-col flex-1 overflow-hidden border-t border-emerald-800 mt-1">
-      <div class="sidebar-section-label flex items-center gap-2 pt-3 pr-2">
-        <i class="fa-solid fa-sitemap text-emerald-400"></i>
-        <span class="flex-1">Danh Mục Hồ Sơ</span>
-        <button id="btn-add-root-folder" onclick="sidebarAddFolder()" title="Tạo thư mục mới tại đây"
-          class="flex items-center gap-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded-md px-2 py-1 text-[10px] font-bold transition">
-          <i class="fa-solid fa-plus"></i> Thêm
-        </button>
-      </div>
-
-      <!-- Current path breadcrumb -->
-      <div id="sidebar-breadcrumb-path" class="hidden">
-        <!-- populated by JS -->
-      </div>
-
-      <!-- Folder tree list -->
-      <div id="sidebar-folder-tree" class="flex-1 overflow-y-auto px-2 pb-4 space-y-0.5">
-        <!-- skeleton loading -->
-        <div class="sidebar-skeleton flex items-center gap-2 px-3 py-2">
-          <div class="w-4 h-4 rounded bg-white/10"></div>
-          <div class="h-3 rounded bg-white/10 flex-1"></div>
-        </div>
-        <div class="sidebar-skeleton flex items-center gap-2 px-3 py-2">
-          <div class="w-4 h-4 rounded bg-white/10"></div>
-          <div class="h-3 rounded bg-white/10 w-3/4"></div>
-        </div>
-        <div class="sidebar-skeleton flex items-center gap-2 px-3 py-2">
-          <div class="w-4 h-4 rounded bg-white/10"></div>
-          <div class="h-3 rounded bg-white/10 w-1/2"></div>
-        </div>
-      </div>
-    </div>
-    <div class="p-4 border-t border-emerald-800 text-xs text-emerald-400 text-center bg-emerald-950">
-      © 2026 Không gian văn hóa HCM
-    </div>
-  </aside>
-
-  <!-- Context Menu (global, hidden by default) -->
-  <div id="sb-ctx-menu" class="sb-ctx-menu hidden"></div>
-
-  <!-- Folder Action Modal -->
-  <div id="folder-modal-overlay">
-    <div id="folder-modal">
-      <h3 id="modal-title">Tạo thư mục</h3>
-      <p id="modal-desc"></p>
-      <input id="modal-input" type="text" placeholder="Tên thư mục..." style="display:none">
-      <div class="modal-actions">
-        <button class="btn-cancel" onclick="closeModal()">Hủy</button>
-        <button id="modal-ok" class="btn-ok primary" onclick="modalOk()">Xác nhận</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Main Content Wrapper -->
-  <div class="flex-1 flex flex-col h-screen overflow-hidden bg-gray-50 relative">
-    
-    <!-- Header -->
-    <header class="bg-white shadow-sm z-40 sticky top-0 border-b border-gray-200">
-      <div class="px-4 md:px-6 flex items-center gap-2 md:gap-4 h-[60px]">
-        
-        <!-- Hamburger Button -->
-        <button onclick="toggleSidebar()" class="text-gray-500 hover:text-teal-600 focus:outline-none p-2 rounded-lg hover:bg-gray-100 transition-colors mr-2">
-          <i class="fa-solid fa-bars text-xl"></i>
-        </button>
-
-        <!-- Nút về trang chủ -->
-        <a href="index.html" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-semibold bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition mr-1">
+  <!-- Header / Navbar -->
+  <header class="bg-gradient-to-r from-red-800 via-red-700 to-amber-700 text-white shadow-lg sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <a href="index.html" class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-semibold bg-white/10 hover:bg-white/20 transition text-white" title="Về trang chủ">
           <i class="fa-solid fa-house"></i>
           <span class="hidden sm:inline">Trang chủ</span>
         </a>
-
-        <!-- Tab Navigation (left side) -->
-        <nav class="flex items-center gap-1 flex-shrink-0">
-          <button onclick="switchTab('library')" id="btn-library"
-            class="header-tab active flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold transition">
-            <i class="fa-solid fa-folder-open"></i>
-            <span class="hidden sm:inline">Kho Hồ Sơ</span>
-          </button>
-
-          <button onclick="switchTab('upload')" id="btn-upload"
-            class="header-tab flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold transition">
-            <i class="fa-solid fa-cloud-arrow-up text-emerald-500"></i>
-            <span class="hidden sm:inline">Lưu Hồ Sơ</span>
-          </button>
-          <button onclick="sessionStorage.clear(); window.location.reload();" title="Tải lại dữ liệu mới nhất"
-            class="header-tab flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold transition text-gray-600 hover:text-green-600 hover:bg-green-50 ml-1">
-            <i class="fa-solid fa-rotate-right"></i>
-            <span class="hidden md:inline">Tải lại</span>
-          </button>
-          <button onclick="loginAdmin()" id="btn-admin" title="Quản trị viên"
-            class="header-tab flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold transition text-gray-400 hover:text-red-600 hover:bg-red-50 ml-1">
-            <i class="fa-solid fa-lock" id="icon-admin"></i>
-          </button>
-        </nav>
-
-        <!-- Divider -->
-        <div class="hidden sm:block w-px h-7 bg-gray-200 flex-shrink-0"></div>
-
-        <!-- Search Bar -->
-        <div class="relative flex-1 max-w-lg">
-          <input type="text" id="search-input" placeholder="Tìm kiếm hồ sơ, giấy tờ..." 
-            class="w-full pl-10 pr-24 py-2 rounded-full text-gray-700 bg-gray-100 border-none focus:outline-none focus:ring-2 focus:ring-emerald-500 shadow-inner transition-all text-sm"
-            onkeypress="handleEnterSearch(event)" oninput="handleLiveSearch()">
-          <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-2.5 text-gray-400 text-sm"></i>
-          <button onclick="executeSearch()" class="absolute right-1 top-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-full py-1.5 px-3 text-xs font-semibold shadow transition">Tìm kiếm</button>
-        </div>
-      </div>
-    </header>
-
-    <!-- Scrollable Main Container -->
-    <main class="flex-1 overflow-y-auto w-full px-4 py-6 md:px-8 pb-20">
-      <div class="container mx-auto">
-    
-    <!-- === TAB 1: LIBRARY === -->
-    <div id="tab-library" class="block">
-      <!-- Main Breadcrumbs -->
-      <div id="breadcrumbs" class="hidden flex flex-wrap items-center gap-2 mb-6 text-sm bg-white py-3 px-4 rounded-lg shadow-sm border border-gray-200"></div>
-
-      <!-- Search Result Title -->
-      <div id="search-result-title" class="hidden mb-4 text-lg font-bold text-emerald-700 flex items-center">
-        <i class="fa-solid fa-filter mr-2"></i> Kết quả tìm kiếm: <span id="search-query" class="ml-1 text-black"></span>
-        <button onclick="clearSearch()" class="ml-4 text-xs text-red-500 underline hover:text-red-700">Xóa tìm kiếm</button>
+        <div class="h-6 w-px bg-white/20 hidden sm:block"></div>
+        <h1 class="text-lg sm:text-xl font-bold flex items-center gap-2 tracking-wide">
+          <i class="fa-solid fa-building-columns text-amber-300"></i>
+          <span>BẢO TÀNG VỀ BÁC</span>
+        </h1>
       </div>
 
-      <div id="library-loader" class="loader hidden"></div>
-
-      <!-- Content Area -->
-      <div id="library-content" class="flex flex-col lg:flex-row gap-4">
-        <div id="main-list-area" class="w-full lg:w-full transition-all duration-300 overflow-hidden" style="flex: 1 1 auto;">
-          <!-- Folders Grid (hidden – folders shown in sidebar tree) -->
-          <div id="folder-container" class="hidden"></div>
-
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-4 border-l-4 border-emerald-600 pl-3 gap-3">
-            <h2 id="files-title" class="text-lg font-bold text-gray-700">Danh Sách Hồ Sơ</h2>
-            <div class="flex flex-wrap items-center gap-2">
-              <select id="filter-select" onchange="applySortAndFilter()" class="text-sm bg-gray-50 border border-gray-200 text-gray-700 py-1.5 px-2 rounded-lg focus:outline-none focus:border-emerald-600 cursor-pointer shadow-sm">
-                <option value="all">Tất cả hồ sơ & tài liệu</option>
-                <option value="word">File Word (.doc/.docx)</option>
-                <option value="excel">File Excel (.xls/.xlsx/.exl/.exlx)</option>
-                <option value="pdf">File PDF (.pdf)</option>
-                <option value="ppt">File PowerPoint (.ppt/.pptx)</option>
-              </select>
-
-              <select id="sort-select" onchange="applySortAndFilter()" class="text-sm bg-gray-50 border border-gray-200 text-gray-700 py-1.5 px-2 rounded-lg focus:outline-none focus:border-blue-500 cursor-pointer shadow-sm">
-                <option value="newest">Mới nhất</option>
-                <option value="oldest">Cũ nhất</option>
-                <option value="downloads">Tải nhiều nhất</option>
-                <option value="name">Tên A-Z</option>
-              </select>
-
-              <div class="flex bg-gray-100 rounded-lg p-1 shadow-inner border border-gray-200">
-                <button onclick="setViewMode('list')" id="btn-view-list" class="p-1 px-2.5 rounded-md text-gray-500 hover:text-teal-600 transition" title="Xem dạng danh sách">
-                  <i class="fa-solid fa-list text-sm"></i>
-                </button>
-                <button onclick="setViewMode('grid')" id="btn-view-grid" class="p-1 px-2.5 rounded-md text-gray-500 hover:text-teal-600 transition" title="Xem dạng lưới">
-                  <i class="fa-solid fa-grip text-sm"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Files List -->
-          <div id="file-container" class="grid grid-cols-1 gap-4">
-            <!-- Render Cards -->
-          </div>
-          
-          <div id="empty-msg" class="hidden text-center text-gray-400 py-10">
-            <i class="fa-solid fa-box-open text-4xl mb-3"></i>
-            <p>Không tìm thấy dữ liệu</p>
-          </div>
-
-          <!-- Trigger cho Infinite Scroll -->
-          <div id="scroll-trigger" class="hidden py-6 flex justify-center text-gray-400">
-             <i class="fa-solid fa-spinner fa-spin text-2xl"></i>
-          </div>
-        </div>
-
-        <!-- Resizer -->
-        <div id="resizer" class="hidden lg:hidden w-2 cursor-col-resize hover:bg-blue-400 active:bg-teal-600 rounded transition-colors self-stretch bg-gray-200"></div>
-
-        <div id="preview-pane" class="hidden w-full lg:w-1/2 bg-white p-4 rounded-lg shadow-md border border-gray-200 sticky top-24 h-[calc(100vh-120px)] flex-col shrink-0">
-           <div class="flex justify-between items-center mb-3">
-             <h3 class="font-bold text-emerald-800 truncate pr-2 flex-grow" id="preview-title">Xem trước hồ sơ</h3>
-             <div class="flex items-center gap-3 shrink-0">
-               <a id="preview-drive-btn" href="#" target="_blank" class="text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-1.5 px-3 rounded border transition flex items-center shadow-sm" title="Mở bằng Google Drive">
-                 <i class="fa-brands fa-google-drive mr-1.5 text-green-600"></i> Mở Drive
-               </a>
-               <button onclick="closePreview()" class="text-gray-500 hover:text-red-500"><i class="fa-solid fa-xmark text-xl"></i></button>
-             </div>
-           </div>
-           <div class="flex-grow w-full relative bg-gray-100 rounded flex items-center justify-center overflow-hidden">
-              <iframe id="preview-iframe" class="w-full h-full border-0 absolute top-0 left-0 hidden" onload="const loader = document.getElementById('preview-loader'); if(loader) { loader.classList.add('hidden'); } this.classList.remove('hidden');"></iframe>
-              <div id="preview-loader" class="text-gray-400 flex flex-col items-center"><i class="fa-solid fa-spinner fa-spin text-3xl mb-2"></i><p>Đang tải...</p></div>
-           </div>
-           <div class="mt-4 flex gap-2">
-              <a id="preview-download-btn" href="#" target="_blank" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded text-center shadow transition flex items-center justify-center"><i class="fa-solid fa-download mr-2"></i>Tải về</a>
-           </div>
-        </div>
+      <div class="flex items-center gap-2">
+        <span id="admin-badge" class="hidden bg-amber-400 text-red-950 text-xs font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">
+          <i class="fa-solid fa-shield-halved mr-1"></i> Admin
+        </span>
+        <button onclick="openLinkModal()" class="bg-amber-400 hover:bg-amber-300 text-red-950 px-3.5 py-1.5 rounded-lg font-bold text-sm shadow-md hover:shadow transition flex items-center gap-1.5">
+          <i class="fa-solid fa-plus"></i>
+          <span>Thêm điểm tham quan</span>
+        </button>
       </div>
     </div>
+  </header>
 
-    <!-- === TAB 2: UPLOAD === -->
-    <div id="tab-upload" class="hidden max-w-3xl mx-auto bg-white p-8 rounded-xl shadow-md mt-6">
-      <h2 class="text-2xl font-bold text-emerald-800 mb-6 text-center border-b pb-4"><i class="fa-solid fa-file-circle-plus mr-2"></i>Lưu Hồ Sơ / Giấy Tờ Mới</h2>
-      
-      <form id="upload-form" onsubmit="handleBatchUpload(event)">
+  <!-- Main Content -->
+  <main class="max-w-6xl mx-auto px-4 py-8 flex-1 w-full space-y-10">
+
+    <!-- PHẦN 1: HERO SECTION - GIỚI THIỆU BẢO TÀNG HỒ CHÍ MINH -->
+    <section class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+      <!-- Top Box: Image + Title/Intro -->
+      <div class="p-6 sm:p-8 flex flex-col md:flex-row items-center md:items-start gap-8 border-b border-slate-100">
         
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-          <!-- Cột Trái -->
-          <div class="space-y-4">
-             <div>
-              <label class="block text-gray-700 text-sm font-bold mb-2">1. Chọn danh mục hồ sơ *</label>
-              <div class="flex gap-2">
-                <div class="relative flex-grow" id="upload-folder-dropdown">
-                  <button type="button" onclick="toggleUploadFolderTree(event)" id="upload-folder-btn" class="w-full bg-white border border-gray-300 text-gray-700 py-2.5 px-3 rounded-lg flex justify-between items-center focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 shadow-sm transition">
-                    <span id="upload-folder-text" class="truncate font-medium text-sm"><i class="fa-solid fa-spinner fa-spin mr-2 text-gray-400"></i> Đang tải danh sách...</span>
-                    <i class="fa-solid fa-chevron-down text-xs text-gray-500"></i>
-                  </button>
-                  <input type="hidden" id="folder-select" value="">
-                  <div id="upload-folder-tree-container" class="hidden absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-xl max-h-72 overflow-y-auto">
-                     <div id="upload-folder-tree" class="p-2 text-sm">
-                        <!-- Tree will be rendered here -->
-                     </div>
-                  </div>
-                </div>
-                <button type="button" onclick="handleCreateFolder(this)" 
-                        class="bg-green-600 hover:bg-green-700 text-white px-3 rounded shadow transition flex-shrink-0" 
-                        title="Tạo thư mục con trong thư mục đang chọn">
-                  <i class="fa-solid fa-folder-plus"></i>
-                </button>
-              </div>
-              <p class="text-xs text-gray-500 mt-1 italic">Mẹo: Chọn thư mục cha ở danh sách rồi bấm nút (+) màu xanh để tạo thư mục con.</p>
-            </div>
-
-            <div>
-              <label class="block text-gray-700 text-sm font-bold mb-2">2. Loại hồ sơ / giấy tờ *</label>
-              <select id="file-type" class="block w-full bg-gray-50 border border-gray-300 text-gray-700 py-2.5 px-3 rounded focus:outline-none focus:border-emerald-600">
-                <option value="Hồ sơ học sinh">Hồ sơ học sinh</option>
-                <option value="Sổ chủ nhiệm">Sổ chủ nhiệm</option>
-                <option value="Kế hoạch chủ nhiệm">Kế hoạch chủ nhiệm</option>
-                <option value="Biên bản họp lớp">Biên bản họp lớp</option>
-                <option value="Danh sách học sinh">Danh sách học sinh</option>
-                <option value="Phiếu liên lạc">Phiếu liên lạc / Thông báo phụ huynh</option>
-                <option value="Báo cáo tháng">Báo cáo tháng / Học kỳ</option>
-                <option value="Giấy tờ hành chính">Giấy tờ hành chính</option>
-                <option value="Hồ sơ khen thưởng">Hồ sơ khen thưởng / Kỷ luật</option>
-                <option value="Tài liệu sinh hoạt lớp">Tài liệu sinh hoạt lớp / Chào cờ</option>
-                <option value="Tài liệu khác">Tài liệu khác</option>
-              </select>
-            </div>
-            
-            <div>
-              <label class="block text-gray-700 text-sm font-bold mb-2">3. Tên hiển thị (Tiêu đề) *</label>
-              <input type="text" id="display-name" placeholder="VD: Sổ chủ nhiệm lớp 10A1 – HK1 2025" 
-                class="border rounded w-full py-2.5 px-3 text-gray-700 focus:outline-none focus:border-emerald-600">
-              <p class="text-xs text-gray-500 mt-1 italic">Nếu lưu nhiều file, tên này sẽ áp dụng cho tất cả hoặc để trống để dùng tên file gốc.</p>
-            </div>
-          </div>
-
-          <!-- Cột Phải -->
-          <div class="space-y-4">
-            <div>
-              <label class="block text-gray-700 text-sm font-bold mb-2">4. Thông tin giáo viên lưu trữ *</label>
-              <input type="text" id="uploader-name" required placeholder="Họ tên giáo viên" 
-                class="border rounded w-full py-2 px-3 text-gray-700 mb-2 focus:outline-none focus:border-emerald-600">
-              <input type="email" id="uploader-email" placeholder="Email (tùy chọn)"
-                class="border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:border-emerald-600">
-            </div>
-
-            <div>
-              <label class="block text-gray-700 text-sm font-bold mb-2">5. Ghi chú thêm (Tùy chọn)</label>
-              <textarea id="file-desc" rows="3" placeholder="Mô tả nội dung, năm học, lớp, lưu ý..." 
-                class="border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:border-emerald-600"></textarea>
-            </div>
+        <!-- Left: Image Banner (Với nút đổi ảnh dành cho Admin) -->
+        <div class="w-full md:w-80 shrink-0 relative group rounded-xl overflow-hidden shadow-md border border-slate-200 bg-red-800">
+          <img id="museum-hero-img" 
+               src="https://res.cloudinary.com/dwqtplan3/image/upload/v1785638390/Logo_Tru%CC%9Bo%CC%9B%CC%80ng_THCS_Ta%CC%82n_Bi%CC%80nh_rmfvy1.jpg" 
+               alt="Bảo tàng Hồ Chí Minh" 
+               class="w-full h-52 md:h-60 object-contain bg-red-700 p-2 transition-transform duration-500 group-hover:scale-105">
+          
+          <!-- Admin Only: Change Image Button -->
+          <div id="hero-img-admin-controls" class="hidden absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 p-4 text-center">
+            <span class="text-white text-xs font-semibold">Quyền Admin</span>
+            <button onclick="openHeroImageModal()" class="bg-white text-red-700 font-bold px-3 py-1.5 rounded-lg text-xs shadow hover:bg-amber-100 transition">
+              <i class="fa-solid fa-camera mr-1"></i> Đổi ảnh đại diện
+            </button>
           </div>
         </div>
 
-        <!-- File Input Multiple -->
-        <div class="mb-6">
-          <label class="block text-gray-700 text-sm font-bold mb-2">6. Chọn hồ sơ / giấy tờ (Hỗ trợ kéo thả Thư mục)</label>
-          <div class="flex flex-col gap-3">
-            <label id="drop-zone" class="flex flex-col items-center justify-center w-full h-32 border-2 border-emerald-300 border-dashed rounded-lg bg-emerald-50 hover:bg-emerald-100 transition relative">
-              <div class="flex flex-col items-center justify-center pt-5 pb-6 pointer-events-none">
-                <i class="fa-solid fa-cloud-arrow-up text-3xl text-emerald-500 mb-2"></i>
-                <p class="text-sm text-gray-500"><span class="font-semibold">Kéo thả File hoặc Thư mục vào đây</span></p>
-                <p class="text-xs text-emerald-600 font-medium mt-0.5">Hỗ trợ đầy đủ: Word (.doc, .docx), Excel (.xls, .xlsx, .exl, .exlx), PDF, ...</p>
-                <p id="file-count-display" class="text-xs text-gray-400 mt-1">Chưa chọn hồ sơ</p>
-              </div>
-            </label>
-            <div class="flex gap-2">
-              <label for="file-upload" class="flex-1 text-center bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 py-2.5 rounded-lg shadow-sm cursor-pointer transition font-semibold text-sm">
-                <i class="fa-regular fa-file mr-1"></i> Chọn File
-              </label>
-              <label for="folder-upload" class="flex-1 text-center bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 py-2.5 rounded-lg shadow-sm cursor-pointer transition font-semibold text-sm">
-                <i class="fa-solid fa-folder-open mr-1 text-yellow-500"></i> Chọn Thư Mục
-              </label>
-            </div>
-            <!-- Remove "required" from input so we can handle validation via JS -->
-            <input id="file-upload" type="file" class="hidden" multiple accept=".doc,.docx,.xls,.xlsx,.exl,.exlx,.pdf,.ppt,.pptx,.csv,.zip,.rar,image/*,*/*" onchange="handleFileInputChange(this)" />
-            <input id="folder-upload" type="file" class="hidden" webkitdirectory directory multiple onchange="handleFileInputChange(this)" />
+        <!-- Right: Main Intro Text -->
+        <div class="flex-1 space-y-4">
+          <h2 class="text-xl sm:text-2xl font-bold text-red-800 font-serif-title leading-snug">
+            Bảo tàng Hồ Chí Minh <span class="text-slate-700 font-sans font-normal text-base sm:text-lg block sm:inline">là công trình lưu niệm và trưng bày các tư liệu, hiện vật về Chủ tịch Hồ Chí Minh, có địa chỉ tại số 19 Ngọc Hà, Ba Đình, Hà Nội.</span>
+          </h2>
+          
+          <div class="inline-flex items-center gap-2 bg-amber-50 border border-amber-200 text-amber-900 px-3 py-1.5 rounded-lg text-xs font-semibold">
+            <i class="fa-solid fa-star text-amber-500"></i>
+            <span>Không gian trưng bày số & Tham quan ảo 3D</span>
+          </div>
+
+          <p class="text-sm text-slate-600 leading-relaxed">
+            Bảo tàng Hồ Chí Minh là một trong những bảo tàng lớn nhất Việt Nam, nơi tập trung toàn diện nhất những tài liệu, hiện vật, hình ảnh phản ánh chân thực và sinh động trọn vẹn cuộc đời, sự nghiệp cách mạng vĩ đại của Chủ tịch Hồ Chí Minh – Anh hùng giải phóng dân tộc, Nhà văn hóa kiệt xuất.
+          </p>
+        </div>
+
+      </div>
+
+      <!-- Bottom Box: Bulleted Details (Đúng như ảnh mẫu của người dùng) -->
+      <div class="bg-slate-50 p-6 sm:p-8 space-y-3.5 text-sm sm:text-base text-slate-700">
+        <div class="flex items-start gap-2.5">
+          <span class="text-red-600 font-bold mt-0.5">•</span>
+          <div>
+            <strong class="text-slate-900 font-semibold">Không gian trưng bày:</strong> Bảo tàng cung cấp hệ thống trưng bày đa dạng, bao gồm trưng bày thường xuyên, trưng bày chuyên đề và cả Bảo tàng 3D trực tuyến để phục vụ khách tham quan.
           </div>
         </div>
 
-        <!-- Submit Button -->
-        <button type="submit" id="btn-submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-4 rounded shadow-lg transform transition hover:-translate-y-0.5 flex justify-center items-center">
-          <span><i class="fa-solid fa-floppy-disk mr-2"></i>Lưu Hồ Sơ Vào Hệ Thống</span>
+        <div class="flex items-start gap-2.5">
+          <span class="text-red-600 font-bold mt-0.5">•</span>
+          <div>
+            <strong class="text-slate-900 font-semibold">Nghiên cứu và Giáo dục:</strong> Nơi đây thực hiện các nghiên cứu khoa học, sưu tầm, bảo quản hiện vật và xuất bản các ấn phẩm về Bác. Ngoài ra, bảo tàng còn tổ chức các hoạt động giáo dục như tuyên truyền học tập tấm gương đạo đức Hồ Chí Minh, phòng khám phá trải nghiệm và các triển lãm như “Những tấm gương bình dị mà cao quý”.
+          </div>
+        </div>
+
+        <div class="flex items-start gap-2.5">
+          <span class="text-red-600 font-bold mt-0.5">•</span>
+          <div>
+            <strong class="text-slate-900 font-semibold">Thời gian hoạt động:</strong> Bảo tàng mở cửa vào <strong class="text-slate-900">Thứ Ba, Thứ Tư, Thứ Năm, Thứ Bảy và Chủ Nhật</strong> với khung giờ sáng từ 8h00 - 12h00 và chiều từ 14h00 - 16h30. Bảo tàng <strong class="text-red-700">đóng cửa vào Thứ Hai và Thứ Sáu</strong>.
+          </div>
+        </div>
+
+        <div class="flex items-start gap-2.5">
+          <span class="text-red-600 font-bold mt-0.5">•</span>
+          <div>
+            <strong class="text-slate-900 font-semibold">Thông tin vé tham quan:</strong> Du khách có thể đăng ký tham quan trực tuyến trên website, tuy nhiên tính năng mua vé trực tuyến hiện đang được hoàn thiện. Để mua vé, khách tham quan cần liên hệ trực tiếp qua số điện thoại 024.38463757.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PHẦN 2: HỆ THỐNG ĐƯỜNG DẪN THAM QUAN BẢO TÀNG & DI TÍCH (THÊM THỦ CÔNG) -->
+    <section class="space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
+        <div>
+          <h3 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+            <i class="fa-solid fa-vr-cardboard text-red-600"></i>
+            <span>Đường Dẫn Tham Quan Bảo Tàng & Di Tích 3D</span>
+          </h3>
+          <p class="text-sm text-slate-500 mt-0.5">
+            Nhấn để tham quan trực tuyến các không gian thực tế ảo, phòng trưng bày số và di tích Bác Hồ.
+          </p>
+        </div>
+
+        <!-- Filter category tags -->
+        <div class="flex flex-wrap items-center gap-2 text-xs">
+          <button onclick="filterCategory('all')" id="filter-btn-all" class="filter-btn bg-red-700 text-white px-3 py-1.5 rounded-full font-semibold transition shadow-sm">
+            Tất cả
+          </button>
+          <button onclick="filterCategory('Bảo tàng 3D')" id="filter-btn-3d" class="filter-btn bg-slate-200 text-slate-700 hover:bg-slate-300 px-3 py-1.5 rounded-full font-semibold transition">
+            Bảo tàng 3D
+          </button>
+          <button onclick="filterCategory('Di tích lịch sử')" id="filter-btn-ditich" class="filter-btn bg-slate-200 text-slate-700 hover:bg-slate-300 px-3 py-1.5 rounded-full font-semibold transition">
+            Di tích lịch sử
+          </button>
+          <button onclick="filterCategory('Chuyên đề')" id="filter-btn-chuyende" class="filter-btn bg-slate-200 text-slate-700 hover:bg-slate-300 px-3 py-1.5 rounded-full font-semibold transition">
+            Chuyên đề số
+          </button>
+        </div>
+      </div>
+
+      <!-- Links Grid -->
+      <div id="links-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Will be rendered by JavaScript -->
+      </div>
+
+      <!-- Empty State -->
+      <div id="empty-state" class="hidden text-center py-12 bg-white rounded-2xl border border-dashed border-slate-300">
+        <i class="fa-solid fa-map-location-dot text-4xl text-slate-300 mb-3"></i>
+        <p class="text-slate-500 font-medium">Chưa có đường dẫn tham quan nào trong chuyên mục này.</p>
+        <button onclick="openLinkModal()" class="mt-3 text-red-600 hover:text-red-700 font-semibold text-sm underline">
+          + Thêm đường dẫn ngay
         </button>
+      </div>
+    </section>
 
-        <!-- Progress Bar Container (Hidden by default) -->
-        <div id="progress-container" class="hidden mt-6 bg-gray-50 p-4 rounded-lg border border-gray-200">
-           <div class="flex justify-between items-center mb-1">
-              <span id="progress-text" class="text-sm font-semibold text-blue-800">Đang chuẩn bị...</span>
-              <span id="progress-percent" class="text-sm font-bold text-blue-800">0%</span>
-           </div>
-           <div class="w-full bg-gray-200 rounded-full h-3">
-              <div id="progress-bar-fill" class="bg-emerald-600 h-3 rounded-full" style="width: 0%"></div>
-           </div>
-           <p id="progress-detail" class="text-xs text-gray-500 mt-2 italic">Đang tải lên, vui lòng không tắt trình duyệt...</p>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="bg-white border-t border-slate-200 mt-16 py-8">
+    <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+      <div class="flex items-center gap-3">
+        <img src="https://res.cloudinary.com/dwqtplan3/image/upload/v1785638390/Logo_Tru%CC%9Bo%CC%9B%CC%80ng_THCS_Ta%CC%82n_Bi%CC%80nh_rmfvy1.jpg" alt="Logo" class="w-8 h-8 rounded-full object-cover">
+        <div>
+          <strong class="text-slate-800 block">BẢO TÀNG VỀ BÁC HỒ</strong>
+          <span>Không gian văn hóa Hồ Chí Minh • Trường THCS Tân Bình</span>
+        </div>
+      </div>
+      <div>
+        © 2026 Không gian văn hóa HCM. Phát triển cho mục đích giáo dục & tham quan số.
+      </div>
+    </div>
+  </footer>
+
+  <!-- MODAL 1: THÊM / SỬA ĐƯỜNG DẪN THAM QUAN (THỦ CÔNG) -->
+  <div id="link-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden border border-slate-200 transform transition-all">
+      <!-- Modal Header -->
+      <div class="bg-red-800 text-white px-6 py-4 flex items-center justify-between">
+        <h3 id="link-modal-title" class="font-bold text-lg flex items-center gap-2">
+          <i class="fa-solid fa-link text-amber-300"></i>
+          <span>Thêm đường dẫn tham quan mới</span>
+        </h3>
+        <button onclick="closeLinkModal()" class="text-white/80 hover:text-white w-8 h-8 rounded-full hover:bg-white/10 flex items-center justify-center transition">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <form id="link-form" onsubmit="saveLink(event)" class="p-6 space-y-4">
+        <input type="hidden" id="link-id">
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Tên địa điểm / Bảo tàng 3D <span class="text-red-500">*</span></label>
+          <input type="text" id="link-title" required placeholder="VD: Bảo tàng Hồ Chí Minh 3D - Ngọc Hà, Hà Nội"
+                 class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-red-600 text-sm">
         </div>
 
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Phân loại <span class="text-red-500">*</span></label>
+            <select id="link-category" class="w-full px-3 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-red-600 text-sm bg-white">
+              <option value="Bảo tàng 3D">Bảo tàng 3D (VR 360)</option>
+              <option value="Di tích lịch sử">Di tích lịch sử</option>
+              <option value="Chuyên đề">Chuyên đề trưng bày số</option>
+              <option value="Khác">Tham quan & Tư liệu khác</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Thứ tự ưu tiên</label>
+            <input type="number" id="link-order" value="1" min="1"
+                   class="w-full px-3 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-red-600 text-sm">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Đường dẫn URL tham quan <span class="text-red-500">*</span></label>
+          <input type="url" id="link-url" required placeholder="https://baotanghochiminh.vn/3d-tour..."
+                 class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-red-600 text-sm">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Ảnh đại diện thẻ (Thumbnail)</label>
+          <div class="flex gap-2">
+            <input type="text" id="link-image" placeholder="Dán URL ảnh hoặc bấm Tải ảnh bên cạnh..."
+                   class="flex-1 px-3.5 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-red-600 text-sm">
+            <label class="cursor-pointer bg-slate-100 hover:bg-slate-200 text-slate-700 px-3.5 py-2.5 rounded-lg border border-slate-300 font-semibold text-xs flex items-center gap-1.5 whitespace-nowrap transition">
+              <i class="fa-solid fa-cloud-arrow-up text-red-600"></i> Tải ảnh
+              <input type="file" accept="image/*" class="hidden" onchange="uploadToCloudinary(this, 'link-image')">
+            </label>
+          </div>
+          <p class="text-[11px] text-slate-400 mt-1">Mẹo: Hỗ trợ nhấn <kbd class="bg-slate-200 px-1 rounded">Ctrl+V</kbd> để dán ảnh trực tiếp vào ô trên (tự động upload lên Cloudinary dwqtplan3).</p>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Mô tả ngắn</label>
+          <textarea id="link-desc" rows="2" placeholder="VD: Không gian thực tế ảo 360 độ toàn bộ 3 tầng trưng bày của bảo tàng..."
+                    class="w-full px-3.5 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-red-600 text-sm"></textarea>
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
+          <button type="button" onclick="closeLinkModal()" class="px-4 py-2 rounded-lg border border-slate-300 text-slate-600 hover:bg-slate-100 font-semibold text-sm transition">
+            Hủy
+          </button>
+          <button type="submit" id="btn-save-link" class="px-5 py-2 rounded-lg bg-red-700 hover:bg-red-800 text-white font-bold text-sm shadow-md hover:shadow transition flex items-center gap-2">
+            <i class="fa-solid fa-floppy-disk"></i> Lưu điểm tham quan
+          </button>
+        </div>
       </form>
     </div>
-
-
-    
-      </div>
-
-      <!-- Footer Brand -->
-      <footer class="mt-16 mb-2">
-        <div class="max-w-3xl mx-auto bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow duration-300">
-          <div class="h-1.5 bg-gradient-to-r from-blue-500 via-emerald-500 to-purple-500"></div>
-          <div class="p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6">
-            <div class="flex items-center gap-5">
-              <div class="w-16 h-16 rounded-full bg-teal-50 flex items-center justify-center flex-shrink-0 shadow-inner border border-teal-100 relative">
-                <i class="fa-solid fa-square-root-variable text-2xl text-teal-600"></i>
-                <div class="absolute -bottom-1 -right-1 bg-green-500 w-4 h-4 rounded-full border-2 border-white"></div>
-              </div>
-              <div class="text-center sm:text-left">
-                <h3 class="text-xl font-extrabold text-gray-800 mb-1 tracking-tight">Bảo Tàng Về Bác Hồ</h3>
-                <p class="text-sm text-gray-500 font-medium">Hệ thống Lưu trữ & Bảo tàng số</p>
-              </div>
-            </div>
-            
-            <div class="flex flex-col items-center sm:items-end">
-              <a href="https://zalo.me/0788095095" target="_blank" class="group flex items-center gap-2.5 bg-teal-50 hover:bg-teal-600 text-teal-700 hover:text-white px-5 py-2.5 rounded-full transition-all duration-300 font-bold shadow-sm border border-blue-200 hover:border-teal-600">
-                <div class="bg-teal-600 group-hover:bg-white text-white group-hover:text-teal-600 w-6 h-6 rounded-full flex items-center justify-center text-xs transition-colors">
-                  <i class="fa-solid fa-phone"></i>
-                </div>
-                Zalo: 078.809.5095
-              </a>
-              <p class="text-[11px] text-gray-400 mt-2.5 font-medium flex items-center gap-1">
-                <i class="fa-solid fa-headset"></i> Hỗ trợ & Đóng góp tài liệu
-              </p>
-            </div>
-          </div>
-        </div>
-      </footer>
-
-    </main>
   </div>
 
-  <div id="toast" class="fixed bottom-5 right-5 bg-gray-800 text-white px-6 py-3 rounded shadow-lg transform translate-y-20 transition duration-300 opacity-0 z-50"></div>
+  <!-- MODAL 2: ĐỔI ẢNH ĐẠI DIỆN HERO BANNER (ADMIN ONLY) -->
+  <div id="hero-image-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden border border-slate-200">
+      <div class="bg-red-800 text-white px-6 py-4 flex items-center justify-between">
+        <h3 class="font-bold text-base flex items-center gap-2">
+          <i class="fa-solid fa-camera text-amber-300"></i>
+          <span>Đổi ảnh đại diện Bảo tàng Hồ Chí Minh</span>
+        </h3>
+        <button onclick="closeHeroImageModal()" class="text-white/80 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+      <div class="p-6 space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Chọn ảnh hoặc dán link</label>
+          <div class="flex gap-2">
+            <input type="text" id="hero-img-url" placeholder="https://..." class="flex-1 px-3 py-2 rounded-lg border border-slate-300 text-sm">
+            <label class="cursor-pointer bg-red-700 hover:bg-red-800 text-white px-4 py-2 rounded-lg font-semibold text-xs flex items-center gap-1.5 transition">
+              <i class="fa-solid fa-upload"></i> Tải ảnh
+              <input type="file" accept="image/*" class="hidden" onchange="uploadToCloudinary(this, 'hero-img-url')">
+            </label>
+          </div>
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeHeroImageModal()" class="px-4 py-2 rounded-lg border text-slate-600 text-sm font-semibold">Hủy</button>
+          <button type="button" onclick="saveHeroImage()" class="px-5 py-2 rounded-lg bg-red-700 text-white text-sm font-bold">Lưu thay đổi</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast" class="fixed bottom-5 right-5 bg-slate-900 text-white px-5 py-3 rounded-xl shadow-xl transform translate-y-20 opacity-0 transition-all duration-300 z-50 flex items-center gap-3 text-sm font-medium">
+    <i id="toast-icon" class="fa-solid fa-circle-check text-green-400 text-lg"></i>
+    <span id="toast-text"></span>
+  </div>
 
   <script>
-    // =========================================================================
-    // LƯU Ý QUAN TRỌNG:
-    // Bạn hãy thay thế URL bên dưới bằng URL có đuôi /exec sau khi Deploy Web App.
-    // Dưới đây chỉ là URL ví dụ để bạn biết cấu trúc.
-    // =========================================================================
-    const LINK_GAS = "https://script.google.com/macros/s/AKfycbxfZOaASbNX5pvsU5Gacki94eA4wg-r4cMJP_PWGXrjo-n7uG_E0_Og2dsDHRr3Hu2b9A/exec";
+    // ==========================================
+    // 1. CẤU HÌNH CLOUDINARY & QUẢN TRỊ ADMIN
+    // ==========================================
+    const CLOUD_NAME = "dwqtplan3";
+    const UPLOAD_PRESET = "canhan";
 
-    window.adminPassword = sessionStorage.getItem('adminPassword') || "";
-    window.isAdmin = !!window.adminPassword;
+    let isAdmin = false;
+    let currentCategoryFilter = 'all';
 
+    // Dữ liệu mẫu ban đầu (Nếu Firestore chưa có)
+    const DEFAULT_LINKS = [
+      {
+        id: "sample-1",
+        title: "Bảo tàng Hồ Chí Minh 3D - Ngọc Hà, Hà Nội",
+        category: "Bảo tàng 3D",
+        url: "https://baotanghochiminh.vn/3d-tour",
+        image: "https://res.cloudinary.com/dwqtplan3/image/upload/v1785638390/Logo_Tru%CC%9Bo%CC%9B%CC%80ng_THCS_Ta%CC%82n_Bi%CC%80nh_rmfvy1.jpg",
+        desc: "Tham quan toàn bộ không gian trưng bày 3 tầng của Bảo tàng Hồ Chí Minh tại thủ đô Hà Nội với công nghệ thực tế ảo VR 360.",
+        order: 1
+      },
+      {
+        id: "sample-2",
+        title: "Bến Nhà Rồng - Bảo tàng Hồ Chí Minh TP.HCM",
+        category: "Di tích lịch sử",
+        url: "https://baotanghochiminh.vn/",
+        image: "https://res.cloudinary.com/dwqtplan3/image/upload/v1785638390/Logo_Tru%CC%9Bo%CC%9B%CC%80ng_THCS_Ta%CC%82n_Bi%CC%80nh_rmfvy1.jpg",
+        desc: "Nơi người thanh niên yêu nước Nguyễn Tất Thành ra đi tìm đường cứu nước năm 1911 tại TP. Hồ Chí Minh.",
+        order: 2
+      },
+      {
+        id: "sample-3",
+        title: "Khu Di tích Phủ Chủ tịch tại Hà Nội",
+        category: "Di tích lịch sử",
+        url: "https://ditichhochiminhphuchutich.gov.vn/",
+        image: "https://res.cloudinary.com/dwqtplan3/image/upload/v1785638390/Logo_Tru%CC%9Bo%CC%9B%CC%80ng_THCS_Ta%CC%82n_Bi%CC%80nh_rmfvy1.jpg",
+        desc: "Không gian nơi Bác Hồ sống và làm việc trong 15 năm cuối đời (1954 - 1969), với Nhà sàn, Ao cá Bác Hồ, Đường xoài...",
+        order: 3
+      },
+      {
+        id: "sample-4",
+        title: "Khu Di tích Quốc gia đặc biệt Pác Bó - Cao Bằng",
+        category: "Di tích lịch sử",
+        url: "https://pacbo.caobang.gov.vn/",
+        image: "https://res.cloudinary.com/dwqtplan3/image/upload/v1785638390/Logo_Tru%CC%9Bo%CC%9B%CC%80ng_THCS_Ta%CC%82n_Bi%CC%80nh_rmfvy1.jpg",
+        desc: "Hang Cốc Bó, suối Lê-nin, núi Các-Mác - nơi lãnh tụ Nguyễn Ái Quốc trở về Tổ quốc trực tiếp lãnh đạo cách mạng Việt Nam năm 1941.",
+        order: 4
+      }
+    ];
+
+    let allLinks = [];
+
+    // Kiểm tra trạng thái đăng nhập Firebase để bật chế độ Admin
     window.addEventListener('DOMContentLoaded', () => {
-       if (window.isAdmin) {
-          document.getElementById('btn-admin').classList.add('text-red-600', 'bg-red-50');
-          document.getElementById('btn-admin').classList.remove('text-gray-400');
-          document.getElementById('icon-admin').classList.replace('fa-lock', 'fa-unlock');
-       }
-    });
-
-    async function gasCall(action, params = {}) {
-      try {
-        const payload = { action, ...params };
-        const res = await fetch(LINK_GAS, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'text/plain;charset=utf-8'
-          },
-          body: JSON.stringify(payload),
-          redirect: 'follow' // BẮT BUỘC ĐỐI VỚI GOOGLE APPS SCRIPT ĐỂ KHÔNG BỊ LỖI FETCH
-        });
-        
-        if (!res.ok) {
-           throw new Error(`HTTP error! status: ${res.status}`);
-        }
-        return await res.json();
-      } catch (err) {
-        console.error("Lỗi gasCall:", err);
-        // Cảnh báo người dùng nếu gặp lỗi CORS (Failed to fetch)
-        if (err.message.includes('Failed to fetch') || err.message.includes('Network Error')) {
-          throw new Error('Lỗi kết nối. Vui lòng chắc chắn bạn đã Deploy Web App với quyền truy cập "Anyone" (Bất kỳ ai) thay vì "Anyone with Google account".');
-        }
-        throw new Error(err.message || 'Lỗi mạng không xác định');
-      }
-    }
-
-    let currentFolderId = null;
-
-    // --- INIT ---
-    window.onload = function() {
-      const cachedFolders = sessionStorage.getItem('tvsm_folders');
-      const cachedLib = sessionStorage.getItem('tvsm_library_root');
-      let usedCache = false;
-
-      if (cachedFolders && cachedLib) {
-         try { 
-             renderFolderTrees(JSON.parse(cachedFolders)); 
-             renderLibrary(JSON.parse(cachedLib));
-             document.getElementById('library-loader').classList.add('hidden');
-             document.getElementById('library-content').classList.remove('opacity-50');
-             usedCache = true;
-         } catch(e) {}
-      }
-      
-      if (!usedCache) {
-         document.getElementById('library-loader').classList.remove('hidden');
-         document.getElementById('library-content').classList.add('opacity-50');
-      }
-
-      // Gọi hàm gộp để giảm cold-start từ 10s xuống 4-5s
-      gasCall('getInitialData').then(res => {
-         if (res.success) {
-            const data = res.data;
-            if (data.folders) {
-               sessionStorage.setItem('tvsm_folders', JSON.stringify(data.folders));
-               renderFolderTrees(data.folders);
-            }
-            if (data.library) {
-               const libRes = {success: true, data: data.library};
-               sessionStorage.setItem('tvsm_library_root', JSON.stringify(libRes));
-               renderLibrary(libRes);
-            }
-         } else {
-            // Fallback nếu chưa update Code.gs
-            if(!usedCache) { loadLibrary(null); loadFolderTree(); }
-         }
-      }).catch(err => {
-         if(!usedCache) { loadLibrary(null); loadFolderTree(); }
-      });
-
-      loadUserInfo();
-    };
-
-    function switchTab(tab) {
-      document.getElementById('tab-library').classList.toggle('hidden', tab !== 'library');
-      document.getElementById('tab-upload').classList.toggle('hidden', tab !== 'upload');
-
-      ['btn-library','btn-upload'].forEach(id => {
-        const el = document.getElementById(id);
-        if (!el) return;
-        el.classList.remove('active');
-      });
-      const activeId = 'btn-' + tab;
-      const activeEl = document.getElementById(activeId);
-      if (activeEl) activeEl.classList.add('active');
-    }
-
-    function goHome() {
-      switchTab('library');
-      document.getElementById('search-input').value = '';
-      document.getElementById('breadcrumbs').classList.remove('hidden');
-      document.getElementById('search-result-title').classList.add('hidden');
-      document.getElementById('files-title').innerText = "Danh Sách Hồ Sơ";
-      closePreview();
-      loadLibrary(null);
-      if (window.innerWidth < 768) {
-        const sidebar = document.getElementById('sidebar');
-        if (sidebar && !sidebar.classList.contains('-translate-x-full')) {
-          toggleSidebar();
-        }
-      }
-    }
-
-    // --- CHUNKED & DIRECT UPLOAD LOGIC ---
-    function handleFileInputChange(inputElement) {
-      const fileCountDisplay = document.getElementById('file-count-display');
-      if (inputElement.files && inputElement.files.length > 0) {
-        const dt = new DataTransfer();
-        for(let i=0; i<inputElement.files.length; i++) {
-           dt.items.add(inputElement.files[i]);
-        }
-        document.getElementById('file-upload').files = dt.files;
-        
-        fileCountDisplay.innerText = `Đã chọn ${dt.files.length} file`;
-        fileCountDisplay.classList.add("text-teal-600", "font-bold");
-      }
-    }
-
-    async function handleBatchUpload(e) {
-      e.preventDefault();
-      const files = document.getElementById('file-upload').files;
-      if (files.length === 0) { showToast("Chưa chọn file!"); return; }
-
-      const folderId = document.getElementById('folder-select').value;
-      const uploaderName = document.getElementById('uploader-name').value;
-      const uploaderEmail = document.getElementById('uploader-email').value;
-      const fileType = document.getElementById('file-type').value;
-      const desc = document.getElementById('file-desc').value;
-      const customNameInput = document.getElementById('display-name').value;
-
-      saveUserInfo(uploaderName, uploaderEmail);
-
-      const btn = document.getElementById('btn-submit');
-      const originalBtnText = btn.innerHTML;
-      btn.disabled = true;
-      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-2"></i> Đang lưu hồ sơ...`;
-      
-      // Show progress container
-      const progressContainer = document.getElementById('progress-container');
-      progressContainer.classList.remove('hidden');
-
-      // NGƯỠNG AN TOÀN: 40MB
-      // Để an toàn, file <= 40MB dùng Direct Upload (Nhanh)
-      // File > 40MB dùng Chunking (Chậm nhưng chắc)
-      const MAX_DIRECT_SIZE = 40 * 1024 * 1024; 
-
-      for (let i = 0; i < files.length; i++) {
-        try {
-          const file = files[i];
-          let finalDisplayName = customNameInput;
-          if (!finalDisplayName) {
-             // Lấy tên file bỏ phần mở rộng
-             finalDisplayName = file.name.replace(/\.[^/.]+$/, "");
-          } else if (files.length > 1) {
-             finalDisplayName = `${customNameInput} (${i+1})`;
-          }
-          
-          const meta = {
-            folderId, uploaderName, uploaderEmail, fileType, description: desc, displayName: finalDisplayName
-          };
-
-          if (file.size <= MAX_DIRECT_SIZE) {
-            // Upload trực tiếp (nhanh hơn cho file nhỏ và trung bình)
-            await uploadFileDirectly(file, i+1, files.length, meta);
-          } else {
-            // Upload chia chunk (an toàn cho file khổng lồ > 40MB)
-            await uploadFileInChunks(file, i+1, files.length, meta);
-          }
-
-        } catch (err) {
-          console.error(err);
-          showToast(`Lỗi upload file ${i+1}: ${err}`);
-        }
-      }
-
-      // Reset UI
-      btn.innerHTML = originalBtnText;
-      btn.disabled = false;
-      progressContainer.classList.add('hidden');
-      
-      showToast(`Hoàn tất! Đã lưu ${files.length} hồ sơ.`);
-      document.getElementById('upload-form').reset();
-      document.getElementById('file-count-display').innerText = "Chưa chọn hồ sơ";
-      goHome();
-    }
-
-    async function uploadFileDirectly(file, currentIdx, totalFiles, meta) {
-      // UI Elements
-      const progressBar = document.getElementById('progress-bar-fill');
-      const progressText = document.getElementById('progress-text');
-      const progressPercent = document.getElementById('progress-percent');
-      const progressDetail = document.getElementById('progress-detail');
-
-      progressText.innerText = `File ${currentIdx}/${totalFiles}: ${file.name}`;
-      progressDetail.innerText = "Đang tải lên tốc độ cao (chờ chút)...";
-      progressBar.style.width = '30%';
-      progressPercent.innerText = '...';
-
-      // Convert to Base64
-      const base64Data = await readFileAsBase64(file);
-      
-      progressBar.style.width = '70%';
-      progressDetail.innerText = "Đang đẩy dữ liệu lên Google Drive...";
-
-      // Call Backend
-      const res = await gasCall('handleUpload', {
-        data: {
-          fileData: base64Data,
-          fileName: file.name,
-          mimeType: file.type,
-          folderId: meta.folderId,
-          uploaderName: meta.uploaderName,
-          uploaderEmail: meta.uploaderEmail,
-          displayName: meta.displayName,
-          fileType: meta.fileType,
-          description: meta.description
-        }
-      });
-      if (!res.success) throw new Error(res.error);
-
-      progressBar.style.width = '100%';
-      progressPercent.innerText = '100%';
-      progressDetail.innerText = "Hoàn tất.";
-    }
-
-    async function uploadFileInChunks(file, currentIdx, totalFiles, meta) {
-      // 2MB Chunk Size
-      const CHUNK_SIZE = 1024 * 1024 * 2; 
-      const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
-      let fileId = null;
-
-      // UI Elements
-      const progressBar = document.getElementById('progress-bar-fill');
-      const progressText = document.getElementById('progress-text');
-      const progressPercent = document.getElementById('progress-percent');
-      const progressDetail = document.getElementById('progress-detail');
-
-      for (let chunkIdx = 0; chunkIdx < totalChunks; chunkIdx++) {
-        const start = chunkIdx * CHUNK_SIZE;
-        const end = Math.min(start + CHUNK_SIZE, file.size);
-        const chunkBlob = file.slice(start, end);
-        const base64Data = await readFileAsBase64(chunkBlob);
-
-        // Update Progress UI
-        const percent = Math.round((chunkIdx / totalChunks) * 100);
-        const progressStr = `File ${currentIdx}/${totalFiles}: ${file.name}`;
-        
-        progressBar.style.width = `${percent}%`;
-        progressText.innerText = progressStr;
-        progressPercent.innerText = `${percent}%`;
-        progressDetail.innerText = `Đang tải gói dữ liệu lớn ${chunkIdx + 1}/${totalChunks}...`;
-
-        if (chunkIdx === 0) {
-          // Init Upload
-          const res = await gasCall('initiateUpload', {
-            data: {
-               fileData: base64Data,
-               fileName: file.name,
-               mimeType: file.type,
-               folderId: meta.folderId
-            }
-          });
-          if (res.success) { fileId = res.fileId; } 
-          else throw new Error(res.error);
-        } else {
-          // Append Chunk
-          const res = await gasCall('appendChunk', { fileId, base64Data });
-          if (!res.success) throw new Error(res.error);
-        }
-      }
-
-      // Final Step: Save Metadata
-      progressBar.style.width = `100%`;
-      progressPercent.innerText = `100%`;
-      progressDetail.innerText = "Đang lưu thông tin file lớn vào hệ thống...";
-      
-      const res = await gasCall('saveFileMetadata', {
-        fileId,
-        meta: {
-          fileName: file.name,
-          uploaderName: meta.uploaderName,
-          uploaderEmail: meta.uploaderEmail,
-          displayName: meta.displayName,
-          fileType: meta.fileType,
-          description: meta.description
-        }
-      });
-      if (!res.success) throw new Error(res.error);
-    }
-
-    function readFileAsBase64(blob) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result.split(',')[1]);
-        reader.onerror = reject;
-        reader.readAsDataURL(blob);
-      });
-    }
-
-    // --- FOLDER MANAGEMENT (Sidebar) ---
-    let _modalCallback = null;
-
-    function showModal({ title, desc, inputPlaceholder, okLabel, okClass, callback }) {
-      document.getElementById('modal-title').innerText = title;
-      document.getElementById('modal-desc').innerText = desc || '';
-      const inp = document.getElementById('modal-input');
-      if (inputPlaceholder !== undefined) {
-        inp.style.display = 'block';
-        inp.placeholder = inputPlaceholder;
-        inp.value = '';
-        setTimeout(() => inp.focus(), 80);
-      } else {
-        inp.style.display = 'none';
-      }
-      const okBtn = document.getElementById('modal-ok');
-      okBtn.innerText = okLabel || 'Xác nhận';
-      okBtn.className = 'btn-ok ' + (okClass || 'primary');
-      _modalCallback = callback;
-      const overlay = document.getElementById('folder-modal-overlay');
-      overlay.classList.add('show');
-    }
-
-    function closeModal() {
-      document.getElementById('folder-modal-overlay').classList.remove('show');
-      _modalCallback = null;
-    }
-
-    function modalOk() {
-      const inp = document.getElementById('modal-input');
-      const val = inp.style.display !== 'none' ? inp.value.trim() : null;
-      if (inp.style.display !== 'none' && !val) {
-        inp.focus(); inp.style.borderColor='#ef4444';
-        setTimeout(() => inp.style.borderColor='', 800);
-        return;
-      }
-      // QUAN TRỌNG: lưu callback trước khi closeModal() đặt nó về null
-      const cb = _modalCallback;
-      closeModal();
-      if (cb) cb(val);
-    }
-
-    // Press Enter in modal input = confirm
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Enter' && document.getElementById('folder-modal-overlay').classList.contains('show')) modalOk();
-      if (e.key === 'Escape') { closeModal(); closeCtxMenu(); }
-    });
-    document.getElementById('folder-modal-overlay').addEventListener('click', function(e) {
-      if (e.target === this) closeModal();
-    });
-
-    // --- Sidebar Toggle Logic ---
-    function toggleSidebar() {
-      const sidebar = document.getElementById('sidebar');
-      const overlay = document.getElementById('sidebar-overlay');
-      
-      if (window.innerWidth < 768) {
-        // Mobile: toggle translation and overlay
-        sidebar.classList.toggle('-translate-x-full');
-        overlay.classList.toggle('hidden');
-      } else {
-        // Desktop: toggle negative margin
-        sidebar.classList.toggle('md:-ml-72');
-      }
-    }
-
-    // ---- Context Menu ----
-    // Dùng biến toàn cục để tránh vấn đề với tên thư mục có ký tự đặc biệt
-    let _ctxFolderId = null;
-    let _ctxFolderName = null;
-
-    function openFolderCtx(event, folderId, folderName) {
-      _ctxFolderId = folderId;
-      _ctxFolderName = folderName;
-
-      const menu = document.getElementById('sb-ctx-menu');
-      menu.innerHTML = `
-        <button data-ctx-action="add-sub"><i class="fa-solid fa-folder-plus w-4 text-blue-400"></i> Thêm thư mục con</button>
-        <button data-ctx-action="rename"><i class="fa-solid fa-pen w-4 text-yellow-400"></i> Đổi tên</button>
-        <div class="ctx-divider"></div>
-        <button class="danger" data-ctx-action="delete"><i class="fa-solid fa-trash w-4"></i> Xóa thư mục</button>
-      `;
-      menu.classList.remove('hidden');
-
-      const x = Math.min(event.clientX, window.innerWidth - 185);
-      const y = Math.min(event.clientY + 5, window.innerHeight - 170);
-      menu.style.left = x + 'px';
-      menu.style.top  = y + 'px';
-
-      setTimeout(() => document.addEventListener('click', closeCtxMenu, { once: true }), 10);
-    }
-
-    function closeCtxMenu() {
-      document.getElementById('sb-ctx-menu').classList.add('hidden');
-    }
-
-    // Event delegation cho context menu (an toàn với mọi tên thư mục)
-    document.getElementById('sb-ctx-menu').addEventListener('click', function(e) {
-      const btn = e.target.closest('button[data-ctx-action]');
-      if (!btn || !_ctxFolderId) return;
-      const action = btn.dataset.ctxAction;
-      const fid  = _ctxFolderId;
-      const name = _ctxFolderName;
-      closeCtxMenu();
-      if (action === 'add-sub')  sidebarAddSubFolder(fid, name);
-      if (action === 'rename')   sidebarRenameFolder(fid, name);
-      if (action === 'delete')   sidebarDeleteFolder(fid, name);
-    });
-
-    // ---- Sidebar Add Folder (at current level) ----
-    function sidebarAddFolder() {
-      const parentId = currentFolderId || null;
-      const parentLabel = parentId ? 'thư mục hiện tại' : 'thư mục gốc';
-      showModal({
-        title: 'Tạo thư mục mới',
-        desc: `Tạo trong ${parentLabel}`,
-        inputPlaceholder: 'Tên thư mục...',
-        okLabel: 'Tạo',
-        okClass: 'primary',
-        callback: (name) => _doCreateFolder(parentId, name)
-      });
-    }
-
-    function sidebarAddSubFolder(parentId, parentName) {
-      closeCtxMenu();
-      showModal({
-        title: 'Thêm thư mục con',
-        desc: `Tạo bên trong "${parentName}"`,
-        inputPlaceholder: 'Tên thư mục con...',
-        okLabel: 'Tạo',
-        okClass: 'primary',
-        callback: (name) => _doCreateFolder(parentId, name)
-      });
-    }
-
-    function _doCreateFolder(parentId, folderName) {
-      if (!folderName) return;
-      showToast('Đang tạo thư mục...');
-      gasCall('createFolder', { parentId, folderName }).then(res => {
-        if (res.success) {
-          showToast('✅ Đã tạo: ' + folderName);
-          loadFolderTree();
-          loadLibrary(currentFolderId);
-        } else showToast('Lỗi: ' + res.error);
-      }).catch(showError);
-    }
-
-    // ---- Rename ----
-    function sidebarRenameFolder(folderId, oldName) {
-      closeCtxMenu();
-      showModal({
-        title: 'Đổi tên thư mục',
-        desc: `Tên hiện tại: "${oldName}"`,
-        inputPlaceholder: 'Tên mới...',
-        okLabel: 'Lưu',
-        okClass: 'primary',
-        callback: (newName) => {
-          if (!newName || newName === oldName) return;
-          showToast('Đang đổi tên...');
-          gasCall('renameFolder', { folderId, newName, adminPassword: window.adminPassword }).then(res => {
-            if (res.success) {
-              showToast('✅ Đã đổi thành: ' + newName);
-              loadFolderTree();
-              loadLibrary(currentFolderId);
-            } else showToast('Lỗi: ' + res.error);
-          }).catch(showError);
-        }
-      });
-    }
-
-    // ---- Delete ----
-    function sidebarDeleteFolder(folderId, folderName) {
-      closeCtxMenu();
-      showModal({
-        title: '⚠️ Xóa thư mục',
-        desc: `Bạn có chắc muốn xóa "${folderName}"? Toàn bộ tài liệu bên trong sẽ bị xóa vĩnh viễn!`,
-        okLabel: 'Xóa vĩnh viễn',
-        okClass: 'danger',
-        callback: () => {
-          showToast('Đang xóa...');
-          gasCall('deleteFolder', { folderId, adminPassword: window.adminPassword }).then(res => {
-            if (res.success) {
-              showToast('🗑️ Đã xóa: ' + folderName);
-              loadFolderTree();
-              // If we were inside the deleted folder, go home
-              if (currentFolderId === folderId) { loadLibrary(null); } 
-              else { loadLibrary(currentFolderId); }
-            } else showToast('Lỗi: ' + res.error);
-          }).catch(showError);
-        }
-      });
-    }
-
-    // ---- Rename File ----
-    window.renameFileUI = function(e, fileId, oldName) {
-      e.stopPropagation();
-      const newName = prompt('Nhập tên tài liệu mới (không bao gồm đuôi file):', oldName);
-      if (!newName || newName === oldName) return;
-      showToast('Đang đổi tên tài liệu...');
-      gasCall('renameFile', { fileId, newName, adminPassword: window.adminPassword }).then(res => {
-        if (res.success) {
-          showToast('✅ Đã đổi tên tài liệu!');
-          loadLibrary(currentFolderId); // Tải lại danh sách hiện tại để refresh tên mới
-        } else showToast('Lỗi: ' + res.error);
-      }).catch(showError);
-    };
-
-    // ---- Delete File ----
-    window.deleteFileUI = function(e, fileId, fileName) {
-      e.stopPropagation();
-      if (!confirm(`⚠️ XÓA VĨNH VIỄN TÀI LIỆU\n\nBạn có chắc muốn xóa "${fileName}"? Thao tác này không thể hoàn tác!`)) return;
-      showToast('Đang xóa tài liệu...');
-      gasCall('deleteFile', { fileId, adminPassword: window.adminPassword }).then(res => {
-        if (res.success) {
-          showToast('🗑️ Đã xóa tài liệu: ' + fileName);
-          loadLibrary(currentFolderId);
-        } else showToast('Lỗi: ' + res.error);
-      }).catch(showError);
-    };
-
-    // --- OTHER LOGIC (Giữ nguyên) ---
-    function handleCreateFolder(btnElement) {
-      const parentId = document.getElementById('folder-select').value;
-      if (!parentId) { showToast("Vui lòng chọn thư mục cha!"); return; }
-      const folderName = prompt("Nhập tên thư mục mới:");
-      if (!folderName || folderName.trim() === "") return;
-
-      const originalHtml = btnElement.innerHTML;
-      btnElement.disabled = true;
-      btnElement.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
-
-      const timeoutId = setTimeout(() => {
-         if (btnElement.disabled) {
-           btnElement.innerHTML = originalHtml;
-           btnElement.disabled = false;
-           showToast("Server phản hồi chậm, hãy kiểm tra lại sau.");
-         }
-      }, 15000);
-
-      gasCall('createFolder', { parentId, folderName }).then(res => {
-          clearTimeout(timeoutId);
-          btnElement.innerHTML = originalHtml;
-          btnElement.disabled = false;
-          if(res.success) { showToast("Đã tạo thư mục: " + folderName); loadFolderTree(); } 
-          else showToast("Lỗi: " + res.error);
-      }).catch(err => { clearTimeout(timeoutId); btnElement.innerHTML=originalHtml; btnElement.disabled=false; showError(err); });
-    }
-
-    let searchDebounceTimeout = null;
-    window.currentSearchQuery = "";
-    
-    function removeVietnameseTones(str) {
-      if(!str) return "";
-      str = str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-      str = str.replace(/đ/g, "d").replace(/Đ/g, "D");
-      return str;
-    }
-
-    function highlightText(text, keyword) {
-        if (!keyword || !text) return text;
-        text = text.normalize('NFC');
-        keyword = keyword.normalize('NFC');
-        const noTonesText = removeVietnameseTones(text).toLowerCase();
-        const noTonesKeyword = removeVietnameseTones(keyword).toLowerCase();
-        if (!noTonesKeyword) return text;
-        let result = '';
-        let currentIndex = 0;
-        
-        let matchIndex = noTonesText.indexOf(noTonesKeyword, currentIndex);
-        if (matchIndex === -1) return text;
-
-        while (matchIndex !== -1) {
-            result += text.substring(currentIndex, matchIndex);
-            const originalMatched = text.substring(matchIndex, matchIndex + keyword.length);
-            result += `<mark class="bg-yellow-300 text-black px-0.5 rounded shadow-sm">` + originalMatched + `</mark>`;
-            currentIndex = matchIndex + keyword.length;
-            matchIndex = noTonesText.indexOf(noTonesKeyword, currentIndex);
-        }
-        result += text.substring(currentIndex);
-        return result;
-    }
-
-    function handleLiveSearch() {
-      clearTimeout(searchDebounceTimeout);
-      const query = document.getElementById('search-input').value.trim();
-      // Chỉ tìm khi đủ 2 ký tự trở lên
-      if (query.length > 0 && query.length < 2) return;
-      searchDebounceTimeout = setTimeout(() => {
-        executeSearch();
-      }, 700); // Tăng lên 700ms để giảm gọi API không cần thiết
-    }
-
-    function handleEnterSearch(e) { if (e.key === 'Enter') { clearTimeout(searchDebounceTimeout); executeSearch(); } }
-
-    function loginAdmin() {
-      if (window.isAdmin) {
-        if(confirm("Bạn đang là Admin. Bạn có muốn thoát (Đăng xuất)?")) {
-          window.adminPassword = "";
-          window.isAdmin = false;
-          sessionStorage.removeItem('adminPassword');
-          document.getElementById('btn-admin').classList.remove('text-red-600', 'bg-red-50');
-          document.getElementById('btn-admin').classList.add('text-gray-400');
-          document.getElementById('icon-admin').classList.replace('fa-unlock', 'fa-lock');
-          showToast("Đã thoát chế độ Quản trị");
-          if(currentFolderId) loadLibrary(currentFolderId);
-          loadFolderTree();
-        }
-      } else {
-        const pass = prompt("Nhập mật khẩu Quản trị (Admin Password):");
-        if(pass) {
-          window.adminPassword = pass;
-          window.isAdmin = true;
-          sessionStorage.setItem('adminPassword', pass);
-          document.getElementById('btn-admin').classList.add('text-red-600', 'bg-red-50');
-          document.getElementById('btn-admin').classList.remove('text-gray-400');
-          document.getElementById('icon-admin').classList.replace('fa-lock', 'fa-unlock');
-          showToast("Đã kích hoạt chế độ Quản trị!");
-          if(currentFolderId) loadLibrary(currentFolderId);
-          loadFolderTree();
-        }
-      }
-    }
-    
-    function executeSearch() {
-      const query = document.getElementById('search-input').value.trim();
-      window.currentSearchQuery = query;
-      if (!query) { clearSearch(); return; }
-      document.getElementById('library-loader').classList.remove('hidden');
-      document.getElementById('library-content').classList.add('opacity-50');
-      document.getElementById('search-result-title').classList.remove('hidden');
-      document.getElementById('search-query').innerText = `"${query}"`;
-      document.getElementById('folder-container').innerHTML = ''; 
-      document.getElementById('files-title').innerText = "Kết quả tìm kiếm hồ sơ";
-      // Clear sidebar tree active highlight on search
-      const treeEl = document.getElementById('sidebar-folder-tree');
-      if (treeEl) treeEl.querySelectorAll('.sidebar-folder-item').forEach(el => el.classList.remove('active'));
-      const sbBc = document.getElementById('sidebar-breadcrumb-path');
-      if (sbBc) sbBc.classList.add('hidden');
-      const bc = document.getElementById('breadcrumbs');
-      if (bc) bc.classList.add('hidden');
-      gasCall('searchFiles', { query }).then(renderSearchResults).catch(showError);
-    }
-    function clearSearch() {
-      document.getElementById('search-input').value = '';
-      window.currentSearchQuery = '';
-      document.getElementById('search-result-title').classList.add('hidden');
-      document.getElementById('files-title').innerText = "Danh Sách Hồ Sơ";
-      loadLibrary(currentFolderId);
-    }
-    function renderSearchResults(res) {
-      document.getElementById('library-loader').classList.add('hidden');
-      document.getElementById('library-content').classList.remove('opacity-50');
-      if(!res.success) { showToast('\u26a0\ufe0f ' + res.error); return; }
-      const count = res.files ? res.files.length : 0;
-      // Cập nhật tiêu đề kết quả kèm số lượng
-      document.getElementById('files-title').innerText =
-        count > 0 ? `Tìm thấy ${count} hồ sơ` : 'Không tìm thấy kết quả';
-      if (count === 0) {
-        document.getElementById('file-container').innerHTML = '';
-        document.getElementById('empty-msg').innerHTML = `
-          <div class="flex flex-col items-center py-14">
-            <div class="w-20 h-20 rounded-full bg-emerald-50 flex items-center justify-center mb-4 shadow-inner">
-              <i class="fa-solid fa-magnifying-glass text-3xl text-emerald-300"></i>
-            </div>
-            <p class="text-lg font-bold text-gray-500 mb-1">Không tìm thấy hồ sơ nào</p>
-            <p class="text-sm text-gray-400">Thử tìm bằng tên file, loại hồ sơ hoặc ghi chú</p>
-            <button onclick="clearSearch()" class="mt-4 text-sm bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg transition shadow">
-              <i class="fa-solid fa-rotate-left mr-2"></i>Quay lại danh sách
-            </button>
-          </div>`;
-        document.getElementById('empty-msg').classList.remove('hidden');
-        return;
-      }
-      renderFiles(res.files);
-    }
-    let currentNextPageToken = null;
-    let isLoadingMore = false;
-
-    function loadLibrary(folderId) {
-      document.getElementById('library-loader').classList.remove('hidden');
-      document.getElementById('library-content').classList.add('opacity-50');
-
-      currentNextPageToken = null;
-
-      const cacheKey = 'tvsm_library_' + (folderId || 'root');
-      const cached = sessionStorage.getItem(cacheKey);
-      if (cached) {
-         try {
-             renderLibrary(JSON.parse(cached));
-         } catch(e) {}
-      }
-
-      gasCall('getData', { folderId }).then(res => {
-         if (res.success) {
-            sessionStorage.setItem(cacheKey, JSON.stringify(res));
-         }
-         renderLibrary(res);
-      }).catch(showError);
-    }
-    function renderLibrary(response) {
-      document.getElementById('library-loader').classList.add('hidden');
-      document.getElementById('library-content').classList.remove('opacity-50');
-      if (!response.success) { showToast("Lỗi: " + response.error); return; }
-      const data = response.data;
-      currentFolderId = data.currentFolderId;
-      
-      currentNextPageToken = data.nextPageToken || null;
-      const filesTitle = document.getElementById('files-title');
-      // Fix ReferenceError here
-      if (!currentFolderId || currentFolderId === 'root' || (data.breadcrumbs && data.breadcrumbs.length > 0 && currentFolderId === data.breadcrumbs[0].id)) {
-         filesTitle.innerText = "20 Hồ Sơ Mới Nhất Hệ Thống";
-      } else {
-         filesTitle.innerText = "Danh Sách Hồ Sơ";
-      }
-
-      // ---- Render Sidebar Breadcrumb Path ----
-      const sbBc = document.getElementById('sidebar-breadcrumb-path');
-      if (data.breadcrumbs && data.breadcrumbs.length > 1) {
-        sbBc.classList.remove('hidden');
-        sbBc.innerHTML = data.breadcrumbs.map((c, i) => {
-          const last = i === data.breadcrumbs.length - 1;
-          return `<span class="${last ? 'current' : ''}" onclick="${last ? '' : "loadLibrary('" + c.id + "')"}">` + c.name + `</span>` +
-                 (last ? '' : `<i class="fa-solid fa-chevron-right text-[9px] mx-0.5 opacity-40"></i>`);
-        }).join('');
-      } else {
-        sbBc.classList.add('hidden');
-        sbBc.innerHTML = '';
-      }
-
-      // ---- Highlight Active Folder in Sidebar Tree ----
-      highlightActiveSidebarFolder();
-
-      // ---- Render Main Breadcrumb Path ----
-      const bc = document.getElementById('breadcrumbs');
-      if (data.breadcrumbs && data.breadcrumbs.length > 0) {
-        bc.classList.remove('hidden');
-        bc.innerHTML = data.breadcrumbs.map((c, i) => {
-          const last = i === data.breadcrumbs.length - 1;
-          const isRoot = (i === 0);
-          const icon = isRoot ? '<i class="fa-solid fa-house mr-1.5"></i>' : '';
-          
-          if (last) {
-            return `<span class="text-teal-700 font-bold flex items-center" data-id="${c.id}">${icon}${c.name}</span>`;
-          } else {
-            return `<span class="text-gray-500 hover:text-teal-600 cursor-pointer transition flex items-center" data-id="${c.id}" onclick="loadLibrary('${c.id}')">${icon}${c.name}</span>
-                    <i class="fa-solid fa-chevron-right text-[10px] text-gray-400 mt-0.5"></i>`;
-          }
-        }).join('');
-      } else {
-        bc.classList.add('hidden');
-        bc.innerHTML = '';
-      }
-
-      // Folder container stays hidden (folders are in sidebar now)
-      document.getElementById('folder-container').innerHTML = '';
-      renderFiles(data.files);
-    }
-    let currentViewMode = localStorage.getItem('lib_view_mode') || 'list';
-    
-    function setViewMode(mode) {
-      currentViewMode = mode;
-      localStorage.setItem('lib_view_mode', mode);
-      
-      const btnList = document.getElementById('btn-view-list');
-      const btnGrid = document.getElementById('btn-view-grid');
-      if (btnList && btnGrid) {
-        btnList.className = `p-1.5 px-2.5 rounded-md transition ${mode === 'list' ? 'bg-white shadow-sm text-teal-600 font-bold' : 'text-gray-500 hover:text-teal-600'}`;
-        btnGrid.className = `p-1.5 px-2.5 rounded-md transition ${mode === 'grid' ? 'bg-white shadow-sm text-teal-600 font-bold' : 'text-gray-500 hover:text-teal-600'}`;
-      }
-      
-      if (window.currentFilesData) {
-        applySortAndFilter();
-      }
-    }
-
-    let pinnedFiles = JSON.parse(localStorage.getItem('lib_pinned_files') || '[]');
-
-    function togglePin(e, fileId) {
-      e.stopPropagation();
-      if (pinnedFiles.includes(fileId)) {
-        pinnedFiles = pinnedFiles.filter(id => id !== fileId);
-      } else {
-        pinnedFiles.push(fileId);
-      }
-      localStorage.setItem('lib_pinned_files', JSON.stringify(pinnedFiles));
-      if (window.currentFilesData) applySortAndFilter();
-    }
-
-    function applySortAndFilter() {
-      if (!window.currentFilesData) return;
-      let files = [...window.currentFilesData];
-      
-      const filterMode = document.getElementById('filter-select') ? document.getElementById('filter-select').value : 'all';
-      const sortMode = document.getElementById('sort-select') ? document.getElementById('sort-select').value : 'newest';
-
-      // 1. Filter
-      if (filterMode !== 'all') {
-        files = files.filter(f => {
-          const mime = (f.mimeType || '').toLowerCase();
-          const fn = (f.displayName || f.name || '').toLowerCase();
-          if (filterMode === 'pdf') return mime.includes('pdf') || fn.endsWith('.pdf');
-          if (filterMode === 'word') return mime.includes('word') || mime.includes('document') || fn.endsWith('.doc') || fn.endsWith('.docx');
-          if (filterMode === 'excel') return mime.includes('sheet') || mime.includes('excel') || fn.endsWith('.xls') || fn.endsWith('.xlsx') || fn.endsWith('.exl') || fn.endsWith('.exlx') || fn.endsWith('.csv');
-          if (filterMode === 'ppt') return mime.includes('presentation') || mime.includes('powerpoint') || fn.endsWith('.ppt') || fn.endsWith('.pptx');
-          return true;
-        });
-      }
-
-      // 2. Sort
-      files.sort((a, b) => {
-        if (sortMode === 'newest') return a._origIdx - b._origIdx;
-        if (sortMode === 'oldest') return b._origIdx - a._origIdx;
-        if (sortMode === 'downloads') return (parseInt(b.downloads)||0) - (parseInt(a.downloads)||0);
-        if (sortMode === 'name') return (a.displayName || '').localeCompare(b.displayName || '');
-        return 0;
-      });
-
-      // 3. Pinning (pinned files go first)
-      files.sort((a, b) => {
-        const aPinned = pinnedFiles.includes(a.id) ? 1 : 0;
-        const bPinned = pinnedFiles.includes(b.id) ? 1 : 0;
-        return bPinned - aPinned;
-      });
-
-      renderFilesCore(files);
-    }
-
-    function renderFiles(files) {
-      if (files) {
-        window.currentFilesData = files.map((f, i) => ({...f, _origIdx: i}));
-      }
-      applySortAndFilter();
-    }
-
-    let currentFilteredFiles = [];
-    let currentRenderPage = 1;
-    const RENDER_PAGE_SIZE = 30;
-    let renderObserver = null;
-
-    function renderFilesCore(files) {
-      currentFilteredFiles = files;
-      currentRenderPage = 1;
-
-      const container = document.getElementById('file-container');
-      const emptyMsg = document.getElementById('empty-msg');
-      const trigger = document.getElementById('scroll-trigger');
-
-      if (!files || files.length === 0) { 
-        container.innerHTML = ''; 
-        emptyMsg.classList.remove('hidden'); 
-        trigger.classList.add('hidden');
-        return; 
-      }
-      emptyMsg.classList.add('hidden');
-      
-      // Update container layout based on view mode
-      if (currentViewMode === 'grid') {
-        container.className = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4";
-      } else {
-        container.className = "grid grid-cols-1 gap-4";
-      }
-
-      // Render trang đầu tiên
-      const filesToRender = files.slice(0, RENDER_PAGE_SIZE);
-      container.innerHTML = generateFilesHTML(filesToRender);
-
-      setupRenderObserver();
-    }
-
-    function setupRenderObserver() {
-      const trigger = document.getElementById('scroll-trigger');
-      if (renderObserver) renderObserver.disconnect();
-
-      // Hiện trigger nếu còn file trong RAM hoặc còn file trên Server
-      if (currentFilteredFiles.length > currentRenderPage * RENDER_PAGE_SIZE || currentNextPageToken) {
-        trigger.classList.remove('hidden');
-        renderObserver = new IntersectionObserver((entries) => {
-          if (entries[0].isIntersecting) {
-            loadMoreFiles();
-          }
-        }, { rootMargin: '150px' });
-        renderObserver.observe(trigger);
-      } else {
-        trigger.classList.add('hidden');
-      }
-    }
-
-    function loadMoreFiles() {
-      // 1. Nếu còn file trong RAM (Frontend Lazy Render)
-      if (currentFilteredFiles.length > currentRenderPage * RENDER_PAGE_SIZE) {
-        currentRenderPage++;
-        const startIndex = (currentRenderPage - 1) * RENDER_PAGE_SIZE;
-        const endIndex = currentRenderPage * RENDER_PAGE_SIZE;
-        const filesToRender = currentFilteredFiles.slice(startIndex, endIndex);
-
-        const container = document.getElementById('file-container');
-        container.insertAdjacentHTML('beforeend', generateFilesHTML(filesToRender));
-
-        setupRenderObserver(); // Cập nhật lại trạng thái trigger
-      } 
-      // 2. Nếu đã hết RAM nhưng còn Server (Backend Pagination)
-      else if (currentNextPageToken && !isLoadingMore) {
-        isLoadingMore = true;
-        const trigger = document.getElementById('scroll-trigger');
-        trigger.classList.remove('hidden');
-
-        gasCall('getData', { folderId: currentFolderId, pageToken: currentNextPageToken }).then(res => {
-          isLoadingMore = false;
-          if (res.success && res.data.files) {
-             currentNextPageToken = res.data.nextPageToken || null;
-             
-             // Thêm vào mảng gốc
-             const newFiles = res.data.files.map((f, i) => ({...f, _origIdx: window.currentFilesData.length + i}));
-             window.currentFilesData = window.currentFilesData.concat(newFiles);
-             currentFilteredFiles = currentFilteredFiles.concat(newFiles);
-             
-             // Append trực tiếp vào DOM thay vì gọi applySortAndFilter() để tránh giật scroll
-             const container = document.getElementById('file-container');
-             container.insertAdjacentHTML('beforeend', generateFilesHTML(newFiles));
-             
-             setupRenderObserver();
-          }
-        });
-      }
-    }
-
-    function generateFilesHTML(filesList) {
-      return filesList.map(f => {
-        const icon = getFileIcon(f.mimeType, f.displayName || f.name || '');
-        const folderInfo = f.folderName ? `<div class="mb-1"><span class="bg-gray-100 text-gray-600 text-[10px] px-2 py-1 rounded-full"><i class="fa-solid fa-folder-tree mr-1"></i>${f.folderName}</span></div>` : '';
-        const isPinned = pinnedFiles.includes(f.id);
-        const pinClass = isPinned ? 'border-yellow-400 bg-yellow-50 shadow-md' : 'border-gray-200 bg-white hover:shadow-md';
-        const pinIconClass = isPinned ? 'text-yellow-500 opacity-100' : 'text-gray-300 opacity-0 group-hover:opacity-100 hover:text-yellow-500';
-        
-        if (currentViewMode === 'grid') {
-          // GRID VIEW TEMPLATE
-          return `
-          <div class="rounded-lg shadow-sm border p-4 transition flex flex-col h-full relative group ${pinClass}">
-            ${window.isAdmin ? `
-              <div class="absolute top-3 right-10 flex gap-2 transition-opacity opacity-0 group-hover:opacity-100 z-10">
-                <button onclick="renameFileUI(event, '${f.id}', '${String(f.displayName || '').replace(/'/g, "\\'")}')" class="text-teal-500 hover:text-teal-700 p-1 bg-white rounded-full shadow-sm" title="Đổi tên"><i class="fa-solid fa-pen text-xs"></i></button>
-                <button onclick="deleteFileUI(event, '${f.id}', '${String(f.displayName || '').replace(/'/g, "\\'")}')" class="text-red-500 hover:text-red-700 p-1 bg-white rounded-full shadow-sm" title="Xóa"><i class="fa-solid fa-trash text-xs"></i></button>
-              </div>
-            ` : ''}
-            <button onclick="togglePin(event, '${f.id}')" class="absolute top-3 right-3 transition-opacity ${pinIconClass}" title="${isPinned ? 'Bỏ ghim' : 'Ghim tài liệu'}">
-              <i class="fa-solid fa-thumbtack ${isPinned ? '-rotate-45' : ''} text-lg"></i>
-            </button>
-            ${folderInfo}
-            <div class="flex items-start gap-3 mb-3 cursor-pointer pr-6" onclick="openPreview('${f.id}', '${String(f.displayName || '').replace(/'/g, "\\'")}', '${f.viewUrl}', '${f.downloadUrl}')">
-              <div class="flex-shrink-0 ${isPinned ? 'bg-white border border-yellow-200' : 'bg-gray-50'} rounded-lg w-12 h-12 flex items-center justify-center">
-                 <i class="${icon} text-2xl"></i>
-              </div>
-              <div class="flex-1 min-w-0">
-                <h3 class="font-bold text-teal-700 text-sm md:text-base truncate group-hover:underline" title="${f.displayName}">${highlightText(f.displayName, window.currentSearchQuery)}</h3>
-                <span class="text-[10px] font-bold text-gray-500 uppercase">${f.fileType}</span>
-              </div>
-            </div>
-            ${f.description ? `<p class="text-xs text-gray-600 italic ${isPinned ? 'bg-white border border-yellow-100' : 'bg-yellow-50'} p-2 rounded mb-3 line-clamp-2">${highlightText(f.description, window.currentSearchQuery)}</p>` : ''}
-            <div class="mt-auto pt-3 border-t flex flex-col gap-2">
-              <div class="flex justify-between items-center text-xs text-gray-500">
-                <span class="truncate pr-2" title="${f.uploader}"><i class="fa-solid fa-user-pen mr-1"></i>${f.uploader}</span>
-                <span>${f.size}</span>
-              </div>
-              <div class="flex items-center justify-between">
-                <div class="text-gray-500 text-xs flex items-center space-x-1 px-1"><i class="fa-solid fa-download"></i><span>${f.downloads}</span></div>
-                <a href="${f.downloadUrl}" target="_blank" onclick="trackDownload('${f.id}')" class="text-teal-600 hover:text-white hover:bg-teal-600 text-[11px] font-bold py-1 px-2.5 rounded border border-teal-600 transition flex items-center"><i class="fa-solid fa-download mr-1"></i> Tải</a>
-              </div>
-            </div>
-          </div>`;
-        } else {
-          // LIST VIEW TEMPLATE
-          return `
-          <div class="rounded-lg shadow-sm border p-4 transition flex flex-col md:flex-row gap-4 relative group ${pinClass}">
-            ${window.isAdmin ? `
-              <div class="absolute top-4 right-10 md:right-4 md:top-14 flex gap-2 transition-opacity opacity-0 group-hover:opacity-100 z-20">
-                <button onclick="renameFileUI(event, '${f.id}', '${String(f.displayName || '').replace(/'/g, "\\'")}')" class="text-teal-500 hover:text-teal-700 p-1.5 bg-white rounded-full shadow border" title="Đổi tên"><i class="fa-solid fa-pen text-sm"></i></button>
-                <button onclick="deleteFileUI(event, '${f.id}', '${String(f.displayName || '').replace(/'/g, "\\'")}')" class="text-red-500 hover:text-red-700 p-1.5 bg-white rounded-full shadow border" title="Xóa"><i class="fa-solid fa-trash text-sm"></i></button>
-              </div>
-            ` : ''}
-            <button onclick="togglePin(event, '${f.id}')" class="absolute top-4 right-4 md:right-auto md:left-4 md:top-4 transition-opacity z-10 ${pinIconClass}" title="${isPinned ? 'Bỏ ghim' : 'Ghim tài liệu'}">
-              <i class="fa-solid fa-thumbtack ${isPinned ? '-rotate-45' : ''} text-lg"></i>
-            </button>
-            <div class="flex-shrink-0 flex flex-col items-center justify-center ${isPinned ? 'bg-white border border-yellow-200' : 'bg-gray-50'} rounded-lg w-20 h-20 md:ml-4">
-               <i class="${icon} text-3xl mb-1"></i>
-               <span class="text-[10px] font-bold text-gray-500 uppercase text-center leading-tight px-1">${f.fileType}</span>
-            </div>
-            <div class="flex-grow min-w-0 pr-8 md:pr-0">
-              ${folderInfo}
-              <h3 class="font-bold text-teal-700 text-lg truncate cursor-pointer hover:underline" title="${f.displayName}" onclick="openPreview('${f.id}', '${String(f.displayName || '').replace(/'/g, "\\'")}', '${f.viewUrl}', '${f.downloadUrl}')">${highlightText(f.displayName, window.currentSearchQuery)}</h3>
-              <p class="text-xs text-gray-500 mb-1"><i class="fa-regular fa-file"></i> ${highlightText(f.name, window.currentSearchQuery)} - ${f.size}</p>
-              ${f.description ? `<p class="text-sm text-gray-600 italic ${isPinned ? 'bg-white border border-yellow-100' : 'bg-yellow-50'} p-2 rounded mb-2 line-clamp-2"><i class="fa-solid fa-quote-left text-xs text-gray-400 mr-1"></i>${highlightText(f.description, window.currentSearchQuery)}</p>` : ''}
-              <div class="flex flex-wrap items-center gap-x-4 gap-y-2 mt-2">
-                <span class="text-teal-700 font-bold text-sm ${isPinned ? 'bg-white' : 'bg-teal-50'} px-2 py-0.5 rounded border ${isPinned ? 'border-yellow-200' : 'border-teal-100'} shadow-sm"><i class="fa-solid fa-user-pen mr-1"></i>${f.uploader}</span>
-                <div class="text-gray-500 flex items-center space-x-1 px-1"><i class="fa-solid fa-download"></i><span>${f.downloads}</span></div>
-              </div>
-            </div>
-            <div class="flex flex-row md:flex-col justify-center items-end gap-2 border-t md:border-t-0 md:border-l ${isPinned ? 'border-yellow-300' : 'border-gray-200'} pt-3 md:pt-0 md:pl-4 mt-2 md:mt-0 min-w-[120px]">
-               <a href="${f.downloadUrl}" target="_blank" onclick="trackDownload('${f.id}')" class="w-full text-center bg-teal-600 hover:bg-teal-700 text-white text-sm font-bold py-2 px-4 rounded shadow transition flex items-center justify-center"><i class="fa-solid fa-download mr-2"></i> Tải về</a>
-            </div>
-          </div>`;
-        }
-      }).join('');
-    }
-    function getFileIcon(mime, filename = '') {
-      const m = (mime || '').toLowerCase();
-      const fn = (filename || '').toLowerCase();
-      if (m.includes('pdf') || fn.endsWith('.pdf')) return 'fa-solid fa-file-pdf text-red-500';
-      if (m.includes('word') || m.includes('document') || fn.endsWith('.doc') || fn.endsWith('.docx')) return 'fa-solid fa-file-word text-blue-500';
-      if (m.includes('sheet') || m.includes('excel') || fn.endsWith('.xls') || fn.endsWith('.xlsx') || fn.endsWith('.exl') || fn.endsWith('.exlx') || fn.endsWith('.csv')) return 'fa-solid fa-file-excel text-green-500';
-      if (m.includes('presentation') || m.includes('powerpoint') || fn.endsWith('.ppt') || fn.endsWith('.pptx')) return 'fa-solid fa-file-powerpoint text-orange-500';
-      if (m.includes('image') || /\.(jpg|jpeg|png|gif|webp|bmp)$/.test(fn)) return 'fa-solid fa-file-image text-purple-500';
-      if (m.includes('compressed') || m.includes('zip') || m.includes('rar') || /\.(zip|rar|7z)$/.test(fn)) return 'fa-solid fa-file-zipper text-yellow-600';
-      return 'fa-solid fa-file-lines text-gray-500';
-    }
-
-    function trackDownload(id) { gasCall('incrementDownload', { fileId: id }); }
-    function renderFolderTrees(list) {
-        // Xây dựng cây thả xuống cho sidebar
-        const treeHtml = renderTreeNodes(list, true);
-        const treeEl = document.getElementById('sidebar-folder-tree');
-        if (treeEl) {
-          treeEl.innerHTML = treeHtml || '<p class="text-xs px-3 py-3 text-white/30 italic">Chưa có danh mục hồ sơ</p>';
-          highlightActiveSidebarFolder();
-        }
-
-        // Xây dựng cây cho dropdown lúc đóng góp
-        const uploadTreeEl = document.getElementById('upload-folder-tree');
-        if (uploadTreeEl) {
-          uploadTreeEl.innerHTML = renderUploadTreeNodes(list, true);
-          
-          if (!document.getElementById('folder-select').value && list.length > 0) {
-             document.getElementById('folder-select').value = list[0].id;
-             const textSpan = document.getElementById('upload-folder-text');
-             textSpan.innerHTML = `<i class="fa-solid fa-folder-open text-teal-500 mr-2"></i>${list[0].name}`;
-             textSpan.title = list[0].name;
-          }
-        }
-    }
-
-    function loadFolderTree() {
-      const cached = sessionStorage.getItem('tvsm_folders');
-      if (cached) {
+      const auth = firebase.auth();
+      const db = firebase.firestore();
+
+      auth.onAuthStateChanged(async (user) => {
+        if (user) {
           try {
-             renderFolderTrees(JSON.parse(cached));
-          } catch(e) {}
-      }
+            const doc = await db.collection('users').doc(user.uid).get();
+            if (doc.exists && doc.data().role === 'admin') {
+              enableAdminMode();
+            }
+          } catch (e) {
+            console.error("Lỗi kiểm tra quyền Admin:", e);
+          }
+        }
+        // Load dữ liệu links sau khi kiểm tra auth
+        loadLinks();
+        loadHeroImage();
+      });
 
-      gasCall('getAllFolders').then(res => {
-        if (!res.success) return;
-        sessionStorage.setItem('tvsm_folders', JSON.stringify(res.data));
-        renderFolderTrees(res.data);
-      }).catch(console.error);
-    }
-
-    function toggleUploadFolderTree(e) {
-      if(e) e.stopPropagation();
-      const container = document.getElementById('upload-folder-tree-container');
-      if (container) container.classList.toggle('hidden');
-    }
-
-    document.addEventListener('click', (e) => {
-      const container = document.getElementById('upload-folder-tree-container');
-      const btn = document.getElementById('upload-folder-btn');
-      if (container && !container.classList.contains('hidden') && btn && !btn.contains(e.target) && !container.contains(e.target)) {
-        container.classList.add('hidden');
-      }
+      // Hỗ trợ dán ảnh (Ctrl+V) vào ô input ảnh
+      setupPasteUpload('link-image');
     });
 
-    function renderUploadTreeNodes(nodes, isRoot = false) {
-      if (!nodes || nodes.length === 0) return '';
-      let html = isRoot ? '' : '<div class="folder-children ml-3 pl-3 border-l border-gray-200 space-y-1 hidden mt-1">';
-      nodes.forEach(node => {
-        const hasChildren = node.hasSubfolders !== false;
-        html += `
-          <div class="upload-folder-wrapper" data-fid="${node.id}">
-            <div class="flex items-center text-gray-700 py-1.5 px-2 transition-colors hover:bg-gray-100 rounded group">
-              ${hasChildren ? '<button type="button" class="upload-tree-toggle w-6 h-6 flex items-center justify-center text-gray-400 hover:text-teal-600 transition-transform duration-200"><i class="fa-solid fa-chevron-right text-[10px]"></i></button>' : '<div class="w-6 h-6 flex items-center justify-center"><i class="fa-solid fa-folder text-teal-300"></i></div>'}
-              <div class="flex-grow cursor-pointer pl-1 folder-select-item" data-id="${node.id}" data-name="${node.name}">
-                <span class="truncate font-medium group-hover:text-teal-600" title="${node.name}">${node.name}</span>
+    function enableAdminMode() {
+      isAdmin = true;
+      document.getElementById('admin-badge').classList.remove('hidden');
+      const adminControls = document.getElementById('hero-img-admin-controls');
+      if (adminControls) adminControls.classList.remove('hidden');
+      renderLinks(); // Render lại để hiện các nút Sửa/Xóa cho Admin
+    }
+
+    // ==========================================
+    // 2. TẢI VÀ HIỂN THỊ DANH SÁCH ĐƯỜNG DẪN
+    // ==========================================
+    async function loadLinks() {
+      try {
+        const db = firebase.firestore();
+        const snapshot = await db.collection('baotang_links').orderBy('order', 'asc').get();
+        if (!snapshot.empty) {
+          allLinks = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        } else {
+          // Nếu trong Firestore chưa có, sử dụng DEFAULT_LINKS & lưu vào localStorage
+          const localData = localStorage.getItem('baotang_links_local');
+          allLinks = localData ? JSON.parse(localData) : DEFAULT_LINKS;
+        }
+      } catch (err) {
+        console.warn("Dùng dữ liệu cục bộ do chưa kết nối Firestore:", err);
+        const localData = localStorage.getItem('baotang_links_local');
+        allLinks = localData ? JSON.parse(localData) : DEFAULT_LINKS;
+      }
+      renderLinks();
+    }
+
+    function renderLinks() {
+      const grid = document.getElementById('links-grid');
+      const emptyState = document.getElementById('empty-state');
+      grid.innerHTML = '';
+
+      const filtered = currentCategoryFilter === 'all'
+        ? allLinks
+        : allLinks.filter(item => item.category === currentCategoryFilter);
+
+      if (filtered.length === 0) {
+        emptyState.classList.remove('hidden');
+        return;
+      } else {
+        emptyState.classList.add('hidden');
+      }
+
+      filtered.forEach(item => {
+        const badgeColor = item.category === 'Bảo tàng 3D' ? 'bg-red-100 text-red-800'
+                         : item.category === 'Di tích lịch sử' ? 'bg-amber-100 text-amber-800'
+                         : 'bg-blue-100 text-blue-800';
+
+        const adminButtons = isAdmin ? `
+          <div class="flex items-center gap-1.5 border-t border-slate-100 pt-3 mt-3">
+            <button onclick="editLink('${item.id}')" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-2.5 py-1 rounded transition">
+              <i class="fa-solid fa-pen-to-square mr-1"></i> Sửa
+            </button>
+            <button onclick="deleteLink('${item.id}')" class="text-xs bg-red-50 hover:bg-red-100 text-red-600 font-semibold px-2.5 py-1 rounded transition">
+              <i class="fa-solid fa-trash mr-1"></i> Xóa
+            </button>
+          </div>
+        ` : '';
+
+        grid.innerHTML += `
+          <div class="link-card bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm flex flex-col justify-between">
+            <div>
+              <!-- Thumbnail Image -->
+              <a href="${item.url}" target="_blank" class="block relative h-44 overflow-hidden bg-slate-100 group">
+                <img src="${item.image || 'https://res.cloudinary.com/dwqtplan3/image/upload/v1785638390/Logo_Tru%CC%9Bo%CC%9B%CC%80ng_THCS_Ta%CC%82n_Bi%CC%80nh_rmfvy1.jpg'}" 
+                     alt="${item.title}" 
+                     class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-3">
+                  <span class="text-white text-xs font-semibold flex items-center gap-1">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i> Nhấn để mở đường dẫn
+                  </span>
+                </div>
+              </a>
+
+              <!-- Content -->
+              <div class="p-5 space-y-2.5">
+                <div class="flex items-center justify-between gap-2">
+                  <span class="text-[11px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full ${badgeColor}">
+                    ${item.category || 'Bảo tàng 3D'}
+                  </span>
+                  <span class="text-xs text-slate-400 font-medium">#${item.order || 1}</span>
+                </div>
+
+                <h4 class="font-bold text-slate-800 text-base leading-snug line-clamp-2 hover:text-red-700 transition">
+                  <a href="${item.url}" target="_blank">${item.title}</a>
+                </h4>
+
+                <p class="text-xs text-slate-500 leading-relaxed line-clamp-3">
+                  ${item.desc || ''}
+                </p>
               </div>
+            </div>
+
+            <!-- Footer Action -->
+            <div class="px-5 pb-5 pt-2">
+              <div class="flex items-center gap-2">
+                <a href="${item.url}" target="_blank" 
+                   class="flex-1 bg-red-700 hover:bg-red-800 text-white text-center font-bold text-xs py-2.5 px-3 rounded-xl shadow-sm hover:shadow transition flex items-center justify-center gap-1.5">
+                  <i class="fa-solid fa-building-columns"></i>
+                  <span>Tham quan ngay</span>
+                </a>
+                <button onclick="copyLinkUrl('${item.url}')" title="Copy đường dẫn" 
+                        class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-3 py-2.5 rounded-xl font-semibold text-xs transition">
+                  <i class="fa-regular fa-copy"></i>
+                </button>
+              </div>
+
+              ${adminButtons}
             </div>
           </div>
         `;
       });
-      html += isRoot ? '' : '</div>';
-      return html;
     }
 
-    function renderTreeNodes(nodes, isRoot = false) {
-      if (!nodes || !nodes.length) return '';
-      return `<div class="folder-children ${isRoot ? 'space-y-0.5' : 'hidden pl-4 space-y-0.5 mt-0.5'}">` + 
-        nodes.map(n => {
-          const safeName = n.name.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-          const hasChildren = n.hasSubfolders !== false;
-          return `
-          <div class="sidebar-folder-wrapper relative" data-fid="${n.id}">
-            <div class="sidebar-folder-item flex items-center justify-between group" 
-                 data-fid="${n.id}" data-fname="${safeName}">
-              <div class="flex items-center flex-1 min-w-0 pr-1">
-                ${hasChildren 
-                  ? `<button class="tree-toggle w-6 h-6 flex flex-shrink-0 items-center justify-center -ml-1 text-white/50 hover:text-white transition-colors" title="Mở/Đóng">
-                       <i class="fa-solid fa-chevron-right text-[10px] transition-transform duration-200"></i>
-                     </button>`
-                  : `<div class="w-6 flex-shrink-0 -ml-1"></div>`
-                }
-                <i class="fa-solid fa-folder w-4 text-sm flex-shrink-0 text-emerald-300 mr-1.5"></i>
-                <span class="truncate flex-1 text-[13px] folder-nav-target cursor-pointer" title="${n.name}">${n.name}</span>
-              </div>
-              ${window.isAdmin ? `
-              <button class="folder-action-btn folder-ctx-btn" title="Tùy chọn">
-                <i class="fa-solid fa-ellipsis-vertical"></i>
-              </button>
-              ` : ''}
-            </div>
-          </div>`;
-        }).join('') + `</div>`;
-    }
-
-    function highlightActiveSidebarFolder() {
-      const treeEl = document.getElementById('sidebar-folder-tree');
-      if (!treeEl) return;
-      
-      treeEl.querySelectorAll('.sidebar-folder-item').forEach(el => {
-        el.classList.remove('active');
+    function filterCategory(category) {
+      currentCategoryFilter = category;
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.className = "filter-btn bg-slate-200 text-slate-700 hover:bg-slate-300 px-3 py-1.5 rounded-full font-semibold transition";
       });
-      
-      if (!currentFolderId) return;
-      
-      const activeItem = treeEl.querySelector(`.sidebar-folder-item[data-fid="${currentFolderId}"]`);
-      if (activeItem) {
-        activeItem.classList.add('active');
-        
-        // Mở các thư mục cha
-        let parentWrapper = activeItem.closest('.folder-children');
-        while (parentWrapper) {
-          parentWrapper.classList.remove('hidden');
-          const toggleIcon = parentWrapper.parentElement.querySelector(':scope > .sidebar-folder-item .tree-toggle i');
-          if (toggleIcon) toggleIcon.classList.add('rotate-90');
-          parentWrapper = parentWrapper.parentElement.closest('.folder-children');
+      const activeBtnId = category === 'all' ? 'filter-btn-all'
+                        : category === 'Bảo tàng 3D' ? 'filter-btn-3d'
+                        : category === 'Di tích lịch sử' ? 'filter-btn-ditich'
+                        : 'filter-btn-chuyende';
+      const activeBtn = document.getElementById(activeBtnId);
+      if (activeBtn) {
+        activeBtn.className = "filter-btn bg-red-700 text-white px-3 py-1.5 rounded-full font-semibold transition shadow-sm";
+      }
+      renderLinks();
+    }
+
+    // ==========================================
+    // 3. THÊM / SỬA / XÓA ĐƯỜNG DẪN (THỦ CÔNG)
+    // ==========================================
+    function openLinkModal(linkId = null) {
+      const modal = document.getElementById('link-modal');
+      const form = document.getElementById('link-form');
+      form.reset();
+
+      if (linkId) {
+        const item = allLinks.find(l => l.id === linkId);
+        if (item) {
+          document.getElementById('link-modal-title').innerHTML = `<i class="fa-solid fa-pen-to-square text-amber-300"></i><span>Sửa đường dẫn tham quan</span>`;
+          document.getElementById('link-id').value = item.id;
+          document.getElementById('link-title').value = item.title;
+          document.getElementById('link-category').value = item.category || 'Bảo tàng 3D';
+          document.getElementById('link-order').value = item.order || 1;
+          document.getElementById('link-url').value = item.url;
+          document.getElementById('link-image').value = item.image || '';
+          document.getElementById('link-desc').value = item.desc || '';
         }
+      } else {
+        document.getElementById('link-modal-title').innerHTML = `<i class="fa-solid fa-link text-amber-300"></i><span>Thêm đường dẫn tham quan mới</span>`;
+        document.getElementById('link-id').value = '';
+        document.getElementById('link-order').value = allLinks.length + 1;
+        document.getElementById('link-image').value = 'https://res.cloudinary.com/dwqtplan3/image/upload/v1785638390/Logo_Tru%CC%9Bo%CC%9B%CC%80ng_THCS_Ta%CC%82n_Bi%CC%80nh_rmfvy1.jpg';
+      }
+
+      modal.classList.remove('hidden');
+    }
+
+    function closeLinkModal() {
+      document.getElementById('link-modal').classList.add('hidden');
+    }
+
+    async function saveLink(e) {
+      e.preventDefault();
+      const id = document.getElementById('link-id').value;
+      const title = document.getElementById('link-title').value.trim();
+      const category = document.getElementById('link-category').value;
+      const order = parseInt(document.getElementById('link-order').value) || 1;
+      const url = document.getElementById('link-url').value.trim();
+      const image = document.getElementById('link-image').value.trim();
+      const desc = document.getElementById('link-desc').value.trim();
+
+      const itemData = { title, category, order, url, image, desc };
+
+      try {
+        const db = firebase.firestore();
+        if (id) {
+          // Sửa item đã có
+          await db.collection('baotang_links').doc(id).set(itemData, { merge: true });
+          const idx = allLinks.findIndex(l => l.id === id);
+          if (idx !== -1) allLinks[idx] = { id, ...itemData };
+          showToast("Đã cập nhật đường dẫn thành công!");
+        } else {
+          // Thêm mới
+          const docRef = await db.collection('baotang_links').add(itemData);
+          allLinks.push({ id: docRef.id, ...itemData });
+          showToast("Đã thêm đường dẫn mới vào danh sách!");
+        }
+      } catch (err) {
+        console.warn("Lưu vào localStorage do chưa cấu hình Firebase Firestore:", err);
+        if (id) {
+          const idx = allLinks.findIndex(l => l.id === id);
+          if (idx !== -1) allLinks[idx] = { id, ...itemData };
+        } else {
+          const newId = 'local-' + Date.now();
+          allLinks.push({ id: newId, ...itemData });
+        }
+        localStorage.setItem('baotang_links_local', JSON.stringify(allLinks));
+        showToast("Đã lưu điểm tham quan mới!");
+      }
+
+      allLinks.sort((a, b) => (a.order || 99) - (b.order || 99));
+      closeLinkModal();
+      renderLinks();
+    }
+
+    function editLink(id) {
+      openLinkModal(id);
+    }
+
+    async function deleteLink(id) {
+      if (!confirm("Bạn có chắc chắn muốn xóa đường dẫn tham quan này không?")) return;
+      try {
+        const db = firebase.firestore();
+        await db.collection('baotang_links').doc(id).delete();
+      } catch (e) {
+        console.warn("Xóa khỏi localStorage:");
+      }
+      allLinks = allLinks.filter(l => l.id !== id);
+      localStorage.setItem('baotang_links_local', JSON.stringify(allLinks));
+      renderLinks();
+      showToast("Đã xóa điểm tham quan!");
+    }
+
+    function copyLinkUrl(url) {
+      navigator.clipboard.writeText(url).then(() => {
+        showToast("Đã copy đường dẫn URL vào bộ nhớ tạm!");
+      });
+    }
+
+    // ==========================================
+    // 4. QUẢN LÝ ẢNH HERO BANNER (ADMIN ONLY)
+    // ==========================================
+    function openHeroImageModal() {
+      const currentSrc = document.getElementById('museum-hero-img').src;
+      document.getElementById('hero-img-url').value = currentSrc;
+      document.getElementById('hero-image-modal').classList.remove('hidden');
+    }
+
+    function closeHeroImageModal() {
+      document.getElementById('hero-image-modal').classList.add('hidden');
+    }
+
+    async function saveHeroImage() {
+      const newSrc = document.getElementById('hero-img-url').value.trim();
+      if (!newSrc) return;
+      document.getElementById('museum-hero-img').src = newSrc;
+      try {
+        const db = firebase.firestore();
+        await db.collection('settings').doc('baotang_hero').set({ imageUrl: newSrc });
+      } catch (e) {
+        localStorage.setItem('baotang_hero_img', newSrc);
+      }
+      closeHeroImageModal();
+      showToast("Đã thay đổi ảnh đại diện Bảo tàng Hồ Chí Minh!");
+    }
+
+    async function loadHeroImage() {
+      try {
+        const db = firebase.firestore();
+        const doc = await db.collection('settings').doc('baotang_hero').get();
+        if (doc.exists && doc.data().imageUrl) {
+          document.getElementById('museum-hero-img').src = doc.data().imageUrl;
+        } else {
+          const local = localStorage.getItem('baotang_hero_img');
+          if (local) document.getElementById('museum-hero-img').src = local;
+        }
+      } catch (e) {
+        const local = localStorage.getItem('baotang_hero_img');
+        if (local) document.getElementById('museum-hero-img').src = local;
       }
     }
-    function saveUserInfo(n, e) { localStorage.setItem('lib_uploader_name', n); localStorage.setItem('lib_uploader_email', e); }
-    function loadUserInfo() {
-      const n = localStorage.getItem('lib_uploader_name'), e = localStorage.getItem('lib_uploader_email');
-      if(n) document.getElementById('uploader-name').value = n; if(e) document.getElementById('uploader-email').value = e;
-    }
-    function showToast(m) { const t = document.getElementById('toast'); t.innerText = m; t.classList.remove('translate-y-20', 'opacity-0'); setTimeout(() => t.classList.add('translate-y-20', 'opacity-0'), 3000); }
-    function showError(e) { showToast("Lỗi: " + e); document.getElementById('library-loader').classList.add('hidden'); }
 
-    function openPreview(id, name, viewUrl, downloadUrl) {
-       let previewUrl = viewUrl.replace(/\/view.*$/, '/preview');
-       document.getElementById('preview-title').innerText = name;
-       document.getElementById('preview-title').title = name;
-       document.getElementById('preview-download-btn').href = downloadUrl;
-       document.getElementById('preview-download-btn').onclick = () => trackDownload(id);
-       document.getElementById('preview-drive-btn').href = viewUrl;
-       
-       const iframe = document.getElementById('preview-iframe');
-       const loader = document.getElementById('preview-loader');
-       
-       iframe.classList.add('hidden');
-       loader.classList.remove('hidden');
-       iframe.src = previewUrl;
-       
-       document.getElementById('main-list-area').classList.remove('lg:w-full');
-       document.getElementById('preview-pane').style.width = '50%';
-       document.getElementById('preview-pane').classList.remove('hidden');
-       document.getElementById('preview-pane').classList.add('flex');
-       document.getElementById('resizer').classList.remove('lg:hidden');
-       document.getElementById('resizer').classList.add('lg:block');
-    }
-    
-    function closePreview() {
-       document.getElementById('preview-pane').classList.add('hidden');
-       document.getElementById('preview-pane').classList.remove('flex');
-       document.getElementById('preview-pane').style.width = '';
-       document.getElementById('preview-iframe').src = '';
-       document.getElementById('main-list-area').classList.add('lg:w-full');
-       document.getElementById('resizer').classList.remove('lg:block');
-       document.getElementById('resizer').classList.add('lg:hidden');
+    // ==========================================
+    // 5. TẢI ẢNH LÊN CLOUDINARY (CTRL+V & BUTTON)
+    // ==========================================
+    async function uploadToCloudinary(fileInput, targetInputId) {
+      const file = fileInput.files ? fileInput.files[0] : null;
+      if (!file) return;
+
+      const targetInput = document.getElementById(targetInputId);
+      const originalValue = targetInput.value;
+      targetInput.value = "Đang tải ảnh lên Cloudinary...";
+      targetInput.disabled = true;
+
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", UPLOAD_PRESET);
+
+      try {
+        const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
+          method: "POST",
+          body: formData
+        });
+        const data = await response.json();
+        if (data.secure_url) {
+          targetInput.value = data.secure_url;
+          showToast("Đã tải ảnh lên thành công!");
+        } else {
+          throw new Error("Không nhận được URL ảnh từ Cloudinary.");
+        }
+      } catch (error) {
+        console.error("Lỗi upload Cloudinary:", error);
+        showToast("Lỗi khi tải ảnh lên. Vui lòng thử lại!");
+        targetInput.value = originalValue;
+      } finally {
+        targetInput.disabled = false;
+      }
     }
 
+    function setupPasteUpload(inputId) {
+      const input = document.getElementById(inputId);
+      if (!input) return;
 
-    let isResizing = false;
-    let startX, startWidthPreview;
-    
-    document.addEventListener('DOMContentLoaded', () => {
-       // ---- Resizer for preview pane ----
-       const resizer = document.getElementById('resizer');
-       const previewPane = document.getElementById('preview-pane');
-       const libraryContent = document.getElementById('library-content');
+      input.addEventListener('paste', async (e) => {
+        const items = (e.clipboardData || e.originalEvent.clipboardData).items;
+        for (let item of items) {
+          if (item.type.indexOf("image") === 0) {
+            e.preventDefault();
+            const blob = item.getAsFile();
+            const originalVal = input.value;
+            input.value = "Đang tự động tải ảnh vừa dán lên Cloudinary...";
+            input.disabled = true;
 
-       if (resizer) {
-         resizer.addEventListener('mousedown', function(e) {
-           isResizing = true;
-           startX = e.clientX;
-           startWidthPreview = previewPane.getBoundingClientRect().width;
-           document.body.style.cursor = 'col-resize';
-           document.body.style.userSelect = 'none';
-           const iframe = document.getElementById('preview-iframe');
-           if(iframe) iframe.style.pointerEvents = 'none';
-         });
+            const formData = new FormData();
+            formData.append("file", blob);
+            formData.append("upload_preset", UPLOAD_PRESET);
 
-         document.addEventListener('mousemove', function(e) {
-           if (!isResizing) return;
-           const dx = startX - e.clientX;
-           let newWidth = startWidthPreview + dx;
-           const containerWidth = libraryContent.getBoundingClientRect().width;
-           if (newWidth < containerWidth * 0.25) newWidth = containerWidth * 0.25;
-           if (newWidth > containerWidth * 0.75) newWidth = containerWidth * 0.75;
-           previewPane.style.width = `${newWidth}px`;
-         });
-
-         document.addEventListener('mouseup', function(e) {
-           if (isResizing) {
-             isResizing = false;
-             document.body.style.cursor = '';
-             document.body.style.userSelect = '';
-             const iframe = document.getElementById('preview-iframe');
-             if(iframe) iframe.style.pointerEvents = 'auto';
-           }
-         });
-       }
-
-       // ---- Initialize View Mode ----
-       setViewMode(currentViewMode);
-
-       // ---- Initialize Sidebar Tree ----
-       loadFolderTree();
-
-       // ---- Drag and Drop Upload ----
-       const dropZone = document.getElementById('drop-zone');
-       const fileInput = document.getElementById('file-upload');
-       if (dropZone && fileInput) {
-         ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-           dropZone.addEventListener(eventName, e => { e.preventDefault(); e.stopPropagation(); }, false);
-         });
-         ['dragenter', 'dragover'].forEach(eventName => {
-           dropZone.addEventListener(eventName, () => dropZone.classList.add('bg-blue-200', 'border-blue-500'), false);
-         });
-         ['dragleave', 'drop'].forEach(eventName => {
-           dropZone.addEventListener(eventName, () => dropZone.classList.remove('bg-blue-200', 'border-blue-500'), false);
-         });
-          dropZone.addEventListener('drop', async (e) => {
-            const dt = e.dataTransfer;
-            const fileInput = document.getElementById('file-upload');
-            const fileCountDisplay = document.getElementById('file-count-display');
-            
-            if (!dt) return;
-
-            let hasDir = false;
-            if (dt.items) {
-               for (let i = 0; i < dt.items.length; i++) {
-                  const item = dt.items[i];
-                  if (item.kind === 'file' && item.webkitGetAsEntry) {
-                     const entry = item.webkitGetAsEntry();
-                     if (entry && entry.isDirectory) hasDir = true;
-                  }
-               }
+            try {
+              const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
+                method: "POST",
+                body: formData
+              });
+              const data = await res.json();
+              if (data.secure_url) {
+                input.value = data.secure_url;
+                showToast("Đã tự động tải ảnh dán (Ctrl+V) lên Cloudinary!");
+              } else {
+                throw new Error("Lỗi tải ảnh Cloudinary.");
+              }
+            } catch (err) {
+              console.error(err);
+              showToast("Không thể tải ảnh dán lên Cloudinary.");
+              input.value = originalVal;
+            } finally {
+              input.disabled = false;
             }
+          }
+        }
+      });
+    }
 
-            if (hasDir) {
-               fileCountDisplay.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1"></i> Đang quét thư mục...`;
-               try {
-                 async function readEntriesPromise(dirReader) {
-                     let entries = [];
-                     let readResult;
-                     do {
-                         readResult = await new Promise(resolve => dirReader.readEntries(resolve));
-                         entries.push(...readResult);
-                     } while (readResult.length > 0);
-                     return entries;
-                 }
+    // ==========================================
+    // 6. TOAST TIỆN ÍCH
+    // ==========================================
+    function showToast(text, isError = false) {
+      const toast = document.getElementById('toast');
+      const toastText = document.getElementById('toast-text');
+      const toastIcon = document.getElementById('toast-icon');
 
-                 async function traverseFileTree(item) {
-                     if (item.isFile) {
-                         return await new Promise(resolve => item.file(resolve));
-                     } else if (item.isDirectory) {
-                         const dirReader = item.createReader();
-                         const entries = await readEntriesPromise(dirReader);
-                         const files = [];
-                         for (const entry of entries) {
-                             const subFiles = await traverseFileTree(entry);
-                             if (Array.isArray(subFiles)) files.push(...subFiles);
-                             else files.push(subFiles);
-                         }
-                         return files;
-                     }
-                     return [];
-                 }
+      toastText.innerText = text;
+      if (isError) {
+        toastIcon.className = "fa-solid fa-circle-exclamation text-red-400 text-lg";
+      } else {
+        toastIcon.className = "fa-solid fa-circle-check text-green-400 text-lg";
+      }
 
-                 const allFiles = [];
-                 for (let i = 0; i < dt.items.length; i++) {
-                     const entry = dt.items[i].webkitGetAsEntry();
-                     if (entry) {
-                         const result = await traverseFileTree(entry);
-                         if (Array.isArray(result)) allFiles.push(...result);
-                         else if (result) allFiles.push(result);
-                     }
-                 }
-                 
-                 const dataTransfer = new DataTransfer();
-                 allFiles.forEach(f => { if(f && f.name) dataTransfer.items.add(f); });
-                 fileInput.files = dataTransfer.files;
-               } catch (err) {
-                 console.error("Lỗi khi quét thư mục:", err);
-                 showToast("Không thể đọc cấu trúc thư mục này bằng kéo thả. Hãy dùng nút Chọn Thư Mục.");
-               }
-            } else if (dt.files && dt.files.length > 0) {
-               fileInput.files = dt.files;
-            }
-            
-            if(fileInput.files && fileInput.files.length > 0) {
-              fileCountDisplay.innerText = `Đã chọn ${fileInput.files.length} file`;
-              fileCountDisplay.classList.add("text-teal-600", "font-bold");
-            } else {
-              fileCountDisplay.innerText = "Chưa chọn tài liệu";
-              fileCountDisplay.classList.remove("text-teal-600", "font-bold");
-            }
-          }, false);
-       }
-
-       // ---- Event Delegation: Sidebar Folder Tree ----
-       // Dùng event delegation để tránh lỗi ký tự đặc biệt trong tên thư mục
-       const sidebarTree = document.getElementById('sidebar-folder-tree');
-       if (sidebarTree) {
-         sidebarTree.addEventListener('click', function(e) {
-           // Click nút mở/đóng (Accordion)
-           const toggleBtn = e.target.closest('.tree-toggle');
-           if (toggleBtn) {
-             e.stopPropagation();
-             const wrapper = toggleBtn.closest('.sidebar-folder-wrapper');
-             const childrenDiv = wrapper.querySelector(':scope > .folder-children');
-             const icon = toggleBtn.querySelector('i');
-             
-             if (childrenDiv) {
-               childrenDiv.classList.toggle('hidden');
-               if (childrenDiv.classList.contains('hidden')) icon.classList.remove('rotate-90');
-               else icon.classList.add('rotate-90');
-             } else {
-               // DO LAZY LOAD
-               icon.className = "fa-solid fa-spinner fa-spin text-[10px] text-blue-400";
-               const fid = wrapper.dataset.fid;
-               gasCall('getSubfolders', { folderId: fid }).then(res => {
-                  if (!res.success || !res.data || res.data.length === 0) {
-                     icon.className = "fa-solid fa-chevron-right text-[10px] transition-transform duration-200";
-                     toggleBtn.classList.add('hidden'); // No children actually exist
-                     return;
-                  }
-                  icon.className = "fa-solid fa-chevron-right text-[10px] transition-transform duration-200 rotate-90";
-                  const html = renderTreeNodes(res.data, false);
-                  wrapper.insertAdjacentHTML('beforeend', html);
-                  wrapper.querySelector(':scope > .folder-children').classList.remove('hidden');
-               }).catch(err => {
-                  icon.className = "fa-solid fa-chevron-right text-[10px] transition-transform duration-200";
-               });
-             }
-             return;
-           }
-
-           // Click nút ⋮ (context menu)
-           const ctxBtn = e.target.closest('.folder-ctx-btn');
-           if (ctxBtn) {
-             e.stopPropagation();
-             const item = ctxBtn.closest('.sidebar-folder-item[data-fid]');
-             if (!item) return;
-             const fid   = item.dataset.fid;
-             const fname = item.dataset.fname
-                             .replace(/&amp;/g, '&')
-                             .replace(/&quot;/g, '"')
-                             .replace(/&lt;/g, '<')
-                             .replace(/&gt;/g, '>');
-             openFolderCtx(e, fid, fname);
-             return;
-           }
-
-           // Click tên thư mục → điều hướng
-           const navTarget = e.target.closest('.sidebar-folder-item[data-fid]');
-           if (navTarget && !e.target.closest('.folder-ctx-btn')) {
-             const fid = navTarget.dataset.fid;
-             if (fid) {
-               loadLibrary(fid);
-               if (window.innerWidth < 768) toggleSidebar();
-             }
-           }
-         });
-       }
-
-       // ---- Event Delegation: Upload Folder Tree ----
-       const uploadTree = document.getElementById('upload-folder-tree');
-       if (uploadTree) {
-         uploadTree.addEventListener('click', function(e) {
-           const toggleBtn = e.target.closest('.upload-tree-toggle');
-           if (toggleBtn) {
-             e.stopPropagation();
-             const wrapper = toggleBtn.closest('.upload-folder-wrapper');
-             let childrenDiv = wrapper.querySelector(':scope > .folder-children');
-             const icon = toggleBtn.querySelector('i');
-             
-             if (childrenDiv) {
-               childrenDiv.classList.toggle('hidden');
-               if (childrenDiv.classList.contains('hidden')) icon.classList.remove('rotate-90');
-               else icon.classList.add('rotate-90');
-             } else {
-               icon.className = "fa-solid fa-spinner fa-spin text-[10px] text-blue-400";
-               const fid = wrapper.dataset.fid;
-               gasCall('getSubfolders', { folderId: fid }).then(res => {
-                  if (!res.success || !res.data || res.data.length === 0) {
-                     icon.className = "fa-solid fa-chevron-right text-[10px] transition-transform duration-200";
-                     toggleBtn.classList.add('hidden');
-                     return;
-                  }
-                  icon.className = "fa-solid fa-chevron-right text-[10px] transition-transform duration-200 rotate-90";
-                  const html = renderUploadTreeNodes(res.data, false);
-                  wrapper.insertAdjacentHTML('beforeend', html);
-                  wrapper.querySelector(':scope > .folder-children').classList.remove('hidden');
-               }).catch(err => {
-                  icon.className = "fa-solid fa-chevron-right text-[10px] transition-transform duration-200";
-               });
-             }
-             return;
-           }
-
-           const selectItem = e.target.closest('.folder-select-item');
-           if (selectItem) {
-             const id = selectItem.getAttribute('data-id');
-             const name = selectItem.getAttribute('data-name');
-             document.getElementById('folder-select').value = id;
-             const textSpan = document.getElementById('upload-folder-text');
-             textSpan.innerHTML = `<i class="fa-solid fa-folder-open text-teal-500 mr-2"></i>${name}`;
-             textSpan.title = name;
-             document.getElementById('upload-folder-tree-container').classList.add('hidden');
-           }
-         });
-       }
-    });
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0');
+      }, 3500);
+    }
   </script>
 </body>
 </html>
