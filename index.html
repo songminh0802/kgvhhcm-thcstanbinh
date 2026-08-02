@@ -160,15 +160,16 @@ ul{list-style:none}
   border:1px solid rgba(255,255,255,0.3);
   padding:6px 12px;border-radius:10px;
   font-size:0.75rem;font-weight:700;
-  display:flex;align-items:center;gap:6px;
+  display:none;align-items:center;gap:6px;
   cursor:pointer;backdrop-filter:blur(6px);
   transition:all 0.25s cubic-bezier(.34,1.56,.64,1);
   box-shadow:0 4px 12px rgba(0,0,0,0.3);
   opacity:0;transform:translateY(-5px);
 }
-.card:hover .c-edit-img-btn, .c-edit-img-btn.always-show{
-  opacity:1;transform:translateY(0);
+body.is-admin .card:hover .c-edit-img-btn, body.is-admin .c-edit-img-btn.always-show{
+  display:flex;opacity:1;transform:translateY(0);
 }
+@media(max-width:768px){ body.is-admin .c-edit-img-btn{display:flex;opacity:1;transform:none;} }
 .c-edit-img-btn:hover{
   background:var(--p1);border-color:#fff;
   transform:scale(1.08) translateY(0);
@@ -358,7 +359,7 @@ ul{list-style:none}
   <div class="hsp"></div>
   <div class="hactions">
     <button class="ibtn" id="theme-btn" title="Đổi giao diện">🌙</button>
-    <button class="ibtn" id="toggle-cld-btn" title="Bật/tắt nút đổi ảnh thẻ Cloudinary">🖼️</button>
+    <button class="ibtn" id="toggle-cld-btn" title="Bật/tắt nút đổi ảnh thẻ Cloudinary" style="display:none">🖼️</button>
 
     <div class="lsel" id="lsel">
       <div class="lbtn" id="lbtn" role="button"><span id="lcur">🇻🇳 VI</span> ▾</div>
@@ -918,9 +919,15 @@ const renderUI = (user, ud) => {
       $id('sb-urole').innerHTML=`<span class="role-badge ${rc[roleStr]||'r-guest'}">${T('r_'+roleStr)}</span>`;
     }
     $id('u-admin').style.display=$id('sb-admin').style.display=adm?'flex':'none';
+    document.body.classList.toggle('is-admin', adm);
+    const togBtn = $id('toggle-cld-btn');
+    if (togBtn) togBtn.style.display = adm ? 'flex' : 'none';
   } else {
     if($id('sb-user'))$id('sb-user').style.display='none';
     $id('u-admin').style.display=$id('sb-admin').style.display='none';
+    document.body.classList.remove('is-admin');
+    const togBtn = $id('toggle-cld-btn');
+    if (togBtn) togBtn.style.display = 'none';
   }
 };
 
@@ -1136,6 +1143,11 @@ const CLD_URL = `https://api.cloudinary.com/v1_1/${CLD_NAME}/image/upload`;
 
 function openCloudinaryModal(e, cid, title) {
   if (e) { e.preventDefault(); e.stopPropagation(); }
+  const isAdmin = document.body.classList.contains('is-admin') || (typeof uData !== 'undefined' && uData?.role === 'admin') || (auth.currentUser && isEmailAdmin(auth.currentUser));
+  if (!isAdmin) {
+    if (typeof toast === 'function') toast('⛔ Chỉ Quản trị viên (Admin) mới có quyền đổi ảnh thẻ!', 'e');
+    return;
+  }
   currentCldCardId = cid;
   $id('cld-card-name').textContent = title;
   
