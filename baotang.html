@@ -389,6 +389,7 @@
     const CLD_NAME = "dwqtplan3";
     const CLD_PRESET = "canhan";
     const CLD_URL = `https://api.cloudinary.com/v1_1/${CLD_NAME}/image/upload`;
+    const ADMIN_EMAIL = 'songminh138@gmail.com';
 
     let isAdmin = false;
     let currentCategoryFilter = 'all';
@@ -448,7 +449,8 @@
           if (user) {
             try {
               const doc = await db.collection('users').doc(user.uid).get();
-              if (doc.exists && doc.data().role === 'admin') {
+              const isDefaultAdmin = (user.email || '').trim().toLowerCase() === ADMIN_EMAIL;
+              if (isDefaultAdmin || (doc.exists && doc.data().role === 'admin')) {
                 enableAdminMode();
               }
             } catch (e) {
