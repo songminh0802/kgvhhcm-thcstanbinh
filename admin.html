@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Trang quản trị - Chd Maths">
+  <title>Quản trị — NVC Maths</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Baloo+2:wght@700;800&display=swap" rel="stylesheet">
+<style>
+/* ── Variables (same as index.html) ── */
+:root{--p1:#667eea;--p2:#764ba2;--accent:#f093fb;--bg:#f0f4ff;--bg2:#ffffff;--tx:#1a1a2e;--tx2:#5a5a8a;--mu:#9090bb;--bd:rgba(103,126,234,.15);--sh:0 8px 32px rgba(103,126,234,.14);--sh2:0 18px 55px rgba(103,126,234,.2);--ov:rgba(15,15,40,.52);--sw:268px;--hh:60px;--r:16px;--danger:#ff6b6b;--success:#43e97b;--warn:#f7cf68}
+[data-theme=dark]{--bg:#0a0a1a;--bg2:#111128;--tx:#e8e8ff;--tx2:#9090cc;--mu:#5555aa;--bd:rgba(103,126,234,.2);--sh:0 8px 32px rgba(0,0,0,.4);--sh2:0 18px 55px rgba(0,0,0,.5);--ov:rgba(0,0,0,.65)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--tx);overflow-x:hidden;min-height:100vh;transition:background .3s,color .3s}
+a{text-decoration:none;color:inherit}button{cursor:pointer;border:none;background:none;font-family:inherit}ul{list-style:none}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:var(--p1);border-radius:3px}
+
+/* ── Header ── */
+.hdr{position:fixed;top:0;left:0;right:0;height:var(--hh);background:var(--bg2);backdrop-filter:blur(20px);border-bottom:1px solid var(--bd);display:flex;align-items:center;padding:0 14px;gap:9px;z-index:1000;box-shadow:var(--sh);transition:background .3s}
+[data-theme=dark] .hdr{background:rgba(10,10,26,.95)}
+.hmb{display:flex;flex-direction:column;justify-content:center;gap:5px;width:38px;height:38px;border-radius:10px;flex-shrink:0;align-items:center}
+.hmb:hover{background:var(--bd)}.hmb span{display:block;width:20px;height:2px;background:var(--tx);border-radius:2px;transition:.3s}
+.hmb.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}.hmb.open span:nth-child(2){opacity:0}.hmb.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.logo{display:flex;align-items:center;gap:8px;font-family:'Baloo 2',cursive;font-weight:800;font-size:1.28rem;background:linear-gradient(135deg,var(--p1),var(--accent));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap}
+.logo-ico{width:34px;height:34px;background:linear-gradient(135deg,var(--p1),var(--p2));border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.95rem;flex-shrink:0;box-shadow:0 4px 12px rgba(103,126,234,.4)}
+.hsp{flex:1}.hactions{display:flex;align-items:center;gap:6px}
+.ibtn{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;color:var(--tx2);font-size:.9rem;transition:.25s}
+.ibtn:hover{background:var(--bd);color:var(--p1)}
+.lsel{position:relative}
+.lbtn{display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:9px;background:var(--bd);color:var(--tx2);font-size:.77rem;font-weight:700;cursor:pointer;transition:.25s}
+.lbtn:hover{background:var(--p1);color:#fff}
+.ldrop{position:absolute;top:calc(100% + 6px);right:0;background:var(--bg2);border:1px solid var(--bd);border-radius:11px;box-shadow:var(--sh2);min-width:128px;overflow:hidden;opacity:0;transform:translateY(-8px);pointer-events:none;transition:.25s;z-index:20}
+.lsel.open .ldrop{opacity:1;transform:none;pointer-events:all}
+.lopt{display:flex;align-items:center;gap:7px;padding:9px 13px;font-size:.82rem;font-weight:600;color:var(--tx2);cursor:pointer;transition:.2s}
+.lopt:hover,.lopt.act{background:var(--bg);color:var(--p1)}
+.auth-btn{display:flex;align-items:center;gap:7px;padding:7px 15px;border-radius:20px;background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff;font-size:.82rem;font-weight:700;box-shadow:0 4px 14px rgba(103,126,234,.4);transition:.25s;white-space:nowrap}
+.auth-btn:hover{transform:translateY(-2px)}
+.umenu{position:relative}
+.uavbtn{display:flex;align-items:center;gap:7px;padding:4px 10px 4px 4px;border-radius:22px;background:var(--bd);cursor:pointer;transition:.25s}
+.uav{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--p1),var(--accent));display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:.8rem;overflow:hidden;flex-shrink:0}
+.uav img{width:100%;height:100%;object-fit:cover}
+.uname{font-size:.8rem;font-weight:700;color:var(--tx);max-width:88px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.udrop{position:absolute;top:calc(100% + 6px);right:0;background:var(--bg2);border:1px solid var(--bd);border-radius:11px;box-shadow:var(--sh2);min-width:145px;overflow:hidden;opacity:0;transform:translateY(-8px);pointer-events:none;transition:.25s;z-index:20}
+.umenu.open .udrop{opacity:1;transform:none;pointer-events:all}
+.uopt{display:flex;align-items:center;gap:9px;padding:11px 14px;font-size:.83rem;font-weight:600;color:var(--tx2);cursor:pointer;transition:.2s;border-top:1px solid var(--bd)}
+.uopt:first-child{border-top:none}.uopt:hover{background:var(--bg);color:var(--tx)}.uopt.red:hover{color:var(--danger)}
+
+/* ── Sidebar ── */
+.sov{position:fixed;inset:0;background:var(--ov);z-index:998;opacity:0;pointer-events:none;transition:.3s;backdrop-filter:blur(4px)}
+.sov.open{opacity:1;pointer-events:all}
+.sb{position:fixed;top:0;left:0;width:var(--sw);height:100vh;background:var(--bg2);z-index:999;transform:translateX(-100%);transition:transform .42s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;box-shadow:4px 0 36px rgba(0,0,0,.14);overflow-y:auto}
+.sb.open{transform:none}
+.sb-hdr{display:flex;align-items:center;justify-content:space-between;padding:15px 17px;border-bottom:1px solid var(--bd);min-height:var(--hh);flex-shrink:0}
+.sb-logo{font-family:'Baloo 2',cursive;font-weight:800;font-size:1.18rem;background:linear-gradient(135deg,var(--p1),var(--accent));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.sb-x{width:29px;height:29px;border-radius:7px;display:flex;align-items:center;justify-content:center;color:var(--mu);cursor:pointer;transition:.2s}.sb-x:hover{background:var(--bd);color:var(--tx)}
+.sb-user{display:none;align-items:center;gap:10px;padding:13px 17px;border-bottom:1px solid var(--bd);flex-shrink:0}
+.sb-uav{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--p1),var(--accent));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:.95rem;flex-shrink:0;overflow:hidden}
+.sb-uav img{width:100%;height:100%;object-fit:cover}
+.sb-uname{font-weight:700;font-size:.86rem;color:var(--tx)}
+.role-badge{display:inline-block;padding:2px 8px;border-radius:8px;font-size:.68rem;font-weight:700}
+.r-admin{background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff}
+.r-teacher{background:linear-gradient(135deg,#43e97b,#38f9d7);color:#0a3020}
+.r-student{background:linear-gradient(135deg,#4facfe,#00f2fe);color:#0a2040}
+.r-parent{background:linear-gradient(135deg,#f093fb,#f5576c);color:#fff}
+.r-guest{background:var(--bd);color:var(--mu)}
+.sb-nav{flex:1;padding:9px 0;overflow-y:auto}
+.sni{display:flex;align-items:center;gap:12px;padding:11px 17px;margin:2px 9px;border-radius:12px;color:var(--tx2);font-size:.87rem;font-weight:600;cursor:pointer;transition:.2s}
+.sni:hover,.sni.act{background:rgba(103,126,234,.1);color:var(--p1)}
+.sni-ico{font-size:1.08rem;width:24px;text-align:center;flex-shrink:0}
+.sdiv{height:1px;background:var(--bd);margin:7px 17px}
+.sni-admin{display:flex;align-items:center;gap:12px;padding:11px 17px;margin:4px 9px;border-radius:12px;color:var(--p1);font-size:.87rem;font-weight:700;cursor:pointer;transition:.2s;background:rgba(103,126,234,.08)}
+.sni-admin:hover{background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff}
+
+/* ── ADMIN PAGE ── */
+.main{padding-top:var(--hh);min-height:100vh}
+.admin-wrap{max-width:1100px;margin:0 auto;padding:28px 18px 48px}
+.access-denied{text-align:center;padding:60px 20px}
+.access-denied-ico{font-size:3.5rem;display:block;margin-bottom:16px}
+.access-denied-title{font-family:'Baloo 2',cursive;font-size:1.7rem;font-weight:800;margin-bottom:10px;color:var(--tx)}
+.access-denied-desc{color:var(--mu);margin-bottom:24px}
+.btn-back{display:inline-flex;align-items:center;gap:7px;padding:10px 20px;border-radius:20px;background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff;font-weight:700;font-size:.87rem}
+
+.admin-title-row{display:flex;align-items:center;gap:14px;margin-bottom:24px;flex-wrap:wrap}
+.admin-icon{font-size:2.2rem;width:52px;height:52px;background:linear-gradient(135deg,var(--p1),var(--p2));border-radius:14px;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(103,126,234,.4);flex-shrink:0}
+.admin-title{font-family:'Baloo 2',cursive;font-size:1.5rem;font-weight:800;color:var(--tx)}
+.admin-sub{font-size:.84rem;color:var(--mu)}
+
+/* Tabs */
+.a-tabs{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap}
+.a-tab{display:flex;align-items:center;gap:7px;padding:9px 18px;border-radius:12px;font-size:.84rem;font-weight:700;color:var(--tx2);background:var(--bg2);border:1.5px solid var(--bd);cursor:pointer;transition:.22s}
+.a-tab:hover{border-color:var(--p1);color:var(--p1)}
+.a-tab.act{background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff;border-color:transparent;box-shadow:0 4px 14px rgba(103,126,234,.38)}
+.tab-c{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:18px;padding:0 5px;border-radius:6px;font-size:.68rem;font-weight:800;background:rgba(255,255,255,.25);color:inherit}
+.a-tab:not(.act) .tab-c{background:var(--bd);color:var(--p1)}
+.a-panel{display:none}.a-panel.act{display:block}
+
+/* Bulk bar */
+.bulk-bar{display:flex;align-items:center;gap:8px;background:rgba(103,126,234,.08);border:1.5px solid var(--p1);border-radius:12px;padding:10px 14px;margin-bottom:14px;flex-wrap:wrap}
+.bulk-bar.hidden{display:none}
+.bulk-cnt{font-size:.82rem;font-weight:700;color:var(--p1)}
+.bsep{width:1px;height:20px;background:var(--bd);flex-shrink:0}
+.bsel{padding:7px 11px;border-radius:9px;border:1.5px solid var(--bd);background:var(--bg2);color:var(--tx);font-size:.8rem;font-weight:600;font-family:inherit;cursor:pointer;outline:none;transition:.2s}
+.bsel:focus{border-color:var(--p1)}
+.bbtn{display:inline-flex;align-items:center;gap:5px;padding:7px 13px;border-radius:9px;font-size:.8rem;font-weight:700;cursor:pointer;border:none;font-family:inherit;transition:.22s;white-space:nowrap}
+.bbtn.pr{background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff}
+.bbtn.su{background:linear-gradient(135deg,#43e97b,#38f9d7);color:#0a3020}
+.bbtn.da{background:linear-gradient(135deg,var(--danger),#ff8e8e);color:#fff}
+.bbtn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.2)}
+
+/* Toolbar */
+.toolbar{display:flex;align-items:center;gap:9px;margin-bottom:16px;flex-wrap:wrap}
+.t-search{position:relative;flex:1;min-width:180px}
+.t-search-ico{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--mu);font-size:.85rem}
+.t-search input{width:100%;padding:9px 13px 9px 32px;border-radius:10px;border:1.5px solid var(--bd);background:var(--bg2);color:var(--tx);font-size:.83rem;font-family:inherit;outline:none;transition:.2s}
+.t-search input:focus{border-color:var(--p1)}
+.t-search input::placeholder{color:var(--mu)}
+.t-sel{padding:9px 11px;border-radius:10px;border:1.5px solid var(--bd);background:var(--bg2);color:var(--tx2);font-size:.82rem;font-weight:600;font-family:inherit;cursor:pointer;outline:none;transition:.2s}
+.t-sel:focus{border-color:var(--p1)}
+.t-btn{display:inline-flex;align-items:center;gap:5px;padding:9px 14px;border-radius:10px;font-size:.82rem;font-weight:700;background:var(--bg2);border:1.5px solid var(--bd);color:var(--tx2);cursor:pointer;transition:.22s}
+.t-btn:hover{border-color:var(--p1);color:var(--p1)}
+
+/* Table */
+.tbl-wrap{overflow-x:auto;border-radius:14px;border:1px solid var(--bd);box-shadow:var(--sh)}
+table{width:100%;border-collapse:collapse;background:var(--bg2)}
+th{padding:11px 13px;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--mu);background:var(--bg);border-bottom:1px solid var(--bd);text-align:left;white-space:nowrap}
+td{padding:11px 13px;font-size:.82rem;border-bottom:1px solid var(--bd);vertical-align:middle;color:var(--tx)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(103,126,234,.04)}
+.cb{width:15px;height:15px;accent-color:var(--p1);cursor:pointer}
+.user-cell{display:flex;align-items:center;gap:9px}
+.row-av{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--p1),var(--accent));display:flex;align-items:center;justify-content:center;color:#fff;font-size:.8rem;font-weight:700;flex-shrink:0;overflow:hidden}
+.row-av img{width:100%;height:100%;object-fit:cover}
+.row-name{font-weight:700;font-size:.83rem;color:var(--tx)}
+.row-email{font-size:.74rem;color:var(--mu)}
+.status-dot{display:inline-block;width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.s-on{background:#43e97b}.s-off{background:var(--mu)}
+.act-btns{display:flex;gap:5px;flex-wrap:wrap}
+.act-btn{padding:5px 10px;border-radius:7px;font-size:.75rem;font-weight:700;cursor:pointer;border:none;font-family:inherit;transition:.18s}
+.act-btn.edit{background:rgba(103,126,234,.12);color:var(--p1)}.act-btn.edit:hover{background:var(--p1);color:#fff}
+.act-btn.del{background:rgba(255,107,107,.12);color:var(--danger)}.act-btn.del:hover{background:var(--danger);color:#fff}
+
+/* Pagination */
+.pgn{display:flex;justify-content:center;align-items:center;gap:6px;margin-top:16px;flex-wrap:wrap}
+.pgn-btn{width:33px;height:33px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.81rem;font-weight:700;border:1.5px solid var(--bd);background:var(--bg2);color:var(--tx2);cursor:pointer;transition:.18s}
+.pgn-btn:hover{border-color:var(--p1);color:var(--p1)}
+.pgn-btn.act{background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff;border-color:transparent}
+.pgn-btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* Groups tab */
+.grp-form-box{background:var(--bg2);border:1.5px solid var(--bd);border-radius:14px;padding:20px 22px;margin-bottom:20px;box-shadow:var(--sh)}
+.grp-form-title{font-family:'Baloo 2',cursive;font-size:1.08rem;font-weight:800;color:var(--tx);margin-bottom:16px}
+.grp-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-label{display:block;font-size:.77rem;font-weight:700;color:var(--tx2);margin-bottom:5px}
+.form-input{width:100%;padding:10px 12px;border-radius:10px;border:1.5px solid var(--bd);background:var(--bg);color:var(--tx);font-size:.84rem;font-family:inherit;outline:none;transition:.2s}
+.form-input:focus{border-color:var(--p1)}
+.form-input::placeholder{color:var(--mu)}
+.cards-chk-grid{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.chk-item{display:flex;align-items:center;gap:6px;padding:7px 12px;border-radius:9px;border:1.5px solid var(--bd);background:var(--bg);cursor:pointer;font-size:.8rem;font-weight:600;color:var(--tx2);transition:.2s;user-select:none}
+.chk-item:hover{border-color:var(--p1);color:var(--p1)}
+.chk-item input{accent-color:var(--p1)}
+.grp-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:10px;flex-wrap:wrap}
+.grp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+.grp-card{background:var(--bg2);border:1.5px solid var(--bd);border-radius:14px;padding:18px;box-shadow:var(--sh);transition:.25s}
+.grp-card:hover{border-color:var(--p1);transform:translateY(-3px);box-shadow:var(--sh2)}
+.grp-card-name{font-family:'Baloo 2',cursive;font-size:1.05rem;font-weight:800;color:var(--tx);margin-bottom:4px}
+.grp-card-desc{font-size:.8rem;color:var(--mu);margin-bottom:12px;min-height:18px}
+.grp-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px;min-height:26px}
+.grp-tag{background:rgba(103,126,234,.1);color:var(--p1);padding:3px 8px;border-radius:6px;font-size:.7rem;font-weight:700}
+.grp-tag.all{background:rgba(67,233,123,.12);color:#1a6a40}
+.grp-actions{display:flex;gap:6px}
+.empty-grp{text-align:center;padding:40px 20px;color:var(--mu);font-size:.88rem}
+.empty-grp .ico{font-size:2.5rem;display:block;margin-bottom:10px}
+
+/* ── Modal ── */
+.mov{position:fixed;inset:0;background:var(--ov);backdrop-filter:blur(8px);z-index:2000;display:flex;align-items:center;justify-content:center;padding:18px;opacity:0;pointer-events:none;transition:.28s}
+.mov.open{opacity:1;pointer-events:all}
+.modal{background:var(--bg2);border:1px solid var(--bd);border-radius:20px;padding:28px 26px;width:100%;max-width:370px;box-shadow:var(--sh2);transform:scale(.93) translateY(12px);transition:.28s;position:relative}
+.mov.open .modal{transform:none}
+.m-x{position:absolute;top:12px;right:12px;width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;color:var(--mu);cursor:pointer;transition:.2s}
+.m-x:hover{background:var(--bd);color:var(--tx)}
+.m-title{font-family:'Baloo 2',cursive;font-size:1.25rem;font-weight:800;color:var(--tx);margin-bottom:4px}
+.m-name{font-size:.82rem;font-weight:700;color:var(--p1);margin-bottom:18px}
+.fg{margin-bottom:13px}
+.fi{width:100%;padding:10px 12px;background:var(--bg);border:1.5px solid var(--bd);border-radius:10px;font-size:.84rem;color:var(--tx);font-family:inherit;outline:none;transition:.2s}
+.fi:focus{border-color:var(--p1)}
+.btn-sub{width:100%;padding:11px;background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff;border-radius:10px;font-weight:700;font-size:.86rem;border:none;cursor:pointer;font-family:inherit;box-shadow:0 4px 14px rgba(103,126,234,.38);transition:.2s}
+.btn-sub:hover{transform:translateY(-2px)}
+
+/* Confirm dialog */
+.cdlg{position:fixed;inset:0;background:var(--ov);backdrop-filter:blur(8px);z-index:3000;display:flex;align-items:center;justify-content:center;padding:18px;opacity:0;pointer-events:none;transition:.25s}
+.cdlg.open{opacity:1;pointer-events:all}
+.cbox{background:var(--bg2);border:1px solid var(--bd);border-radius:18px;padding:28px 24px;max-width:340px;width:100%;box-shadow:var(--sh2);text-align:center}
+.cbox-ico{font-size:2.4rem;margin-bottom:12px}
+.cbox-title{font-family:'Baloo 2',cursive;font-size:1.18rem;font-weight:800;color:var(--tx);margin-bottom:7px}
+.cbox-desc{font-size:.83rem;color:var(--mu);margin-bottom:20px}
+.cbox-btns{display:flex;gap:9px;justify-content:center}
+.btn-c{padding:9px 20px;border-radius:10px;font-size:.83rem;font-weight:700;cursor:pointer;border:1.5px solid var(--bd);background:var(--bg);color:var(--tx2);font-family:inherit;transition:.2s}
+.btn-c:hover{background:var(--bd)}
+.btn-cd{padding:9px 20px;border-radius:10px;font-size:.83rem;font-weight:700;cursor:pointer;border:none;background:linear-gradient(135deg,var(--danger),#ff8e8e);color:#fff;font-family:inherit;transition:.2s}
+.btn-cd:hover{transform:translateY(-1px)}
+
+/* ── Toast ── */
+.tc{position:fixed;bottom:18px;right:18px;z-index:4000;display:flex;flex-direction:column;gap:7px;pointer-events:none}
+.toast{display:flex;align-items:center;gap:8px;background:var(--bg2);border:1px solid var(--bd);border-radius:12px;padding:11px 15px;box-shadow:var(--sh2);font-size:.82rem;font-weight:600;color:var(--tx);max-width:290px;animation:tin .3s ease;pointer-events:all}
+.toast.s{border-left:3px solid var(--success)}.toast.e{border-left:3px solid var(--danger)}.toast.i{border-left:3px solid var(--p1)}
+.toast.out{animation:tout .28s ease forwards}
+@keyframes tin{from{opacity:0;transform:translateX(26px)}to{opacity:1;transform:none}}
+@keyframes tout{to{opacity:0;transform:translateX(26px)}}
+
+/* Loader */
+.ldr{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;transition:opacity .45s}
+.ldr.gone{opacity:0;pointer-events:none}
+.ldr-logo{font-family:'Baloo 2',cursive;font-size:1.75rem;font-weight:800;background:linear-gradient(135deg,var(--p1),var(--accent));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.spin{width:34px;height:34px;border:3px solid var(--bd);border-top-color:var(--p1);border-radius:50%;animation:sp .7s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* ── Import Preview Modal & Table ── */
+.imp-tbl-wrap{max-height:280px;overflow-y:auto;border:1px solid var(--bd);border-radius:10px;margin:12px 0}
+.imp-tbl{width:100%;border-collapse:collapse;font-size:0.78rem}
+.imp-tbl th,.imp-tbl td{padding:8px 10px;border-bottom:1px solid var(--bd);text-align:left}
+.imp-tbl th{background:var(--bg);position:sticky;top:0;font-weight:700}
+.imp-badge{display:inline-block;padding:2px 7px;border-radius:6px;font-size:0.72rem;font-weight:700}
+.imp-ok{background:rgba(67,233,123,0.18);color:#218838}
+.imp-warn{background:rgba(255,193,7,0.18);color:#856404}
+.imp-err{background:rgba(255,107,107,0.18);color:#c82333}
+.imp-prog{width:100%;height:8px;background:var(--bd);border-radius:4px;overflow:hidden;margin:10px 0;display:none}
+.imp-prog-bar{height:100%;width:0%;background:linear-gradient(135deg,var(--p1),var(--success));transition:width .3s}
+
+@media(max-width:600px){.grp-grid-2{grid-template-columns:1fr}.tbl-wrap{font-size:.78rem}.bulk-bar{gap:6px}}
+</style>
+</head>
+<body>
+
+<div class="ldr" id="ldr"><div class="ldr-logo">NVC Maths</div><div class="spin"></div></div>
+<div class="sov" id="sov"></div>
+
+<!-- Sidebar -->
+<nav class="sb" id="sb">
+  <div class="sb-hdr">
+    <span class="sb-logo">∑ NVC Maths</span>
+    <button class="sb-x" id="sb-x" aria-label="Đóng menu">✕</button>
+  </div>
+  <div class="sb-user" id="sb-user">
+    <div class="sb-uav" id="sb-uav">A</div>
+    <div><div class="sb-uname" id="sb-uname">Admin</div><div id="sb-urole"></div></div>
+  </div>
+  <ul class="sb-nav">
+    <li><a href="index.html"            class="sni"><span class="sni-ico">🏠</span>Trang chủ</a></li>
+    <li><a href="hocsinh.html"          class="sni"><span class="sni-ico">👨‍🎓</span>Học sinh</a></li>
+    <li><a href="diemdanh.html"         class="sni"><span class="sni-ico">📋</span>Điểm danh</a></li>
+    <li><a href="hoctap.html"           class="sni"><span class="sni-ico">📈</span>Học tập</a></li>
+    <li><a href="gopy.html"             class="sni"><span class="sni-ico">💬</span>Góp ý &amp; chia sẻ</a></li>
+    <li><a href="thoikhoabieu.html"     class="sni"><span class="sni-ico">📅</span>Lịch trình</a></li>
+    <li><a href="https://anhlopchunhiem-thaycuong.vercel.app/" target="_blank" class="sni" data-cid="hinhanh"><span class="sni-ico">🖼️</span>Nhật ký ảnh lớp</a></li>
+    <li><a href="tailieu.html"          class="sni"><span class="sni-ico">📁</span>Tài liệu</a></li>
+    <li><a href="thongbao.html"         class="sni"><span class="sni-ico">📢</span>Thông báo</a></li>
+    <li><a href="luutru.html"           class="sni"><span class="sni-ico">🗄️</span>Lưu trữ</a></li>
+    <li><div class="sdiv"></div></li>
+    <li><a href="admin.html"            class="sni act"><span class="sni-ico">🛡️</span>Quản trị</a></li>
+    <li><div class="sni" id="sb-logout" style="cursor:pointer;color:var(--danger)"><span class="sni-ico">🚶</span>Đăng xuất</div></li>
+  </ul>
+  <div class="sb-ft">© 2025 NVC Maths</div>
+</nav>
+
+<!-- Header -->
+<header class="hdr">
+  <button class="hmb" id="hmb"><span></span><span></span><span></span></button>
+  <a href="index.html" class="logo" aria-label="Trang chủ"><div class="logo-ico">∑</div>NVC Maths</a>
+  <div class="hsp"></div>
+  <div class="hactions">
+    <button class="ibtn" id="theme-btn">🌙</button>
+    <div class="lsel" id="lsel">
+      <div class="lbtn" id="lbtn"><span id="lcur">🇻🇳 VI</span> ▾</div>
+      <div class="ldrop">
+        <div class="lopt act" data-l="vi">🇻🇳 Tiếng Việt</div>
+        <div class="lopt"     data-l="en">🇬🇧 English</div>
+      </div>
+    </div>
+    <div class="umenu" id="umenu" style="display:none">
+      <div class="uavbtn" id="uavbtn" tabindex="0">
+        <div class="uav" id="uav">A</div>
+        <span class="uname" id="uname">Admin</span>
+        <span style="color:var(--mu);font-size:.68rem">▾</span>
+      </div>
+      <div class="udrop">
+        <div class="uopt red" id="u-logout">🚪 Đăng xuất</div>
+      </div>
+    </div>
+    <button class="auth-btn" id="auth-btn" style="display:none">🔑 Đăng nhập</button>
+  </div>
+</header>
+
+<!-- Main -->
+<main class="main">
+  <div class="admin-wrap">
+
+    <!-- Access denied -->
+    <div id="access-denied" style="display:none">
+      <div class="access-denied">
+        <span class="access-denied-ico">🔒</span>
+        <div class="access-denied-title">Truy cập bị từ chối</div>
+        <p class="access-denied-desc">Bạn cần có quyền quản trị để truy cập trang này.</p>
+        <a href="index.html" class="btn-back">← Về trang chủ</a>
+      </div>
+    </div>
+
+    <!-- Admin panel -->
+    <div id="admin-panel" style="display:none">
+
+      <div class="admin-title-row">
+        <div class="admin-icon">🛡️</div>
+        <div>
+          <div class="admin-title">Trang quản trị</div>
+          <div class="admin-sub">Quản lý người dùng và nhóm</div>
+        </div>
+      </div>
+
+      <div class="a-tabs">
+        <button class="a-tab act" data-tab="tab-users">👥 Người dùng <span class="tab-c" id="tc-users">0</span></button>
+        <button class="a-tab"     data-tab="tab-groups">📁 Nhóm <span class="tab-c" id="tc-groups">0</span></button>
+      </div>
+
+      <!-- ══ USERS tab ══ -->
+      <div class="a-panel act" id="tab-users">
+
+        <!-- Cài đặt hiển thị thẻ mặc định cho Khách/Chưa đăng nhập -->
+        <div class="grp-form-box" style="margin-bottom:18px">
+          <div class="grp-form-title">⚙️ Cài đặt Thẻ hiển thị mặc định (Chưa đăng nhập & Khách)</div>
+          <p style="font-size:0.79rem;color:var(--mu);margin-bottom:12px">Chọn các thẻ được phép nhìn thấy khi người dùng chưa đăng nhập hoặc khi đăng nhập với vai trò Khách (chưa được gán nhóm). Để trống = Cho phép xem tất cả.</p>
+          <div class="grp-grid-2">
+            <div>
+              <label class="form-label" style="color:var(--p1)">🌐 Khách CHƯA đăng nhập</label>
+              <div class="cards-chk-grid" id="unauth-chk-grid"></div>
+            </div>
+            <div>
+              <label class="form-label" style="color:var(--p1)">👤 Khách ĐÃ đăng nhập (chưa có nhóm)</label>
+              <div class="cards-chk-grid" id="guest-chk-grid"></div>
+            </div>
+          </div>
+          <div style="display:flex;justify-content:flex-end;margin-top:14px">
+            <button type="button" class="bbtn su" id="save-defaults-btn">💾 Lưu cấu hình mặc định</button>
+          </div>
+        </div>
+
+        <!-- Bulk bar -->
+        <div class="bulk-bar hidden" id="bulk-bar">
+          <span class="bulk-cnt" id="bulk-cnt">0 đã chọn</span>
+          <div class="bsep"></div>
+          <select class="bsel" id="bulk-role-sel">
+            <option value="">Chọn vai trò</option>
+            <option value="admin">🛡️ Quản trị</option>
+            <option value="teacher">👨‍🏫 Giáo viên</option>
+            <option value="student">📚 Học sinh</option>
+            <option value="parent">👪 Phụ huynh</option>
+            <option value="guest">👤 Khách</option>
+          </select>
+          <button class="bbtn su" id="bulk-role-btn">✅ Gán vai trò</button>
+          <div class="bsep"></div>
+          <select class="bsel" id="bulk-grp-sel"><option value="">— Nhóm —</option></select>
+          <button class="bbtn pr" id="bulk-grp-btn">📁 Gán nhóm</button>
+          <div class="bsep"></div>
+          <button class="bbtn da" id="bulk-del-btn">🗑️ Xóa</button>
+        </div>
+
+        <!-- Toolbar -->
+        <div class="toolbar">
+          <div class="t-search"><span class="t-search-ico">🔍</span><input type="text" id="users-search" placeholder="Tìm kiếm..."></div>
+          <select class="t-sel" id="role-filter">
+            <option value="">Tất cả vai trò</option>
+            <option value="admin">🛡️ Quản trị</option>
+            <option value="teacher">👨‍🏫 Giáo viên</option>
+            <option value="student">📚 Học sinh</option>
+            <option value="parent">👪 Phụ huynh</option>
+            <option value="guest">👤 Khách</option>
+          </select>
+          <button class="t-btn" id="refresh-btn">🔄 Làm mới</button>
+          <button class="t-btn" id="btn-dl-template" title="Tải file Excel mẫu chuẩn">📥 Tải file mẫu</button>
+          <button class="t-btn" id="btn-import-excel" title="Import danh sách người dùng từ Excel">📤 Import từ Excel</button>
+          <input type="file" id="file-import-input" accept=".xlsx,.xls,.csv" style="display:none">
+        </div>
+
+        <!-- Table -->
+        <div class="tbl-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th><input type="checkbox" class="cb" id="cb-all"></th>
+                <th>Người dùng</th>
+                <th>Vai trò</th>
+                <th>Nhóm</th>
+                <th>Đăng nhập</th>
+                <th>Trạng thái</th>
+                <th>Lần cuối</th>
+                <th>Thao tác</th>
+              </tr>
+            </thead>
+            <tbody id="users-tbody"></tbody>
+          </table>
+        </div>
+        <div class="pgn" id="pgn"></div>
+      </div>
+
+      <!-- ══ GROUPS tab ══ -->
+      <div class="a-panel" id="tab-groups">
+
+        <!-- Create/Edit form -->
+        <div class="grp-form-box" id="grp-form-box">
+          <div class="grp-form-title" id="grp-form-title">🆕 Tạo nhóm mới</div>
+          <form id="grp-form">
+            <div class="grp-grid-2">
+              <div><label class="form-label">Tên nhóm</label><input class="form-input" id="grp-name" placeholder="VD: Lớp 10A1" required></div>
+              <div><label class="form-label">Mô tả</label><input class="form-input" id="grp-desc" placeholder="Mô tả ngắn..."></div>
+            </div>
+            <label class="form-label" style="margin-top:14px;display:block">🃏 Thẻ hiển thị (trống = tất cả)</label>
+            <div class="cards-chk-grid" id="cards-chk-grid"></div>
+            <div style="display:flex;gap:8px;margin-top:18px;justify-content:flex-end;flex-wrap:wrap">
+              <button type="button" class="bbtn pr" id="grp-cancel-btn" style="background:var(--bg);color:var(--tx2);border:1.5px solid var(--bd)">✕ Hủy</button>
+              <button type="submit" class="bbtn su">💾 Lưu nhóm</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="grp-bar">
+          <span style="font-size:.82rem;color:var(--mu)">Danh sách nhóm</span>
+          <button class="bbtn pr" id="grp-new-btn">+ Tạo nhóm mới</button>
+        </div>
+
+        <div class="grp-grid" id="grp-grid"></div>
+      </div>
+
+    </div><!-- /admin-panel -->
+  </div>
+</main>
+
+<!-- Edit User Modal -->
+<div class="mov" id="edit-mov" role="dialog" aria-modal="true">
+  <div class="modal">
+    <button class="m-x" id="edit-mov-x">✕</button>
+    <div class="m-title">✏️ Chỉnh sửa</div>
+    <div class="m-name" id="edit-user-label"></div>
+    <form id="edit-form">
+      <div class="fg"><label class="form-label">Vai trò</label>
+        <select class="fi" id="edit-role">
+          <option value="admin">🛡️ Quản trị viên</option>
+          <option value="teacher">👨‍🏫 Giáo viên</option>
+          <option value="student">📚 Học sinh</option>
+          <option value="parent">👪 Phụ huynh</option>
+          <option value="guest">👤 Khách</option>
+        </select>
+      </div>
+      <div class="fg"><label class="form-label">Nhóm</label>
+        <select class="fi" id="edit-grp"><option value="">— Không có nhóm —</option></select>
+      </div>
+      <button type="submit" class="btn-sub">💾 Lưu thay đổi</button>
+    </form>
+  </div>
+</div>
+
+<!-- Edit Group Modal -->
+<div class="mov" id="edit-grp-mov" role="dialog" aria-modal="true">
+  <div class="modal" style="max-width:430px">
+    <button class="m-x" id="edit-grp-x">✕</button>
+    <div class="m-title">✏️ Chỉnh sửa nhóm</div>
+    <div class="m-name" id="edit-grp-subtitle"></div>
+    <form id="edit-grp-form">
+      <input type="hidden" id="edit-grp-id">
+      <div class="fg"><label class="form-label">Tên nhóm</label><input class="fi" id="edit-grp-name" required></div>
+      <div class="fg"><label class="form-label">Mô tả</label><input class="fi" id="edit-grp-desc"></div>
+      <label class="form-label" style="margin-top:10px;display:block">🃏 Thẻ hiển thị (trống = tất cả)</label>
+      <div class="cards-chk-grid" id="edit-grp-chk-grid" style="max-height:180px;overflow-y:auto;margin-bottom:14px"></div>
+      <button type="submit" class="btn-sub">💾 Lưu thay đổi</button>
+    </form>
+  </div>
+</div>
+
+<!-- Confirm Dialog -->
+<div class="cdlg" id="cdlg" role="alertdialog">
+  <div class="cbox">
+    <div class="cbox-ico">⚠️</div>
+    <div class="cbox-title" id="cdlg-title">Xác nhận</div>
+    <div class="cbox-desc" id="cdlg-desc"></div>
+    <div class="cbox-btns">
+      <button class="btn-c" id="cdlg-cancel">Hủy</button>
+      <button class="btn-cd" id="cdlg-ok">Xác nhận</button>
+    </div>
+  </div>
+</div>
+
+<!-- Import Preview Modal -->
+<div class="mov" id="import-mov" role="dialog" aria-modal="true">
+  <div class="modal" style="max-width:760px">
+    <button class="m-x" id="import-mov-x">✕</button>
+    <div class="m-title">📤 Xem trước Danh sách Import</div>
+    <p style="font-size:0.81rem;color:var(--mu);margin-bottom:10px" id="import-summary-txt">Kiểm tra thông tin trước khi thực hiện ghi vào hệ thống.</p>
+    <div class="imp-prog" id="import-prog-box"><div class="imp-prog-bar" id="import-prog-bar"></div></div>
+    <div id="import-status-msg" style="font-size:0.82rem;font-weight:700;margin-bottom:8px"></div>
+    <div class="imp-tbl-wrap">
+      <table class="imp-tbl">
+        <thead>
+          <tr>
+            <th>STT</th>
+            <th>Họ và tên</th>
+            <th>Email</th>
+            <th>Vai trò</th>
+            <th>Nhóm</th>
+            <th>Trạng thái</th>
+          </tr>
+        </thead>
+        <tbody id="import-tbody"></tbody>
+      </table>
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:14px">
+      <button type="button" class="btn-c" id="import-cancel-btn">Hủy</button>
+      <button type="button" class="btn-sub" id="import-confirm-btn" style="width:auto;padding:8px 22px">🚀 Xác nhận Import</button>
+    </div>
+  </div>
+</div>
+
+<div class="tc" id="tc" aria-live="polite"></div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<!-- SheetJS (Excel & CSV Parsing) -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+<script>
+// ════════════════════════════════════════════
+// CUSTOMIZE: Thay bằng cấu hình Firebase của bạn
+// ════════════════════════════════════════════
+firebase.initializeApp({
+ apiKey: "AIzaSyBVueYYokJdqm_uCMqBL24d6YCtMTamCM8",
+  authDomain: "csdlsongminh.firebaseapp.com",
+  databaseURL: "https://csdlsongminh-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "csdlsongminh",
+  storageBucket: "csdlsongminh.firebasestorage.app",
+  messagingSenderId: "319501136448",
+  appId: "1:319501136448:web:1c2a9a1b5582d3a9f725a5"
+});
+const auth=firebase.auth(),db=firebase.firestore(),rtdb=firebase.database();
+const ADMIN_EMAIL='songminh138@gmail.com';
+
+// ════════════════════════════════════════════
+// CUSTOMIZE: Danh sách card (đồng bộ với index.html)
+// ════════════════════════════════════════════
+const CARDS=[
+  {id:'hocsinh',emoji:'👨‍🎓',name:'Hồ sơ Học sinh'},
+  {id:'diemdanh',emoji:'📋',name:'Điểm danh & Nề nếp'},
+  {id:'hoctap',emoji:'📈',name:'Kết quả Học tập'},
+  {id:'gopy',emoji:'💬',name:'Góp ý & chia sẻ'},
+  {id:'thoikhoabieu',emoji:'📅',name:'Thời khóa biểu & Sự kiện'},
+  {id:'hinhanh',emoji:'🖼️',name:'Nhật ký ảnh lớp'},
+  {id:'tailieu',emoji:'📚',name:'Tài liệu môn Toán'},
+  {id:'thongbao',emoji:'📢',name:'Bảng Thông báo'},
+  {id:'luutru',emoji:'🗄️',name:'Lưu trữ'},
+  // Thêm card mới ở đây: {id:'trang-moi',emoji:'🎯',name:'Tên thẻ'},
+];
+
+const ROLES=['admin','teacher','student','parent','guest'];
+const ROLE_NAME={admin:'🛡️ Quản trị',teacher:'👨‍🏫 Giáo viên',student:'📚 Học sinh',parent:'👪 Phụ huynh',guest:'👤 Khách'};
+const ROLE_CLS={admin:'r-admin',teacher:'r-teacher',student:'r-student',parent:'r-parent',guest:'r-guest'};
+const $=id=>document.getElementById(id);
+
+// ─── Theme ───────────────────────────────────
+const applyTheme=t=>{document.documentElement.setAttribute('data-theme',t);localStorage.setItem('chd_theme',t);$('theme-btn').textContent=t==='dark'?'☀️':'🌙';};
+applyTheme(localStorage.getItem('chd_theme')||'light');
+$('theme-btn').addEventListener('click',()=>applyTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark'));
+
+// ─── Toast ───────────────────────────────────
+const toast=(msg,type='i',dur=3000)=>{
+  const el=document.createElement('div');el.className=`toast ${type}`;
+  el.innerHTML=`<span>${{i:'ℹ️',s:'✅',e:'❌'}[type]}</span> ${msg}`;
+  $('tc').appendChild(el);
+  setTimeout(()=>{el.classList.add('out');setTimeout(()=>el.remove(),300);},dur);
+};
+
+// ─── Confirm dialog ──────────────────────────
+let confirmCb=null;
+const confirm_=(title,desc,cb)=>{
+  $('cdlg-title').textContent=title; $('cdlg-desc').textContent=desc;
+  $('cdlg').classList.add('open'); confirmCb=cb;
+};
+$('cdlg-cancel').addEventListener('click',()=>$('cdlg').classList.remove('open'));
+$('cdlg-ok').addEventListener('click',()=>{$('cdlg').classList.remove('open');if(confirmCb)confirmCb();});
+
+// ─── Sidebar / UI ────────────────────────────
+const initUI=()=>{
+  const sb=$('sb'),sov=$('sov'),hmb=$('hmb');
+  const open=()=>{sb.classList.add('open');sov.classList.add('open');hmb.classList.add('open');document.body.style.overflow='hidden';};
+  const close=()=>{sb.classList.remove('open');sov.classList.remove('open');hmb.classList.remove('open');document.body.style.overflow='';};
+  hmb.addEventListener('click',()=>sb.classList.contains('open')?close():open());
+  sov.addEventListener('click',close); $('sb-x').addEventListener('click',close);
+  // Lang
+  const lsel=$('lsel'),lcur=$('lcur');
+  let lang=localStorage.getItem('chd_lang')||'vi';
+  lcur.textContent=lang==='vi'?'🇻🇳 VI':'🇬🇧 EN';
+  document.querySelectorAll('.lopt').forEach(o=>{
+    o.classList.toggle('act',o.dataset.l===lang);
+    o.addEventListener('click',()=>{lang=o.dataset.l;localStorage.setItem('chd_lang',lang);lcur.textContent=lang==='vi'?'🇻🇳 VI':'🇬🇧 EN';lsel.classList.remove('open');document.querySelectorAll('.lopt').forEach(x=>x.classList.toggle('act',x.dataset.l===lang));});
+  });
+  $('lbtn').addEventListener('click',e=>{e.stopPropagation();lsel.classList.toggle('open');});
+  document.addEventListener('click',()=>lsel.classList.remove('open'));
+  // User dropdown
+  const um=$('umenu');
+  $('uavbtn').addEventListener('click',e=>{e.stopPropagation();um.classList.toggle('open');});
+  document.addEventListener('click',()=>um.classList.remove('open'));
+  $('u-logout').addEventListener('click',()=>{auth.signOut();window.location.href='index.html';});
+  $('sb-logout').addEventListener('click',()=>{auth.signOut();window.location.href='index.html';});
+  // Tabs
+  document.querySelectorAll('.a-tab').forEach(t=>t.addEventListener('click',()=>{
+    document.querySelectorAll('.a-tab').forEach(x=>x.classList.remove('act'));
+    document.querySelectorAll('.a-panel').forEach(x=>x.classList.remove('act'));
+    t.classList.add('act');
+    $(t.dataset.tab).classList.add('act');
+  }));
+};
+
+// ─── Auth state ──────────────────────────────
+auth.onAuthStateChanged(async user=>{
+  if(!user){window.location.href='index.html';return;}
+  const isAdmEmail = (user.email||'').trim().toLowerCase() === ADMIN_EMAIL.trim().toLowerCase();
+  const snap=await db.collection('users').doc(user.uid).get().catch(()=>null);
+  let ud=snap?.data();
+  if(!isAdmEmail && (!ud||ud.role!=='admin')){
+    $('ldr').classList.add('gone');$('access-denied').style.display='block';setTimeout(()=>$('ldr')?.remove(),500);return;
+  }
+  if(isAdmEmail && (!ud || ud.role!=='admin')){
+    ud = ud || { uid:user.uid, email:user.email, displayName:user.displayName||user.email?.split('@')[0]||'Admin' };
+    ud.role = 'admin';
+    db.collection('users').doc(user.uid).set({ ...ud, role:'admin' }, { merge: true }).catch(()=>{});
+  }
+  // Render user in header
+  const init=(ud.displayName||user.email||'A').charAt(0).toUpperCase();
+  const photo=ud.photoURL||user.photoURL;
+  ['uav','sb-uav'].forEach(id=>{const el=$(id);if(el)el.innerHTML=photo?`<img src="${photo}" alt="">`:`${init}`;});
+  if($('uname'))$('uname').textContent=(ud.displayName||'Admin').split(' ')[0];
+  if($('sb-user'))$('sb-user').style.display='flex';
+  if($('sb-uname'))$('sb-uname').textContent=ud.displayName||user.email;
+  if($('sb-urole'))$('sb-urole').innerHTML=`<span class="role-badge r-admin">Quản trị</span>`;
+  $('umenu').style.display='flex';
+  initUI(); buildCardsChecks(); loadGroups(); loadUsers();
+  $('ldr').classList.add('gone'); $('admin-panel').style.display='block';
+  setTimeout(()=>$('ldr')?.remove(),500);
+});
+
+// ─── Pagination state ─────────────────────────
+let allUsers=[],filtered=[],curPage=1;
+const PAGE=15;
+let groups={};
+let selectedUids=new Set();
+let editUid=null, editingGrpId=null;
+let onlineMap={};
+rtdb.ref('/online').on('value',s=>{onlineMap=s.val()||{};});
+
+// ─── Load Users ───────────────────────────────
+const loadUsers = async () => {
+  try {
+    const snap = await db.collection('users').get();
+    allUsers = snap.docs.map(d => ({ uid: d.id, ...d.data() }));
+    allUsers.sort((a, b) => {
+      const tA = a.lastLogin ? (a.lastLogin.seconds || 0) : 0;
+      const tB = b.lastLogin ? (b.lastLogin.seconds || 0) : 0;
+      return tB - tA;
+    });
+    $('tc-users').textContent = allUsers.length;
+    selectedUids.clear(); updateBulkBar(); applyFilter();
+  } catch (e) {
+    console.error('Lỗi tải người dùng:', e);
+    toast('Lỗi tải người dùng', 'e');
+  }
+};
+
+const applyFilter = () => {
+  const q = $('users-search').value.trim().toLowerCase();
+  const r = $('role-filter').value;
+  filtered = allUsers.filter(u => {
+    const nameStr = (u.displayName || u.name || '').toLowerCase();
+    const emailStr = (u.email || '').toLowerCase();
+    const matchQ = !q || nameStr.includes(q) || emailStr.includes(q);
+    const matchR = !r || u.role === r;
+    return matchQ && matchR;
+  });
+  curPage = 1; renderTable();
+};
+
+const fmtDate=ts=>{if(!ts)return'—';const d=ts.toDate?ts.toDate():new Date(ts.seconds*1000);return d.toLocaleDateString('vi-VN');};
+
+const renderTable=()=>{
+  const start=(curPage-1)*PAGE, end=start+PAGE;
+  const page=filtered.slice(start,end);
+  const tbody=$('users-tbody');
+  if(!page.length){tbody.innerHTML=`<tr><td colspan="8" style="text-align:center;color:var(--mu);padding:28px">Không có dữ liệu</td></tr>`;renderPgn();return;}
+  tbody.innerHTML=page.map(u=>{
+    const grpName=groups[u.groupId]?.name||'—';
+    const isOn=onlineMap[u.uid]?.status==='online';
+    const badge=`<span class="role-badge ${ROLE_CLS[u.role]||'r-guest'}">${ROLE_NAME[u.role]||u.role}</span>`;
+    const prov=u.provider==='google.com'?'Google':'Email';
+    const init=(u.displayName||u.name||u.email||'U').charAt(0).toUpperCase();
+    const avHtml=u.photoURL?`<img src="${u.photoURL}" alt="">`:`${init}`;
+    const chk=selectedUids.has(u.uid)?'checked':'';
+    return `<tr>
+      <td><input type="checkbox" class="cb row-cb" data-uid="${u.uid}" ${chk}></td>
+      <td><div class="user-cell"><div class="row-av">${avHtml}</div><div><div class="row-name">${u.displayName||u.name||'—'}</div><div class="row-email">${u.email||'—'}</div></div></div></td>
+      <td>${badge}</td>
+      <td style="font-size:.78rem;color:var(--mu)">${grpName}</td>
+      <td style="font-size:.78rem;color:var(--mu)">${prov}</td>
+      <td><span class="status-dot ${isOn?'s-on':'s-off'}"></span> ${isOn?'Online':'Offline'}</td>
+      <td style="font-size:.77rem;color:var(--mu)">${fmtDate(u.lastLogin)}</td>
+      <td><div class="act-btns">
+        <button class="act-btn edit" onclick="openEditUser('${u.uid}')">✏️ Sửa</button>
+        <button class="act-btn del" onclick="deleteUser('${u.uid}','${u.displayName||u.email}')">🗑️</button>
+      </div></td>
+    </tr>`;
+  }).join('');
+  // Re-attach row checkboxes
+  document.querySelectorAll('.row-cb').forEach(cb=>{
+    cb.addEventListener('change',()=>{
+      if(cb.checked) selectedUids.add(cb.dataset.uid); else selectedUids.delete(cb.dataset.uid);
+      updateBulkBar();
+    });
+  });
+  renderPgn();
+};
+
+const renderPgn=()=>{
+  const total=Math.ceil(filtered.length/PAGE), pgn=$('pgn');
+  pgn.innerHTML='';
+  if(total<=1)return;
+  const addBtn=(label,page,active,disabled)=>{
+    const b=document.createElement('button');
+    b.className='pgn-btn'+(active?' act':'');
+    b.textContent=label;b.disabled=disabled||false;
+    b.addEventListener('click',()=>{curPage=page;renderTable();});
+    pgn.appendChild(b);
+  };
+  addBtn('‹',curPage-1,false,curPage===1);
+  for(let i=1;i<=total;i++) if(i===1||i===total||Math.abs(i-curPage)<=1) addBtn(i,i,i===curPage);
+  addBtn('›',curPage+1,false,curPage===total);
+};
+
+const updateBulkBar=()=>{
+  const n=selectedUids.size, bar=$('bulk-bar');
+  bar.classList.toggle('hidden',n===0);
+  $('bulk-cnt').textContent=`${n} đã chọn`;
+  // Sync cb-all
+  const total=filtered.slice((curPage-1)*PAGE,curPage*PAGE).length;
+  $('cb-all').indeterminate=n>0&&n<total;
+  $('cb-all').checked=n>=total&&total>0;
+};
+
+// Select all
+$('cb-all').addEventListener('change',function(){
+  filtered.slice((curPage-1)*PAGE,curPage*PAGE).forEach(u=>{
+    if(this.checked) selectedUids.add(u.uid); else selectedUids.delete(u.uid);
+  });
+  renderTable(); updateBulkBar();
+});
+
+// Search / filter
+$('users-search').addEventListener('input',applyFilter);
+$('role-filter').addEventListener('change',applyFilter);
+$('refresh-btn').addEventListener('click',loadUsers);
+
+// Bulk actions
+$('bulk-role-btn').addEventListener('click',async()=>{
+  const role=$('bulk-role-sel').value; if(!role||!selectedUids.size)return;
+  confirm_(`Gán vai trò "${ROLE_NAME[role]||role}"`,`Áp dụng cho ${selectedUids.size} người dùng?`,async()=>{
+    const batch=db.batch();
+    selectedUids.forEach(uid=>batch.update(db.collection('users').doc(uid),{role}));
+    await batch.commit().catch(()=>toast('Lỗi','e'));
+    toast(`Đã cập nhật ${selectedUids.size} người dùng`,'s');
+    selectedUids.clear(); loadUsers();
+  });
+});
+$('bulk-grp-btn').addEventListener('click',async()=>{
+  const grpId=$('bulk-grp-sel').value; if(!selectedUids.size)return;
+  confirm_(`Gán nhóm`,`Áp dụng cho ${selectedUids.size} người dùng?`,async()=>{
+    const batch=db.batch();
+    selectedUids.forEach(uid=>batch.update(db.collection('users').doc(uid),{groupId:grpId||null}));
+    await batch.commit().catch(()=>toast('Lỗi','e'));
+    toast(`Đã cập nhật ${selectedUids.size} người dùng`,'s');
+    selectedUids.clear(); loadUsers();
+  });
+});
+$('bulk-del-btn').addEventListener('click',()=>{
+  if(!selectedUids.size)return;
+  confirm_('Xóa người dùng',`Xóa ${selectedUids.size} người dùng? Không thể khôi phục!`,async()=>{
+    const batch=db.batch();
+    selectedUids.forEach(uid=>batch.delete(db.collection('users').doc(uid)));
+    await batch.commit().catch(()=>toast('Lỗi xóa','e'));
+    toast(`Đã xóa ${selectedUids.size} người dùng`,'s');
+    selectedUids.clear(); loadUsers();
+  });
+});
+
+// Edit User
+const openEditUser=uid=>{
+  const u=allUsers.find(x=>x.uid===uid); if(!u)return;
+  editUid=uid;
+  $('edit-user-label').textContent=u.displayName||u.email;
+  $('edit-role').value=u.role||'guest';
+  $('edit-grp').value=u.groupId||'';
+  $('edit-mov').classList.add('open');
+};
+$('edit-mov-x').addEventListener('click',()=>$('edit-mov').classList.remove('open'));
+$('edit-form').addEventListener('submit',async e=>{
+  e.preventDefault();
+  if(!editUid)return;
+  await db.collection('users').doc(editUid).update({role:$('edit-role').value,groupId:$('edit-grp').value||null}).catch(()=>toast('Lỗi lưu','e'));
+  toast('Đã lưu!','s'); $('edit-mov').classList.remove('open'); loadUsers();
+});
+
+const deleteUser=async(uid,name)=>{
+  confirm_('Xóa người dùng',`Xóa "${name}" khỏi Firestore? (Không xóa được tài khoản Auth)`,async()=>{
+    await db.collection('users').doc(uid).delete().catch(()=>toast('Lỗi','e'));
+    toast('Đã xóa!','s'); loadUsers();
+  });
+};
+
+// ─── Groups ───────────────────────────────────
+const loadGroups=async()=>{
+  try{
+    const snap=await db.collection('groups').orderBy('createdAt','desc').get();
+    groups={};
+    snap.forEach(d=>groups[d.id]=d.data());
+    $('tc-groups').textContent=snap.size;
+    renderGroups(); populateGroupSelects();
+  } catch{}
+};
+
+const renderGroups=()=>{
+  const grid=$('grp-grid');
+  const list=Object.entries(groups);
+  if(!list.length){grid.innerHTML=`<div class="empty-grp"><span class="ico">📭</span>Chưa có nhóm nào. Tạo nhóm mới để bắt đầu!</div>`;return;}
+  grid.innerHTML=list.map(([id,g])=>`
+    <div class="grp-card">
+      <div class="grp-card-name">📁 ${g.name||'Nhóm'}</div>
+      <div class="grp-card-desc">${g.desc||g.description||''}</div>
+      <div class="grp-tags">
+        ${(!g.visibleCards?.length)?`<span class="grp-tag all">✓ Tất cả thẻ</span>`:g.visibleCards.map(c=>{const card=CARDS.find(x=>x.id===c);return`<span class="grp-tag">${card?card.emoji:''} ${card?card.name:c}</span>`;}).join('')}
+      </div>
+      <div class="grp-actions">
+        <button class="act-btn edit" onclick="editGroup('${id}')">✏️ Sửa</button>
+        <button class="act-btn del" onclick="deleteGroup('${id}','${g.name||'nhóm'}')">🗑️ Xóa</button>
+      </div>
+    </div>`).join('');
+};
+
+const populateGroupSelects=()=>{
+  const opts=['<option value="">— Không có nhóm —</option>',...Object.entries(groups).map(([id,g])=>`<option value="${id}">${g.name}</option>`)].join('');
+  $('edit-grp').innerHTML=opts;
+  $('bulk-grp-sel').innerHTML=opts;
+};
+
+const makeCardsHTML = cls => CARDS.map(c=>`
+    <label class="chk-item">
+      <input type="checkbox" class="${cls}" value="${c.id}">
+      ${c.emoji} ${c.name}
+    </label>`).join('');
+
+const buildCardsChecks=()=>{
+  if($('cards-chk-grid')) $('cards-chk-grid').innerHTML = makeCardsHTML('grp-card-cb');
+  if($('edit-grp-chk-grid')) $('edit-grp-chk-grid').innerHTML = makeCardsHTML('edit-grp-cb');
+  if($('unauth-chk-grid')) $('unauth-chk-grid').innerHTML = makeCardsHTML('unauth-cb');
+  if($('guest-chk-grid')) $('guest-chk-grid').innerHTML = makeCardsHTML('guest-cb');
+  loadDefaultCardsSettings();
+};
+
+const loadDefaultCardsSettings = async () => {
+  try {
+    const snap = await db.collection('settings').doc('default_cards').get();
+    const data = snap.exists ? snap.data() : {};
+    const uList = data.unauthenticatedCards || [];
+    const gList = data.guestCards || [];
+    $('unauth-chk-grid')?.querySelectorAll('.unauth-cb').forEach(cb => cb.checked = uList.includes(cb.value));
+    $('guest-chk-grid')?.querySelectorAll('.guest-cb').forEach(cb => cb.checked = gList.includes(cb.value));
+  } catch(e) {}
+};
+
+$('save-defaults-btn')?.addEventListener('click', async () => {
+  const unauthenticatedCards = [...$('unauth-chk-grid').querySelectorAll('.unauth-cb:checked')].map(cb => cb.value);
+  const guestCards = [...$('guest-chk-grid').querySelectorAll('.guest-cb:checked')].map(cb => cb.value);
+  await db.collection('settings').doc('default_cards').set({
+    unauthenticatedCards,
+    guestCards,
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+  }, { merge: true }).catch(() => toast('Lỗi lưu cấu hình', 'e'));
+  toast('Đã lưu cài đặt thẻ hiển thị mặc định!', 's');
+});
+
+const resetGrpForm=()=>{
+  $('grp-form-title').textContent='🆕 Tạo nhóm mới';
+  $('grp-name').value=''; $('grp-desc').value='';
+  document.querySelectorAll('.grp-card-cb').forEach(cb=>cb.checked=false);
+};
+
+const editGroup=(id)=>{
+  const g=groups[id]; if(!g) return;
+  $('edit-grp-id').value = id;
+  $('edit-grp-subtitle').textContent = g.name || '';
+  $('edit-grp-name').value = g.name || '';
+  $('edit-grp-desc').value = g.desc || g.description || '';
+  const vc = g.visibleCards || [];
+  $('edit-grp-chk-grid').querySelectorAll('.edit-grp-cb').forEach(cb => cb.checked = vc.includes(cb.value));
+  $('edit-grp-mov').classList.add('open');
+};
+
+$('edit-grp-x')?.addEventListener('click', () => $('edit-grp-mov').classList.remove('open'));
+$('edit-grp-form')?.addEventListener('submit', async e => {
+  e.preventDefault();
+  const id = $('edit-grp-id').value; if(!id) return;
+  const name = $('edit-grp-name').value.trim(); if(!name) return;
+  const desc = $('edit-grp-desc').value.trim();
+  const visibleCards = [...$('edit-grp-chk-grid').querySelectorAll('.edit-grp-cb:checked')].map(cb => cb.value);
+  const data = { name, desc, description: desc, visibleCards, updatedAt: firebase.firestore.FieldValue.serverTimestamp() };
+  await db.collection('groups').doc(id).update(data).catch(() => toast('Lỗi cập nhật nhóm', 'e'));
+  toast('Đã cập nhật nhóm!', 's');
+  $('edit-grp-mov').classList.remove('open');
+  loadGroups();
+});
+
+const deleteGroup=(id,name)=>{
+  confirm_('Xóa nhóm',`Xóa nhóm "${name}"? Người dùng trong nhóm sẽ không còn thuộc nhóm này.`,async()=>{
+    await db.collection('groups').doc(id).delete().catch(()=>toast('Lỗi','e'));
+    const usersInGrp=allUsers.filter(u=>u.groupId===id);
+    if(usersInGrp.length){const batch=db.batch();usersInGrp.forEach(u=>batch.update(db.collection('users').doc(u.uid),{groupId:null}));await batch.commit().catch(()=>{});}
+    toast('Đã xóa nhóm!','s'); loadGroups(); loadUsers();
+  });
+};
+
+$('grp-cancel-btn').addEventListener('click',resetGrpForm);
+$('grp-new-btn').addEventListener('click',()=>{ resetGrpForm(); $('grp-form-box').scrollIntoView({behavior:'smooth'}); });
+$('grp-form').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const name=$('grp-name').value.trim(); if(!name)return;
+  const visibleCards=[...$('cards-chk-grid').querySelectorAll('.grp-card-cb:checked')].map(cb=>cb.value);
+  const data={name,desc:$('grp-desc').value.trim(),description:$('grp-desc').value.trim(),visibleCards,updatedAt:firebase.firestore.FieldValue.serverTimestamp()};
+  try{
+    await db.collection('groups').add({...data,createdAt:firebase.firestore.FieldValue.serverTimestamp(),createdBy:auth.currentUser.uid});
+    toast('Đã tạo nhóm mới!','s');
+    resetGrpForm(); loadGroups();
+  } catch{ toast('Lỗi tạo nhóm','e'); }
+});
+
+// ════════════════════════════════════════════
+// EXCEL IMPORT FEATURE (Tải file mẫu, Xem trước & Import hàng loạt)
+// ════════════════════════════════════════════
+let pendingImportRows = [];
+
+const downloadUserImportTemplate = () => {
+  if (typeof XLSX === 'undefined') {
+    toast('Chưa tải được thư viện Excel, vui lòng thử lại', 'e');
+    return;
+  }
+  const headers = ['Họ tên', 'Email', 'Vai trò', 'Nhóm', 'Mật khẩu'];
+  const sampleRows = [
+    ['Nguyễn Văn An', 'hocsinh.an@gmail.com', 'Học sinh', 'Nhóm Toán 10A1', 'Chd@123456'],
+    ['Trần Thị Bình', 'giaovien.binh@gmail.com', 'Giáo viên', '', 'Chd@123456'],
+    ['Lê Hoàng Cường', 'phuhuynh.cuong@gmail.com', 'Phụ huynh', '', 'Chd@123456']
+  ];
+  const ws = XLSX.utils.aoa_to_sheet([headers, ...sampleRows]);
+  ws['!cols'] = [{ wch: 22 }, { wch: 26 }, { wch: 14 }, { wch: 20 }, { wch: 16 }];
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'DanhSachNguoiDung');
+  XLSX.writeFile(wb, 'mau_import_nguoi_dung.xlsx');
+  toast('Đã tải xuống file Excel mẫu!', 's');
+};
+
+const normalizeImportRole = (rStr) => {
+  const s = String(rStr || '').trim().toLowerCase();
+  if (['admin', 'quản trị', 'quan tri'].includes(s)) return 'admin';
+  if (['teacher', 'giáo viên', 'giao vien'].includes(s)) return 'teacher';
+  if (['student', 'học sinh', 'hoc sinh'].includes(s)) return 'student';
+  if (['parent', 'phụ huynh', 'phu huynh'].includes(s)) return 'parent';
+  return 'guest';
+};
+
+const formatRoleBadge = (role) => {
+  const map = {
+    admin: '🛡️ Quản trị',
+    teacher: '👨‍🏫 Giáo viên',
+    student: '📚 Học sinh',
+    parent: '👪 Phụ huynh',
+    guest: '👤 Khách'
+  };
+  return map[role] || '👤 Khách';
+};
+
+const handleUserImportFile = (file) => {
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const data = new Uint8Array(e.target.result);
+      const workbook = XLSX.read(data, { type: 'array' });
+      const firstSheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[firstSheetName];
+      const jsonRows = XLSX.utils.sheet_to_json(worksheet, { defval: '' });
+
+      if (!jsonRows || !jsonRows.length) {
+        toast('File Excel trống hoặc không đúng định dạng', 'e');
+        return;
+      }
+
+      pendingImportRows = [];
+      const tbody = $('import-tbody');
+      tbody.innerHTML = '';
+
+      jsonRows.forEach((row, idx) => {
+        const nameRaw = row['Họ tên'] || row['Họ và tên'] || row['Full Name'] || row['name'] || '';
+        const emailRaw = String(row['Email'] || row['email'] || '').trim();
+        const roleRaw = row['Vai trò'] || row['Role'] || row['role'] || '';
+        const groupRaw = String(row['Nhóm'] || row['Group'] || row['group'] || '').trim();
+        const passRaw = String(row['Mật khẩu'] || row['Password'] || row['password'] || '').trim() || 'ChdMaths@123';
+
+        const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailRaw);
+        const normRole = normalizeImportRole(roleRaw);
+        const name = nameRaw.trim() || (isValidEmail ? emailRaw.split('@')[0] : 'Người dùng');
+
+        // Tìm nhóm theo tên hoặc ID
+        let matchedGroupId = '';
+        let groupStatusMsg = '';
+        if (groupRaw) {
+          const foundGroupEntry = Object.entries(groups).find(([gid, gObj]) => {
+            return gid === groupRaw || (gObj.name && gObj.name.trim().toLowerCase() === groupRaw.toLowerCase());
+          });
+          if (foundGroupEntry) {
+            matchedGroupId = foundGroupEntry[0];
+            groupStatusMsg = foundGroupEntry[1].name;
+          } else {
+            groupStatusMsg = `⚠️ Nhóm "${groupRaw}" không tồn tại`;
+          }
+        } else {
+          groupStatusMsg = '—';
+        }
+
+        const isExistingUser = allUsers.some(u => (u.email || '').toLowerCase() === emailRaw.toLowerCase());
+        let statusBadge = '';
+        let valid = false;
+
+        if (!isValidEmail) {
+          statusBadge = '<span class="imp-badge imp-err">❌ Lỗi Email</span>';
+        } else if (isExistingUser) {
+          statusBadge = '<span class="imp-badge imp-warn">🔄 Sẽ cập nhật</span>';
+          valid = true;
+        } else {
+          statusBadge = '<span class="imp-badge imp-ok">✨ Sẽ tạo mới</span>';
+          valid = true;
+        }
+
+        if (valid) {
+          pendingImportRows.push({
+            name,
+            email: emailRaw.toLowerCase(),
+            role: normRole,
+            groupId: matchedGroupId,
+            password: passRaw,
+            isExisting: isExistingUser
+          });
+        }
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${idx + 1}</td>
+          <td style="font-weight:700">${name}</td>
+          <td>${emailRaw}</td>
+          <td>${formatRoleBadge(normRole)}</td>
+          <td>${groupStatusMsg}</td>
+          <td>${statusBadge}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      $('import-summary-txt').textContent = `Đọc được ${jsonRows.length} dòng — Hợp lệ để import: ${pendingImportRows.length} tài khoản.`;
+      $('import-prog-box').style.display = 'none';
+      $('import-status-msg').textContent = '';
+      $('import-confirm-btn').disabled = pendingImportRows.length === 0;
+      $('import-mov').classList.add('open');
+    } catch (err) {
+      console.error(err);
+      toast('Lỗi đọc file Excel: ' + err.message, 'e');
+    }
+  };
+  reader.readAsArrayBuffer(file);
+};
+
+const executeBulkImport = async () => {
+  if (!pendingImportRows.length) return;
+  const btn = $('import-confirm-btn');
+  const progBox = $('import-prog-box');
+  const progBar = $('import-prog-bar');
+  const statusMsg = $('import-status-msg');
+
+  btn.disabled = true;
+  progBox.style.display = 'block';
+  let createdCount = 0;
+  let updatedCount = 0;
+  let errorCount = 0;
+
+  // Khởi tạo Secondary Firebase App Instance để không làm đăng xuất Admin hiện tại
+  let importApp = null;
+  try {
+    importApp = firebase.initializeApp(firebase.app().options, 'ImportAppInstance_' + Date.now());
+  } catch (e) {
+    importApp = firebase.app('ImportAppInstance');
+  }
+  const importAuth = importApp.auth();
+
+  for (let i = 0; i < pendingImportRows.length; i++) {
+    const item = pendingImportRows[i];
+    const pct = Math.round(((i + 1) / pendingImportRows.length) * 100);
+    progBar.style.width = pct + '%';
+    statusMsg.textContent = `Đang xử lý (${i + 1}/${pendingImportRows.length}): ${item.email}...`;
+
+    try {
+      // 1. Kiểm tra doc user trong firestore theo email hoặc uid
+      let existingDocId = null;
+      const existSnapshot = await db.collection('users').where('email', '==', item.email).get();
+      if (!existSnapshot.empty) {
+        existingDocId = existSnapshot.docs[0].id;
+      }
+
+      if (existingDocId) {
+        // Cập nhật thông tin user đã tồn tại
+        const updateData = {
+          displayName: item.name,
+          name: item.name,
+          role: item.role,
+          groupId: item.groupId || null,
+          lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        };
+        await db.collection('users').doc(existingDocId).set(updateData, { merge: true });
+        updatedCount++;
+      } else {
+        // Tạo tài khoản Auth qua Secondary App
+        let newUid = null;
+        try {
+          const cred = await importAuth.createUserWithEmailAndPassword(item.email, item.password);
+          newUid = cred.user.uid;
+          await importAuth.signOut();
+        } catch (authErr) {
+          if (authErr.code === 'auth/email-already-in-use') {
+            try {
+              const signCred = await importAuth.signInWithEmailAndPassword(item.email, item.password);
+              newUid = signCred.user.uid;
+              await importAuth.signOut();
+            } catch (signInErr) {
+              console.warn('Email đã tồn tại trên Auth nhưng không đăng nhập được bằng mật khẩu trong Excel:', item.email);
+            }
+          } else {
+            console.warn('Lỗi tạo auth cho ' + item.email, authErr);
+            errorCount++;
+            continue;
+          }
+        }
+
+        if (newUid) {
+          const newDocData = {
+            uid: newUid,
+            email: item.email,
+            displayName: item.name,
+            name: item.name,
+            role: item.role,
+            groupId: item.groupId || null,
+            provider: 'password',
+            status: 'active',
+            lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          };
+          await db.collection('users').doc(newUid).set(newDocData, { merge: true });
+          createdCount++;
+        } else {
+          updatedCount++;
+        }
+      }
+    } catch (err) {
+      console.error('Lỗi import user ' + item.email, err);
+      errorCount++;
+    }
+  }
+
+  // Hoàn tất
+  statusMsg.textContent = `🎉 Hoàn tất! Tạo mới: ${createdCount} | Cập nhật: ${updatedCount} | Lỗi: ${errorCount}`;
+  toast(`Đã import xong (${createdCount} mới, ${updatedCount} cập nhật)`, 's');
+  btn.disabled = false;
+  setTimeout(() => {
+    $('import-mov').classList.remove('open');
+    loadUsers();
+  }, 1600);
+};
+
+// Gán sự kiện cho các nút Import
+$('btn-dl-template')?.addEventListener('click', downloadUserImportTemplate);
+$('btn-import-excel')?.addEventListener('click', () => $('file-import-input')?.click());
+$('file-import-input')?.addEventListener('change', (e) => {
+  if (e.target.files && e.target.files[0]) {
+    handleUserImportFile(e.target.files[0]);
+    e.target.value = '';
+  }
+});
+$('import-mov-x')?.addEventListener('click', () => $('import-mov').classList.remove('open'));
+$('import-cancel-btn')?.addEventListener('click', () => $('import-mov').classList.remove('open'));
+$('import-confirm-btn')?.addEventListener('click', executeBulkImport);
+
+document.addEventListener('DOMContentLoaded',()=>{});
+</script>
+</body>
+</html>

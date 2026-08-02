@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- CUSTOMIZE [1]: Đổi mô tả trang (hiện trên Google) -->
+  <meta name="description" content="Không gian văn hóa Hồ Chí Minh - Nơi lưu giữ, tìm hiểu và lan tỏa tư tưởng, đạo đức, phong cách Hồ Chí Minh.">
+  <!-- CUSTOMIZE [2]: Đổi tiêu đề tab trình duyệt -->
+  <title>Không gian văn hóa Hồ Chí Minh</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Baloo+2:wght@700;800&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════════
+   CUSTOMIZE [3]: ĐỔI MÀU SẮC TẠI ĐÂY
+   Chỉ cần thay giá trị hex/gradient là xong
+══════════════════════════════════════════ */
+:root {
+  --p1: #1d4ed8;          /* Màu chính (chủ đạo - xanh dương hiện đại) */
+  --p2: #1e40af;          /* Màu chính - cuối gradient */
+  --accent: #dc2626;      /* Màu nhấn (đỏ truyền thống) */
+  --bg:  #f8fafc;         /* Nền trang chính */
+  --bg2: #ffffff;         /* Nền card, header, sidebar */
+  --tx:  #0f172a;         /* Chữ chính */
+  --tx2: #334155;         /* Chữ phụ */
+  --mu:  #64748b;         /* Chữ mờ */
+  --bd:  rgba(29,78,216,.14); /* Viền */
+  --sh:  0 8px 30px rgba(15,23,42,.08);
+  --sh2: 0 18px 50px rgba(15,23,42,.15);
+  --ov:  rgba(15,23,42,.55);
+  --sw: 268px; --hh: 60px; --r: 16px;
+}
+[data-theme=dark] {
+  --bg:#0f172a; --bg2:#1e293b; --tx:#f8fafc; --tx2:#94a3b8; --mu:#64748b;
+  --bd:rgba(255,255,255,.12); --sh:0 8px 32px rgba(0,0,0,.45); --sh2:0 18px 55px rgba(0,0,0,.6); --ov:rgba(0,0,0,.7);
+}
+
+/* Reset & base */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--tx);overflow-x:hidden;min-height:100vh;transition:background .3s,color .3s}
+a{text-decoration:none;color:inherit}
+button{cursor:pointer;border:none;background:none;font-family:inherit}
+ul{list-style:none}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:var(--p1);border-radius:3px}
+
+/* ── HEADER ──────────────────────────────── */
+.hdr{position:fixed;top:0;left:0;right:0;height:var(--hh);background:var(--bg2);backdrop-filter:blur(20px);border-bottom:1px solid var(--bd);display:flex;align-items:center;padding:0 14px;gap:9px;z-index:1000;box-shadow:var(--sh);transition:background .3s}
+[data-theme=dark] .hdr{background:rgba(10,10,26,.95)}
+
+.hmb{display:flex;flex-direction:column;justify-content:center;gap:5px;width:38px;height:38px;border-radius:10px;flex-shrink:0;align-items:center}
+.hmb:hover{background:var(--bd)}
+.hmb span{display:block;width:20px;height:2px;background:var(--tx);border-radius:2px;transition:.3s}
+.hmb.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.hmb.open span:nth-child(2){opacity:0;transform:scaleX(0)}
+.hmb.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+/* CUSTOMIZE [4]: Đổi màu logo */
+.logo{display:flex;align-items:center;gap:8px;font-family:'Baloo 2',cursive;font-weight:800;font-size:1.28rem;background:linear-gradient(135deg,var(--p1),var(--accent));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap}
+.logo-ico{width:34px;height:34px;background:linear-gradient(135deg,var(--p1),var(--p2));border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.95rem;flex-shrink:0;box-shadow:0 4px 12px rgba(103,126,234,.4)}
+
+.hsp{flex:1}
+.hactions{display:flex;align-items:center;gap:6px}
+.ibtn{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;color:var(--tx2);font-size:.9rem;transition:.25s}
+.ibtn:hover{background:var(--bd);color:var(--p1)}
+
+.lsel{position:relative}
+.lbtn{display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:9px;background:var(--bd);color:var(--tx2);font-size:.77rem;font-weight:700;cursor:pointer;transition:.25s}
+.lbtn:hover{background:var(--p1);color:#fff}
+.ldrop{position:absolute;top:calc(100% + 6px);right:0;background:var(--bg2);border:1px solid var(--bd);border-radius:11px;box-shadow:var(--sh2);min-width:128px;overflow:hidden;opacity:0;transform:translateY(-8px);pointer-events:none;transition:.25s;z-index:20}
+.lsel.open .ldrop{opacity:1;transform:none;pointer-events:all}
+.lopt{display:flex;align-items:center;gap:7px;padding:9px 13px;font-size:.82rem;font-weight:600;color:var(--tx2);cursor:pointer;transition:.2s}
+.lopt:hover,.lopt.act{background:var(--bg);color:var(--p1)}
+
+.auth-btn{display:flex;align-items:center;gap:7px;padding:7px 15px;border-radius:20px;background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff;font-size:.82rem;font-weight:700;box-shadow:0 4px 14px rgba(103,126,234,.4);transition:.25s;white-space:nowrap}
+.auth-btn:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(103,126,234,.5)}
+
+.umenu{position:relative}
+.uavbtn{display:flex;align-items:center;gap:7px;padding:4px 10px 4px 4px;border-radius:22px;background:var(--bd);cursor:pointer;transition:.25s}
+.uavbtn:hover{background:rgba(103,126,234,.15)}
+.uav{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--p1),var(--accent));display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:.8rem;overflow:hidden;flex-shrink:0}
+.uav img{width:100%;height:100%;object-fit:cover}
+.uname{font-size:.8rem;font-weight:700;color:var(--tx);max-width:88px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.udrop{position:absolute;top:calc(100% + 6px);right:0;background:var(--bg2);border:1px solid var(--bd);border-radius:11px;box-shadow:var(--sh2);min-width:155px;overflow:hidden;opacity:0;transform:translateY(-8px);pointer-events:none;transition:.25s;z-index:20}
+.umenu.open .udrop{opacity:1;transform:none;pointer-events:all}
+.uopt{display:flex;align-items:center;gap:9px;padding:11px 14px;font-size:.83rem;font-weight:600;color:var(--tx2);cursor:pointer;transition:.2s;border-top:1px solid var(--bd)}
+.uopt:first-child{border-top:none}
+.uopt:hover{background:var(--bg);color:var(--tx)}
+.uopt.red:hover{color:#ff6b6b}
+
+/* ── SIDEBAR ─────────────────────────────── */
+.sov{position:fixed;inset:0;background:var(--ov);z-index:998;opacity:0;pointer-events:none;transition:.3s;backdrop-filter:blur(4px)}
+.sov.open{opacity:1;pointer-events:all}
+.sb{position:fixed;top:0;left:0;width:var(--sw);height:100vh;background:var(--bg2);z-index:999;transform:translateX(-100%);transition:transform .42s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;box-shadow:4px 0 36px rgba(0,0,0,.14);overflow-y:auto}
+.sb.open{transform:none}
+.sb-hdr{display:flex;align-items:center;justify-content:space-between;padding:15px 17px;border-bottom:1px solid var(--bd);min-height:var(--hh);flex-shrink:0}
+.sb-logo{font-family:'Baloo 2',cursive;font-weight:800;font-size:1.18rem;background:linear-gradient(135deg,var(--p1),var(--accent));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.sb-x{width:29px;height:29px;border-radius:7px;display:flex;align-items:center;justify-content:center;color:var(--mu);transition:.2s;cursor:pointer}
+.sb-x:hover{background:var(--bd);color:var(--tx)}
+.sb-user{display:none;align-items:center;gap:10px;padding:13px 17px;border-bottom:1px solid var(--bd);flex-shrink:0}
+.sb-uav{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--p1),var(--accent));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:.95rem;flex-shrink:0;overflow:hidden}
+.sb-uav img{width:100%;height:100%;object-fit:cover}
+.sb-uname{font-weight:700;font-size:.86rem;color:var(--tx)}
+.role-badge{display:inline-block;padding:2px 8px;border-radius:8px;font-size:.68rem;font-weight:700}
+.r-admin{background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff}
+.r-teacher{background:linear-gradient(135deg,#43e97b,#38f9d7);color:#0a3020}
+.r-student{background:linear-gradient(135deg,#4facfe,#00f2fe);color:#0a2040}
+.r-parent{background:linear-gradient(135deg,#f093fb,#f5576c);color:#fff}
+.r-guest{background:var(--bd);color:var(--mu)}
+.sb-nav{flex:1;padding:9px 0;overflow-y:auto}
+.sni{display:flex;align-items:center;gap:12px;padding:11px 17px;margin:2px 9px;border-radius:12px;color:var(--tx2);font-size:.87rem;font-weight:600;cursor:pointer;transition:.2s}
+.sni:hover,.sni.act{background:rgba(103,126,234,.1);color:var(--p1)}
+.sni-ico{font-size:1.08rem;width:24px;text-align:center;flex-shrink:0}
+.sdiv{height:1px;background:var(--bd);margin:7px 17px}
+.sni-admin{display:flex;align-items:center;gap:12px;padding:11px 17px;margin:4px 9px;border-radius:12px;color:var(--p1);font-size:.87rem;font-weight:700;cursor:pointer;transition:.2s;background:rgba(103,126,234,.08)}
+.sni-admin:hover{background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff}
+.sb-ft{padding:13px 17px;border-top:1px solid var(--bd);font-size:.72rem;color:var(--mu);text-align:center;flex-shrink:0}
+
+/* ── INTRO BOX ───────────────────────────── */
+.main{padding-top:var(--hh);min-height:100vh}
+.intro-sec{padding:28px 18px 18px;background:var(--bg2)}
+.intro-box{max-width:860px;margin:0 auto;background:var(--bg);border:1px solid var(--bd);border-radius:var(--r);padding:20px 26px;display:flex;align-items:center;gap:17px;box-shadow:var(--sh);position:relative;overflow:hidden}
+.intro-box::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--p1),var(--accent),#43e97b)}
+.intro-emo{font-size:2.1rem;flex-shrink:0}
+.intro-title{font-family:'Baloo 2',cursive;font-size:1.12rem;font-weight:800;color:var(--tx);margin-bottom:4px}
+.intro-desc{font-size:.85rem;color:var(--tx2);line-height:1.65}
+.hl{color:var(--p1);font-weight:700}
+
+/* Scroll reveal */
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .55s ease,transform .55s ease}
+.reveal.vis{opacity:1;transform:none}
+
+/* ── CARDS ───────────────────────────────── */
+.cards-sec{padding:32px 18px 44px;background:var(--bg)}
+.sec-hdr{text-align:center;margin-bottom:32px}
+.sec-tag{display:inline-flex;align-items:center;gap:5px;background:rgba(29,78,216,.1);color:var(--p1);padding:5px 13px;border-radius:9px;font-size:.73rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:9px}
+.sec-title{font-family:'Baloo 2',cursive;font-size:clamp(1.55rem,4vw,2.2rem);font-weight:800;color:var(--tx);margin-bottom:6px}
+.sec-sub{color:var(--mu);font-size:.88rem}
+
+.cards-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;max-width:1100px;margin:0 auto}
+
+/* CARD + Stagger animation */
+.card{display:flex;flex-direction:column;align-items:center;text-align:center;background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r);padding:0;cursor:pointer;position:relative;overflow:hidden;box-shadow:var(--sh);
+  /* Stagger start state */
+  opacity:0;transform:translateY(44px) scale(.97);
+  transition:opacity .55s ease,transform .55s cubic-bezier(.34,1.56,.64,1),box-shadow .3s}
+.card.vis{opacity:1;transform:none}
+.card:hover{transform:translateY(-7px) scale(1.025)!important;box-shadow:var(--sh2)}
+
+.c-img-wrap{width:100%;height:220px;overflow:hidden;position:relative;background:#f1f5f9;border-bottom:1px solid var(--bd)}
+.c-img-wrap img{width:100%;height:100%;object-fit:cover;transition:transform .45s ease}
+.card:hover .c-img-wrap img{transform:scale(1.06)}
+.c-fallback{display:none;width:100%;height:100%;align-items:center;justify-content:center;font-size:3.8rem;color:#fff}
+
+.c-content{padding:22px 20px 24px;display:flex;flex-direction:column;align-items:center;flex:1;width:100%}
+.c-title{font-family:'Baloo 2',cursive;font-size:1.15rem;font-weight:800;color:var(--tx);margin-bottom:8px}
+.c-desc{font-size:.88rem;color:var(--mu);line-height:1.55;font-style:italic;margin-bottom:20px;flex:1}
+
+.c-btn{display:inline-flex;align-items:center;justify-content:center;padding:8px 20px;border:1.5px solid var(--p1);color:var(--p1);background:transparent;border-radius:8px;font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;transition:all .25s ease}
+.card:hover .c-btn{background:var(--p1);color:#fff;box-shadow:0 4px 12px rgba(29,78,216,.25)}
+
+/* Card hover overlays */
+[data-cid=hocsinh]::before{background:linear-gradient(135deg,rgba(67,233,123,.07),rgba(56,249,215,.07))}
+[data-cid=diemdanh]::before{background:linear-gradient(135deg,rgba(252,92,125,.07),rgba(106,48,147,.07))}
+[data-cid=hoctap]::before{background:linear-gradient(135deg,rgba(79,172,254,.07),rgba(0,242,254,.07))}
+[data-cid=gopy]::before,[data-cid=phuhuynh]::before{background:linear-gradient(135deg,rgba(240,147,251,.07),rgba(245,87,108,.07))}
+[data-cid=thoikhoabieu]::before{background:linear-gradient(135deg,rgba(250,112,154,.07),rgba(254,225,64,.07))}
+[data-cid=quylop]::before{background:linear-gradient(135deg,rgba(255,215,0,.07),rgba(255,140,0,.07))}
+[data-cid=tailieu]::before{background:linear-gradient(135deg,rgba(168,237,234,.07),rgba(254,214,227,.07))}
+[data-cid=thongbao]::before{background:linear-gradient(135deg,rgba(102,126,234,.07),rgba(118,75,162,.07))}
+[data-cid=luutru]::before{background:linear-gradient(135deg,rgba(17,153,142,.07),rgba(56,239,125,.07))}
+
+/* ── FOOTER ──────────────────────────────── */
+.ftr{background:var(--bg2);border-top:1px solid var(--bd);padding:22px 18px}
+.ftr-inner{max-width:1060px;margin:0 auto;display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.ftr a{display:flex;align-items:center;gap:5px;font-size:.81rem;font-weight:600;color:var(--tx2);padding:6px 11px;border-radius:9px;transition:.2s}
+.ftr a:hover{background:var(--bd);color:var(--p1)}
+
+/* ── MODAL ───────────────────────────────── */
+.mov{position:fixed;inset:0;background:var(--ov);backdrop-filter:blur(8px);z-index:2000;display:flex;align-items:center;justify-content:center;padding:18px;opacity:0;pointer-events:none;transition:.28s}
+.mov.open{opacity:1;pointer-events:all}
+.modal{background:var(--bg2);border:1px solid var(--bd);border-radius:20px;padding:30px 28px;width:100%;max-width:395px;box-shadow:var(--sh2);transform:scale(.92) translateY(14px);transition:.28s;position:relative}
+.mov.open .modal{transform:none}
+.m-x{position:absolute;top:13px;right:13px;width:29px;height:29px;border-radius:7px;display:flex;align-items:center;justify-content:center;color:var(--mu);cursor:pointer;transition:.2s}
+.m-x:hover{background:var(--bd);color:var(--tx)}
+.m-title{font-family:'Baloo 2',cursive;font-size:1.45rem;font-weight:800;text-align:center;margin-bottom:4px;background:linear-gradient(135deg,var(--p1),var(--accent));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.m-sub{text-align:center;font-size:.82rem;color:var(--mu);margin-bottom:20px}
+.m-tabs{display:flex;background:var(--bg);border-radius:11px;padding:4px;margin-bottom:18px}
+.m-tab{flex:1;padding:7px;border-radius:8px;font-size:.8rem;font-weight:700;color:var(--mu);text-align:center;cursor:pointer;transition:.2s}
+.m-tab.act{background:var(--bg2);color:var(--p1);box-shadow:var(--sh)}
+.m-err{background:rgba(255,107,107,.1);border:1px solid rgba(255,107,107,.3);border-radius:9px;padding:9px 12px;font-size:.8rem;color:#ff6b6b;margin-bottom:13px;display:none}
+.m-err.show{display:block}
+.btn-g{width:100%;display:flex;align-items:center;justify-content:center;gap:9px;padding:11px;background:var(--bg);border:1.5px solid var(--bd);border-radius:11px;font-weight:700;font-size:.85rem;color:var(--tx);margin-bottom:15px;cursor:pointer;transition:.2s}
+.btn-g:hover{border-color:var(--p1);box-shadow:0 4px 14px rgba(103,126,234,.13)}
+.mdiv{display:flex;align-items:center;gap:10px;margin-bottom:15px;color:var(--mu);font-size:.77rem;font-weight:600}
+.mdiv::before,.mdiv::after{content:'';flex:1;height:1px;background:var(--bd)}
+.fg{margin-bottom:13px}
+.fl{display:block;font-size:.77rem;font-weight:700;color:var(--tx2);margin-bottom:5px}
+.fi{width:100%;padding:10px 13px;background:var(--bg);border:1.5px solid var(--bd);border-radius:11px;font-size:.85rem;color:var(--tx);font-family:inherit;outline:none;transition:.2s}
+.fi:focus{border-color:var(--p1);box-shadow:0 0 0 3px rgba(103,126,234,.13)}
+.fi::placeholder{color:var(--mu)}
+.btn-sub{width:100%;padding:11px;background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff;border-radius:11px;font-weight:700;font-size:.87rem;transition:.2s;box-shadow:0 4px 14px rgba(103,126,234,.38);cursor:pointer;border:none;font-family:inherit}
+.btn-sub:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(103,126,234,.48)}
+
+/* ── TOAST ───────────────────────────────── */
+.tc{position:fixed;bottom:18px;right:18px;z-index:3000;display:flex;flex-direction:column;gap:7px;pointer-events:none}
+.toast{display:flex;align-items:center;gap:8px;background:var(--bg2);border:1px solid var(--bd);border-radius:12px;padding:11px 15px;box-shadow:var(--sh2);font-size:.82rem;font-weight:600;color:var(--tx);max-width:295px;animation:tin .32s ease;pointer-events:all}
+.toast.s{border-left:3px solid #43e97b}.toast.e{border-left:3px solid #ff6b6b}.toast.i{border-left:3px solid var(--p1)}
+.toast.out{animation:tout .28s ease forwards}
+@keyframes tin{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:none}}
+@keyframes tout{to{opacity:0;transform:translateX(28px)}}
+
+/* ── LOADER ──────────────────────────────── */
+.ldr{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;transition:opacity .45s}
+.ldr.gone{opacity:0;pointer-events:none}
+.ldr-logo{font-family:'Baloo 2',cursive;font-size:1.75rem;font-weight:800;background:linear-gradient(135deg,var(--p1),var(--accent));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.spin{width:34px;height:34px;border:3px solid var(--bd);border-top-color:var(--p1);border-radius:50%;animation:sp .7s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* ── RESPONSIVE ──────────────────────────── */
+@media(max-width:900px){
+  .cards-grid{grid-template-columns:repeat(2,1fr);gap:18px}
+}
+@media(max-width:580px){
+  .cards-grid{grid-template-columns:1fr;gap:16px}
+  .c-img-wrap{height:195px}
+  .intro-box{flex-direction:column;text-align:center;padding:16px}
+  .uname{display:none}
+  .tc{left:12px;right:12px}
+  .toast{max-width:100%}
+}
+</style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div class="ldr" id="ldr">
+  <!-- CUSTOMIZE [5]: Đổi chữ loader -->
+  <div class="ldr-logo">🪷 Không Gian Văn Hóa HCM</div>
+  <div class="spin"></div>
+</div>
+
+<div class="sov" id="sov"></div>
+
+<!-- ═══════════════════════════════════════════════
+  SIDEBAR — Chỉnh sửa menu tại đây (CUSTOMIZE [6])
+═══════════════════════════════════════════════ -->
+<nav class="sb" id="sb">
+  <div class="sb-hdr">
+    <!-- CUSTOMIZE [7]: Đổi tên trong sidebar -->
+    <span class="sb-logo">🪷 Không Gian Văn Hóa HCM</span>
+    <button class="sb-x" id="sb-x" aria-label="Đóng menu">✕</button>
+  </div>
+
+  <!-- User info (tự hiện khi đăng nhập) -->
+  <div class="sb-user" id="sb-user">
+    <div class="sb-uav" id="sb-uav">U</div>
+    <div>
+      <div class="sb-uname" id="sb-uname">Người dùng</div>
+      <div id="sb-urole"></div>
+    </div>
+  </div>
+
+  <ul class="sb-nav">
+    <!-- ══════════════════════════════════════════
+    CUSTOMIZE [8]: Chỉnh sửa / thêm mục menu sidebar
+    Mỗi mục gồm: emoji icon + tên hiển thị + href trang
+    ══════════════════════════════════════════ -->
+    <li><a href="index.html"    class="sni act"><span class="sni-ico">🏠</span><span data-i18n="nav_home">Trang chủ</span></a></li>
+    <li><a href="tailieu.html"  class="sni"><span class="sni-ico">📖</span><span data-i18n="c_doc_title">Tư liệu về Bác Hồ</span></a></li>
+    <li><a href="hoctap.html"   class="sni"><span class="sni-ico">📚</span><span data-i18n="c_book_title">Tủ sách về Bác</span></a></li>
+    <li><a href="hocsinh.html"  class="sni"><span class="sni-ico">🎥</span><span data-i18n="c_video_title">Video tư liệu</span></a></li>
+    <li><a href="hinhanh.html"  class="sni"><span class="sni-ico">🖼️</span><span data-i18n="c_image_title">Hình ảnh</span></a></li>
+    <li><a href="gopy.html"     class="sni"><span class="sni-ico">🌱</span><span data-i18n="c_garden_title">Vườn hoa nhớ Bác</span></a></li>
+    <li><a href="luutru.html"   class="sni"><span class="sni-ico">🏛️</span><span data-i18n="c_museum_title">Bảo tàng về Bác</span></a></li>
+    <li><a href="thongbao.html" class="sni"><span class="sni-ico">📢</span><span data-i18n="nav_announcement">Thông báo</span></a></li>
+    <!-- Thêm mục mới:
+    <li><a href="trang-moi.html" class="sni"><span class="sni-ico">🎯</span>Tên mục</a></li>
+    -->
+    <li><div class="sdiv"></div></li>
+    <li><div class="sni" id="sb-auth-btn" style="cursor:pointer" data-i18n="btn_login_icon">🔑 Đăng nhập</div></li>
+    <li><div class="sni" id="sb-logout"   style="cursor:pointer;display:none" data-i18n="btn_logout_icon">🚪 Đăng xuất</div></li>
+  </ul>
+
+  <div class="sdiv"></div>
+  <div class="sni-admin" id="sb-admin" style="display:none;margin:5px 9px" data-i18n="btn_admin_icon">🛡️ Quản trị</div>
+  <!-- CUSTOMIZE [9]: Đổi năm/tên footer sidebar -->
+  <div class="sb-ft">© 2026 Không gian văn hóa Hồ Chí Minh</div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════
+  HEADER
+═══════════════════════════════════════════════ -->
+<header class="hdr">
+  <button class="hmb" id="hmb" aria-label="Mở menu"><span></span><span></span><span></span></button>
+
+  <!-- CUSTOMIZE [10]: Đổi icon (∑) và tên logo -->
+  <a href="index.html" class="logo" aria-label="Trang chủ">
+    <div class="logo-ico">🪷</div>Không Gian Văn Hóa HCM
+  </a>
+
+  <div class="hsp"></div>
+  <div class="hactions">
+    <button class="ibtn" id="theme-btn" title="Đổi giao diện">🌙</button>
+
+    <div class="lsel" id="lsel">
+      <div class="lbtn" id="lbtn" role="button"><span id="lcur">🇻🇳 VI</span> ▾</div>
+      <div class="ldrop" role="listbox">
+        <div class="lopt act" data-l="vi">🇻🇳 Tiếng Việt</div>
+        <div class="lopt"     data-l="en">🇬🇧 English</div>
+      </div>
+    </div>
+
+    <button class="auth-btn" id="auth-btn" data-i18n="btn_login_icon">🔑 Đăng nhập</button>
+
+    <div class="umenu" id="umenu" style="display:none">
+      <div class="uavbtn" id="uavbtn" tabindex="0" role="button">
+        <div class="uav" id="uav">U</div>
+        <span class="uname" id="uname">Bạn</span>
+        <span style="color:var(--mu);font-size:.68rem">▾</span>
+      </div>
+      <div class="udrop" role="menu">
+        <div class="uopt" id="u-admin" style="display:none" data-i18n="btn_admin_icon">🛡️ Quản trị</div>
+        <div class="uopt red" id="u-logout" data-i18n="btn_logout_icon">🚪 Đăng xuất</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════════════
+  MAIN CONTENT
+═══════════════════════════════════════════════ -->
+<main class="main">
+
+  <!-- ── Intro Box ─────────────────────── -->
+  <section class="intro-sec">
+    <div class="intro-box reveal" id="intro-box">
+      <!-- CUSTOMIZE [11]: Đổi emoji, tiêu đề, mô tả -->
+      <div class="intro-emo">🏛️</div>
+      <div>
+        <div class="intro-title" data-i18n="intro_title">Chào mừng đến với <span class="hl">Không gian văn hóa Hồ Chí Minh!</span></div>
+        <div class="intro-desc" data-i18n="intro_desc">Nơi lưu giữ, tìm hiểu và lan tỏa <span class="hl">tư tưởng, đạo đức, phong cách Hồ Chí Minh</span> trong nhà trường và cộng đồng.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Cards Section ─────────────────── -->
+  <section class="cards-sec">
+    <div class="sec-hdr">
+      <!-- CUSTOMIZE [12]: Đổi tiêu đề section cards -->
+      <div class="sec-tag" data-i18n="sec_tag">🪷 KHÁM PHÁ CHUYÊN MỤC</div>
+      <h1 class="sec-title" data-i18n="sec_title">Không gian văn hóa Hồ Chí Minh</h1>
+      <p class="sec-sub" data-i18n="sec_sub">Kho học liệu số, tư liệu lịch sử, hình ảnh và hoạt động truyền thống về Bác</p>
+    </div>
+
+    <!--
+    ═══════════════════════════════════════════════════════════
+    CUSTOMIZE [13]: THÊM / SỬA / XÓA THẺ CARD
+
+    Mỗi card gồm:
+      href      → đường dẫn trang đích (VD: teacher.html)
+      data-cid  → ID duy nhất (dùng cho hệ thống phân quyền)
+      c-ico     → background gradient + emoji
+      c-title   → tên thẻ
+      c-desc    → mô tả ngắn (1-2 dòng)
+
+    GỢI Ý GRADIENT ĐẸP:
+      Xanh biển:  linear-gradient(135deg,#4facfe,#00f2fe)
+      Xanh lá:    linear-gradient(135deg,#43e97b,#38f9d7)
+      Hồng tím:   linear-gradient(135deg,#f093fb,#f5576c)
+      Cam vàng:   linear-gradient(135deg,#fa7268,#f7cf68)
+      Tím đậm:    linear-gradient(135deg,#667eea,#764ba2)
+      Vàng cam:   linear-gradient(135deg,#ffd700,#ff8c00)
+      Hồng xanh:  linear-gradient(135deg,#a8edea,#fed6e3)
+      Cam hồng:   linear-gradient(135deg,#fead7b,#f857a6)
+      Đỏ tươi:    linear-gradient(135deg,#fc5c7d,#6a3093)
+      Xanh mint:  linear-gradient(135deg,#11998e,#38ef7d)
+    ═══════════════════════════════════════════════════════════
+    -->
+    <div class="cards-grid" id="cards-grid">
+
+      <a href="tailieu.html" class="card" data-cid="tailieu">
+        <div class="c-img-wrap">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/Ho_Chi_Minh_1946.jpg/800px-Ho_Chi_Minh_1946.jpg" alt="Tư liệu về Bác Hồ" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <div class="c-fallback" style="display:none; width:100%; height:100%; background:linear-gradient(135deg,#c62828,#ffb300); align-items:center; justify-content:center; font-size:3.5rem;">📖</div>
+        </div>
+        <div class="c-content">
+          <h3 class="c-title" data-i18n="c_doc_title">📖 Tư liệu về Bác Hồ</h3>
+          <p class="c-desc" data-i18n="c_doc_desc">Tìm hiểu cuộc đời, sự nghiệp và tư tưởng Hồ Chí Minh.</p>
+          <span class="c-btn" data-i18n="c_explore_btn">Mở chuyên mục</span>
+        </div>
+      </a>
+
+      <a href="hoctap.html" class="card" data-cid="tusach">
+        <div class="c-img-wrap">
+          <img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800&auto=format&fit=crop&q=80" alt="Tủ sách về Bác" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <div class="c-fallback" style="display:none; width:100%; height:100%; background:linear-gradient(135deg,#1e40af,#3b82f6); align-items:center; justify-content:center; font-size:3.5rem;">📚</div>
+        </div>
+        <div class="c-content">
+          <h3 class="c-title" data-i18n="c_book_title">📚 Tủ sách về Bác</h3>
+          <p class="c-desc" data-i18n="c_book_desc">Kho học liệu số phục vụ giáo viên và học sinh.</p>
+          <span class="c-btn" data-i18n="c_explore_btn">Mở chuyên mục</span>
+        </div>
+      </a>
+
+      <a href="hocsinh.html" class="card" data-cid="video">
+        <div class="c-img-wrap">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Ho_Chi_Minh_with_children.jpg/800px-Ho_Chi_Minh_with_children.jpg" alt="Video tư liệu" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <div class="c-fallback" style="display:none; width:100%; height:100%; background:linear-gradient(135deg,#b45309,#f59e0b); align-items:center; justify-content:center; font-size:3.5rem;">🎥</div>
+        </div>
+        <div class="c-content">
+          <h3 class="c-title" data-i18n="c_video_title">🎥 Video tư liệu</h3>
+          <p class="c-desc" data-i18n="c_video_desc">Các video tuyên truyền, giáo dục và học tập.</p>
+          <span class="c-btn" data-i18n="c_explore_btn">Mở chuyên mục</span>
+        </div>
+      </a>
+
+      <a href="hinhanh.html" class="card" data-cid="hinhanh">
+        <div class="c-img-wrap">
+          <img src="https://images.unsplash.com/photo-1509062522246-3755977927d7?w=800&auto=format&fit=crop&q=80" alt="Hình ảnh" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <div class="c-fallback" style="display:none; width:100%; height:100%; background:linear-gradient(135deg,#047857,#10b981); align-items:center; justify-content:center; font-size:3.5rem;">🖼️</div>
+        </div>
+        <div class="c-content">
+          <h3 class="c-title" data-i18n="c_image_title">🖼️ Hình ảnh</h3>
+          <p class="c-desc" data-i18n="c_image_desc">Hình ảnh hoạt động giáo dục và phong trào nhà trường.</p>
+          <span class="c-btn" data-i18n="c_explore_btn">Mở chuyên mục</span>
+        </div>
+      </a>
+
+      <a href="gopy.html" class="card" data-cid="vuonhoa">
+        <div class="c-img-wrap">
+          <img src="https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=800&auto=format&fit=crop&q=80" alt="Vườn hoa nhớ Bác" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <div class="c-fallback" style="display:none; width:100%; height:100%; background:linear-gradient(135deg,#ec4899,#f472b6); align-items:center; justify-content:center; font-size:3.5rem;">🌱</div>
+        </div>
+        <div class="c-content">
+          <h3 class="c-title" data-i18n="c_garden_title">🌱 Vườn hoa nhớ Bác</h3>
+          <p class="c-desc" data-i18n="c_garden_desc">Không gian xanh giáo dục truyền thống và ý thức bảo vệ môi trường.</p>
+          <span class="c-btn" data-i18n="c_explore_btn">Mở chuyên mục</span>
+        </div>
+      </a>
+
+      <a href="luutru.html" class="card" data-cid="baotang">
+        <div class="c-img-wrap">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Ho_Chi_Minh_Museum_Hanoi.jpg/800px-Ho_Chi_Minh_Museum_Hanoi.jpg" alt="Bảo tàng về Bác" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <div class="c-fallback" style="display:none; width:100%; height:100%; background:linear-gradient(135deg,#991b1b,#dc2626); align-items:center; justify-content:center; font-size:3.5rem;">🏛️</div>
+        </div>
+        <div class="c-content">
+          <h3 class="c-title" data-i18n="c_museum_title">🏛️ Bảo tàng về Bác</h3>
+          <p class="c-desc" data-i18n="c_museum_desc">Bảo tàng là nơi lưu giữ, trưng bày hiện vật và tư liệu về cuộc đời, sự nghiệp về Bác.</p>
+          <span class="c-btn" data-i18n="c_explore_btn">Mở chuyên mục</span>
+        </div>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- ── Footer ────────────────────────── -->
+  <!-- CUSTOMIZE [14]: Cập nhật các liên kết footer -->
+  <footer class="ftr">
+    <div class="ftr-inner">
+      <a href="index.html"   data-i18n="nav_home">🏠 Trang chủ</a>
+      <a href="tailieu.html" data-i18n="c_doc_title">📖 Tư liệu về Bác Hồ</a>
+      <a href="hoctap.html"  data-i18n="c_book_title">📚 Tủ sách về Bác</a>
+      <a href="hocsinh.html" data-i18n="c_video_title">🎥 Video tư liệu</a>
+      <a href="hinhanh.html" data-i18n="c_image_title">🖼️ Hình ảnh</a>
+      <a href="gopy.html"    data-i18n="c_garden_title">🌱 Vườn hoa nhớ Bác</a>
+      <a href="luutru.html"  data-i18n="c_museum_title">🏛️ Bảo tàng về Bác</a>
+      <a href="thongbao.html" data-i18n="nav_announcement">📢 Thông báo</a>
+    </div>
+  </footer>
+
+</main>
+
+<!-- ═══════════════════════════════════════════════
+  AUTH MODAL
+═══════════════════════════════════════════════ -->
+<div class="mov" id="mov" role="dialog" aria-modal="true">
+  <div class="modal">
+    <button class="m-x" id="m-x" aria-label="Đóng">✕</button>
+    <div class="m-title" data-i18n="m_welcome">Chào mừng! 👋</div>
+    <p class="m-sub" data-i18n="m_sub">Đăng nhập để trải nghiệm đầy đủ tính năng</p>
+    <div class="m-err" id="m-err"></div>
+    <div class="m-tabs">
+      <div class="m-tab act" id="mt-login" data-i18n="m_tab_login">Đăng nhập</div>
+      <div class="m-tab"     id="mt-reg"   data-i18n="m_tab_reg">Đăng ký</div>
+    </div>
+    <!-- Login -->
+    <div id="mp-login">
+      <button class="btn-g" id="btn-gg">
+        <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        <span data-i18n="m_btn_gg_login">Đăng nhập với Google</span>
+      </button>
+      <div class="mdiv" data-i18n="m_or">hoặc</div>
+      <form id="f-login">
+        <div class="fg"><label class="fl" data-i18n="l_email">Email</label><input class="fi" type="email" id="l-email" placeholder="your@email.com" autocomplete="email"></div>
+        <div class="fg"><label class="fl" data-i18n="l_pass">Mật khẩu</label><input class="fi" type="password" id="l-pass" placeholder="••••••••" data-i18n-ph="ph_pass" autocomplete="current-password"></div>
+        <button type="submit" class="btn-sub" data-i18n="btn_login">Đăng nhập</button>
+      </form>
+    </div>
+    <!-- Register -->
+    <div id="mp-reg" style="display:none">
+      <button class="btn-g" id="btn-gg-reg">
+        <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        <span data-i18n="m_btn_gg_reg">Đăng ký với Google</span>
+      </button>
+      <div class="mdiv" data-i18n="m_or">hoặc</div>
+      <form id="f-reg">
+        <div class="fg"><label class="fl" data-i18n="l_name">Họ và tên</label><input class="fi" type="text" id="r-name" placeholder="Nguyễn Văn A" data-i18n-ph="ph_name" autocomplete="name"></div>
+        <div class="fg"><label class="fl" data-i18n="l_email">Email</label><input class="fi" type="email" id="r-email" placeholder="your@email.com" autocomplete="email"></div>
+        <div class="fg"><label class="fl" data-i18n="l_pass">Mật khẩu</label><input class="fi" type="password" id="r-pass" placeholder="ít nhất 6 ký tự" data-i18n-ph="ph_pass" autocomplete="new-password"></div>
+        <div class="fg"><label class="fl" data-i18n="l_conf">Xác nhận mật khẩu</label><input class="fi" type="password" id="r-conf" placeholder="••••••••" autocomplete="new-password"></div>
+        <button type="submit" class="btn-sub" data-i18n="btn_reg">Đăng ký</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="tc" id="tc" aria-live="polite"></div>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+
+<script>
+// ════════════════════════════════════════════════
+// CUSTOMIZE [15]: THAY BẰNG CẤU HÌNH FIREBASE CỦA BẠN
+// Lấy tại: Firebase Console → Project Settings → Your apps
+// ════════════════════════════════════════════════
+firebase.initializeApp({
+ apiKey: "AIzaSyBVueYYokJdqm_uCMqBL24d6YCtMTamCM8",
+  authDomain: "csdlsongminh.firebaseapp.com",
+  databaseURL: "https://csdlsongminh-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "csdlsongminh",
+  storageBucket: "csdlsongminh.firebasestorage.app",
+  messagingSenderId: "319501136448",
+  appId: "1:319501136448:web:1c2a9a1b5582d3a9f725a5"
+});
+const auth=firebase.auth(), db=firebase.firestore(), rtdb=firebase.database();
+
+// ════════════════════════════════════════════════
+// CUSTOMIZE [16]: Email admin mặc định
+// ════════════════════════════════════════════════
+const ADMIN_EMAIL = 'songminh138@gmail.com';
+
+// ─── Ngôn ngữ (i18n) ─────────────────────────
+const LANG = {
+  vi:{ r_admin:'Quản trị', r_teacher:'Giáo viên', r_student:'Học sinh', r_parent:'Phụ huynh', r_guest:'Khách',
+       ok:'Đăng nhập thành công! 🎉', bye:'Đã đăng xuất 👋', reg_ok:'Đăng ký thành công! 🎉',
+       err_admin:'Cần quyền quản trị để vào trang này.' },
+  en:{ r_admin:'Admin', r_teacher:'Teacher', r_student:'Student', r_parent:'Parent', r_guest:'Guest',
+       ok:'Logged in! 🎉', bye:'Logged out 👋', reg_ok:'Registered! 🎉',
+       err_admin:'Admin access required.' }
+};
+const UI_DICT = {
+  vi: {
+    nav_home: 'Trang chủ',
+    nav_student: 'Học sinh',
+    nav_attendance: 'Điểm danh',
+    nav_grades: 'Học tập',
+    nav_parent: 'Góp ý & chia sẻ',
+    nav_schedule: 'Lịch trình',
+    nav_finance: 'Nhật ký ảnh lớp',
+    nav_documents: 'Tài liệu',
+    nav_announcement: 'Thông báo',
+    nav_archive: 'Lưu trữ',
+    btn_login_icon: '🔑 Đăng nhập',
+    btn_logout_icon: '🚪 Đăng xuất',
+    btn_admin_icon: '🛡️ Quản trị',
+    intro_title: 'Chào mừng đến với <span class="hl">Không gian văn hóa Hồ Chí Minh!</span>',
+    intro_desc: 'Nơi lưu giữ, tìm hiểu và lan tỏa <span class="hl">tư tưởng, đạo đức, phong cách Hồ Chí Minh</span> trong nhà trường và cộng đồng.',
+    sec_tag: '🪷 KHÁM PHÁ CHUYÊN MỤC',
+    sec_title: 'Không gian văn hóa Hồ Chí Minh',
+    sec_sub: 'Kho học liệu số, tư liệu lịch sử, hình ảnh và hoạt động truyền thống về Bác',
+    c_doc_title: '📖 Tư liệu về Bác Hồ',
+    c_doc_desc: 'Tìm hiểu cuộc đời, sự nghiệp và tư tưởng Hồ Chí Minh.',
+    c_book_title: '📚 Tủ sách về Bác',
+    c_book_desc: 'Kho học liệu số phục vụ giáo viên và học sinh.',
+    c_video_title: '🎥 Video tư liệu',
+    c_video_desc: 'Các video tuyên truyền, giáo dục và học tập.',
+    c_image_title: '🖼️ Hình ảnh',
+    c_image_desc: 'Hình ảnh hoạt động giáo dục và phong trào nhà trường.',
+    c_garden_title: '🌱 Vườn hoa nhớ Bác',
+    c_garden_desc: 'Không gian xanh giáo dục truyền thống và ý thức bảo vệ môi trường.',
+    c_museum_title: '🏛️ Bảo tàng về Bác',
+    c_museum_desc: 'Bảo tàng là nơi lưu giữ, trưng bày hiện vật và tư liệu về cuộc đời, sự nghiệp về Bác.',
+    c_explore_btn: 'MỞ CHUYÊN MỤC',
+    ft_student: '🎥 Video tư liệu',
+    ft_attendance: '📖 Tư liệu về Bác Hồ',
+    ft_grades: '📚 Tủ sách về Bác',
+    ft_parent: '🌱 Vườn hoa nhớ Bác',
+    ft_schedule: '📅 Lịch trình',
+    ft_finance: '🖼️ Hình ảnh',
+    ft_documents: '📖 Tư liệu về Bác Hồ',
+    ft_announcement: '📢 Thông báo',
+    ft_archive: '🏛️ Bảo tàng về Bác',
+    m_welcome: 'Chào mừng! 👋',
+    m_sub: 'Đăng nhập để trải nghiệm đầy đủ tính năng',
+    m_tab_login: 'Đăng nhập',
+    m_tab_reg: 'Đăng ký',
+    m_btn_gg_login: 'Đăng nhập với Google',
+    m_btn_gg_reg: 'Đăng ký với Google',
+    m_or: 'hoặc',
+    l_email: 'Email',
+    l_pass: 'Mật khẩu',
+    l_name: 'Họ và tên',
+    l_conf: 'Xác nhận mật khẩu',
+    btn_login: 'Đăng nhập',
+    btn_reg: 'Đăng ký',
+    ph_name: 'Nguyễn Văn A',
+    ph_pass: 'ít nhất 6 ký tự'
+  },
+  en: {
+    nav_home: 'Home',
+    nav_teacher: 'Teachers',
+    nav_student: 'Students',
+    nav_parent: 'Feedback & Share',
+    nav_game: 'Games',
+    nav_tailieu: 'Documents',
+    nav_baigiang: 'Lectures',
+    nav_forum: 'Forum',
+    nav_about: 'About',
+    nav_archive: 'Archive',
+    btn_login_icon: '🔑 Sign in',
+    btn_logout_icon: '🚪 Sign out',
+    btn_admin_icon: '🛡️ Admin',
+    intro_title: 'Welcome to <span class="hl">Ho Chi Minh Cultural Space!</span>',
+    intro_desc: 'A place preserving, learning, and spreading <span class="hl">Ho Chi Minh ideology, ethics, and style</span> in school and community.',
+    sec_tag: '🪷 EXPLORE SECTIONS',
+    sec_title: 'Ho Chi Minh Cultural Space',
+    sec_sub: 'Digital repository of learning materials, archives, photos, and traditional activities about Uncle Ho',
+    c_doc_title: '📖 Ho Chi Minh Archives',
+    c_doc_desc: 'Learn about the life, career, and ideology of President Ho Chi Minh.',
+    c_book_title: '📚 Books on Uncle Ho',
+    c_book_desc: 'Digital repository of learning materials for teachers and students.',
+    c_video_title: '🎥 Video Archives',
+    c_video_desc: 'Educational and promotional video materials for learning and reference.',
+    c_image_title: '🖼️ Photo Album',
+    c_image_desc: 'Photos of school educational activities and traditional movements.',
+    c_garden_title: '🌱 Memorial Garden',
+    c_garden_desc: 'Green educational space promoting tradition and environmental protection.',
+    c_museum_title: '🏛️ Ho Chi Minh Museum',
+    c_museum_desc: 'A place preserving and displaying artifacts and archives about the life and career of Uncle Ho.',
+    c_explore_btn: 'OPEN SECTION',
+    ft_student: '🎥 Video Archives',
+    ft_attendance: '📖 Ho Chi Minh Archives',
+    ft_grades: '📚 Books on Uncle Ho',
+    ft_parent: '🌱 Memorial Garden',
+    ft_schedule: '📅 Schedule',
+    ft_finance: '🖼️ Photo Album',
+    ft_documents: '📖 Ho Chi Minh Archives',
+    ft_announcement: '📢 Announcements',
+    ft_archive: '🏛️ Ho Chi Minh Museum',
+    m_welcome: 'Welcome! 👋',
+    m_sub: 'Sign in to access all features',
+    m_tab_login: 'Sign in',
+    m_tab_reg: 'Sign up',
+    m_btn_gg_login: 'Sign in with Google',
+    m_btn_gg_reg: 'Sign up with Google',
+    m_or: 'or',
+    l_email: 'Email',
+    l_pass: 'Password',
+    l_name: 'Full Name',
+    l_conf: 'Confirm Password',
+    btn_login: 'Sign in',
+    btn_reg: 'Sign up',
+    ph_name: 'John Doe',
+    ph_pass: 'at least 6 characters'
+  }
+};
+let lang = localStorage.getItem('NVC_lang')||'vi';
+const T = k => LANG[lang][k]||LANG.vi[k]||k;
+
+const applyLanguage = (l) => {
+  lang = l;
+  localStorage.setItem('NVC_lang', l);
+  document.documentElement.lang = l;
+  const dict = UI_DICT[l] || UI_DICT.vi;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    if (dict[key]) el.innerHTML = dict[key];
+  });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+    const key = el.dataset.i18nPh;
+    if (dict[key]) el.placeholder = dict[key];
+  });
+  const lcur = document.getElementById('lcur');
+  if (lcur) lcur.textContent = l === 'vi' ? '🇻🇳 VI' : '🇬🇧 EN';
+  document.querySelectorAll('.lopt').forEach(o => {
+    o.classList.toggle('act', o.dataset.l === l);
+  });
+  if (typeof uData !== 'undefined' && uData) {
+    const roleStr = uData.role || 'guest';
+    const roleEl = document.getElementById('sb-urole');
+    if (roleEl) roleEl.innerHTML = `<span class="role-badge ${roleStr === 'admin' ? 'role-admin' : roleStr === 'teacher' ? 'role-teacher' : 'role-student'}">${T('r_' + roleStr)}</span>`;
+  }
+};
+
+// ─── Theme ────────────────────────────────────
+const applyTheme = t => {
+  document.documentElement.setAttribute('data-theme',t);
+  localStorage.setItem('NVC_theme',t);
+  document.getElementById('theme-btn').textContent = t==='dark'?'☀️':'🌙';
+};
+applyTheme(localStorage.getItem('NVC_theme')||'light');
+document.getElementById('theme-btn').addEventListener('click', () =>
+  applyTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark'));
+
+// ─── Toast ────────────────────────────────────
+const toast = (msg, type='i', dur=3200) => {
+  const el=document.createElement('div');
+  el.className=`toast ${type}`;
+  el.innerHTML=`<span>${{i:'ℹ️',s:'✅',e:'❌'}[type]}</span> ${msg}`;
+  document.getElementById('tc').appendChild(el);
+  setTimeout(()=>{ el.classList.add('out'); setTimeout(()=>el.remove(),300); }, dur);
+};
+
+// ─── Modal helpers ────────────────────────────
+const mov    = document.getElementById('mov');
+const openM  = () => mov.classList.add('open');
+const closeM = () => { mov.classList.remove('open'); document.getElementById('m-err').classList.remove('show'); };
+const showErr= m  => { const e=document.getElementById('m-err'); e.textContent=m; e.classList.add('show'); };
+
+// ─── Auth errors ──────────────────────────────
+const AUTH_ERR = {
+  'auth/user-not-found':'Email không tồn tại.',
+  'auth/wrong-password':'Sai mật khẩu.',
+  'auth/email-already-in-use':'Email đã được sử dụng.',
+  'auth/weak-password':'Mật khẩu phải có ít nhất 6 ký tự.',
+  'auth/invalid-email':'Email không hợp lệ.',
+  'auth/popup-closed-by-user':'Bạn đã đóng cửa sổ đăng nhập.',
+  'auth/invalid-credential':'Thông tin đăng nhập không đúng.',
+  'auth/too-many-requests':'Quá nhiều lần thử. Vui lòng thử lại sau.',
+};
+const getErr = c => AUTH_ERR[c]||'Đã xảy ra lỗi. Vui lòng thử lại.';
+
+// ─── Firebase Auth actions ────────────────────
+const gLogin = async () => {
+  try { await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); closeM(); toast(T('ok'),'s'); }
+  catch(e) { showErr(getErr(e.code)); }
+};
+const eLogin = async (email, pass) => {
+  try { await auth.signInWithEmailAndPassword(email,pass); closeM(); toast(T('ok'),'s'); }
+  catch(e) { showErr(getErr(e.code)); }
+};
+const eReg = async (name, email, pass) => {
+  try { const c=await auth.createUserWithEmailAndPassword(email,pass); await c.user.updateProfile({displayName:name}); closeM(); toast(T('reg_ok'),'s'); }
+  catch(e) { showErr(getErr(e.code)); }
+};
+const doLogout = async () => {
+  if(auth.currentUser) await rtdb.ref(`/online/${auth.currentUser.uid}`).set({status:'offline',lastSeen:firebase.database.ServerValue.TIMESTAMP}).catch(()=>{});
+  await auth.signOut(); toast(T('bye'),'i');
+};
+
+// ─── Helper check admin email ─────────────────
+const isEmailAdmin = u => u && (u.email||'').trim().toLowerCase() === ADMIN_EMAIL.trim().toLowerCase();
+
+// ─── User document (Firestore) ────────────────
+const upsertUser = async user => {
+  const isAdm = isEmailAdmin(user);
+  const ref = db.collection('users').doc(user.uid);
+  try {
+    const snap = await ref.get();
+    if(!snap.exists){
+      await ref.set({ uid:user.uid, email:user.email||'', displayName:user.displayName||user.email?.split('@')[0]||'User',
+        photoURL:user.photoURL||'', role:isAdm?'admin':'guest', groupId:null,
+        provider:user.providerData[0]?.providerId||'unknown',
+        createdAt:firebase.firestore.FieldValue.serverTimestamp(),
+        lastLogin:firebase.firestore.FieldValue.serverTimestamp() }, { merge: true });
+    } else {
+      const upd = {lastLogin:firebase.firestore.FieldValue.serverTimestamp()};
+      if(isAdm && snap.data().role!=='admin') upd.role='admin';
+      await ref.update(upd);
+    }
+    const updated = await ref.get();
+    const data = updated.data() || {};
+    if(isAdm) data.role = 'admin';
+    return data;
+  } catch(err) {
+    console.warn("Lỗi đồng bộ Firestore user:", err);
+    return {
+      uid: user.uid,
+      email: user.email||'',
+      displayName: user.displayName||user.email?.split('@')[0]||'User',
+      photoURL: user.photoURL||'',
+      role: isAdm ? 'admin' : 'guest',
+      groupId: null
+    };
+  }
+};
+
+const updatePresence = uid => {
+  rtdb.ref('.info/connected').on('value', s => {
+    if(s.val()){
+      const r=rtdb.ref(`/online/${uid}`);
+      r.onDisconnect().set({status:'offline',lastSeen:firebase.database.ServerValue.TIMESTAMP}).catch(()=>{});
+      r.set({status:'online',lastSeen:firebase.database.ServerValue.TIMESTAMP}).catch(()=>{});
+    }
+  });
+};
+
+// ─── Render user UI ───────────────────────────
+let uData = null;
+const $id = id => document.getElementById(id);
+
+const renderUI = (user, ud) => {
+  const li = !!user;
+  $id('auth-btn').style.display  = li?'none':'flex';
+  $id('umenu').style.display     = li?'flex':'none';
+  $id('sb-auth-btn').style.display = li?'none':'flex';
+  $id('sb-logout').style.display   = li?'flex':'none';
+  if(li && ud){
+    const init=(ud.displayName||user.email||'U').charAt(0).toUpperCase(), photo=ud.photoURL||user.photoURL;
+    const setAv = id => { const el=$id(id); if(el) el.innerHTML=photo?`<img src="${photo}" alt="">`:`${init}`; };
+    setAv('uav'); setAv('sb-uav');
+    if($id('uname'))   $id('uname').textContent=(ud.displayName||'Bạn').split(' ')[0];
+    if($id('sb-user')) $id('sb-user').style.display='flex';
+    if($id('sb-uname'))$id('sb-uname').textContent=ud.displayName||user.email;
+    const adm = (ud.role==='admin') || isEmailAdmin(user);
+    if($id('sb-urole')){
+      const rc={admin:'r-admin',teacher:'r-teacher',student:'r-student',parent:'r-parent',guest:'r-guest'};
+      const roleStr = adm ? 'admin' : (ud.role||'guest');
+      $id('sb-urole').innerHTML=`<span class="role-badge ${rc[roleStr]||'r-guest'}">${T('r_'+roleStr)}</span>`;
+    }
+    $id('u-admin').style.display=$id('sb-admin').style.display=adm?'flex':'none';
+  } else {
+    if($id('sb-user'))$id('sb-user').style.display='none';
+    $id('u-admin').style.display=$id('sb-admin').style.display='none';
+  }
+};
+
+// ─── Card visibility by group & defaults ──────
+let defaultCardSettings = { unauthenticatedCards: [], guestCards: [] };
+let currentAllowedCards = null;
+
+db.collection('settings').doc('default_cards').onSnapshot(snap => {
+  if(snap.exists) defaultCardSettings = snap.data();
+  filterCards(uData);
+}, () => {});
+
+const applyCardVisibility = allowedList => {
+  if(!allowedList || !allowedList.length) { showAll(); return; }
+  document.querySelectorAll('.card').forEach(c => {
+    c.style.display = allowedList.includes(c.dataset.cid) ? 'flex' : 'none';
+  });
+  document.querySelectorAll('.sb-nav a, .ft-links a').forEach(link => {
+    let cid = link.dataset.cid;
+    if (!cid && link.getAttribute('href')) {
+      const match = link.getAttribute('href').split('#')[0].split('?')[0].match(/^([a-zA-Z0-9_-]+)\.html$/);
+      if (match && match[1] !== 'index' && match[1] !== 'admin') {
+        cid = match[1];
+      }
+    }
+    if (cid) {
+      const isAllowed = allowedList.includes(cid);
+      link.style.display = isAllowed ? '' : 'none';
+      if (link.parentElement && link.parentElement.tagName === 'LI') {
+        link.parentElement.style.display = isAllowed ? '' : 'none';
+      }
+    }
+  });
+};
+
+const filterCards = async ud => {
+  if(!ud) {
+    currentAllowedCards = defaultCardSettings.unauthenticatedCards;
+    applyCardVisibility(currentAllowedCards);
+    return;
+  }
+  if(ud.role === 'admin') {
+    currentAllowedCards = null;
+    showAll();
+    return;
+  }
+  if(ud.groupId) {
+    try {
+      const g = await db.collection('groups').doc(ud.groupId).get();
+      if(g.exists && g.data().visibleCards?.length){
+        currentAllowedCards = g.data().visibleCards;
+        applyCardVisibility(currentAllowedCards);
+      } else {
+        currentAllowedCards = null;
+        showAll();
+      }
+    } catch {
+      currentAllowedCards = null;
+      showAll();
+    }
+    return;
+  }
+  currentAllowedCards = defaultCardSettings.guestCards;
+  applyCardVisibility(currentAllowedCards);
+};
+const showAll = () => {
+  document.querySelectorAll('.card').forEach(c=>c.style.display='flex');
+  document.querySelectorAll('.sb-nav a, .ft-links a').forEach(link => {
+    link.style.display = '';
+    if (link.parentElement && link.parentElement.tagName === 'LI') {
+      link.parentElement.style.display = '';
+    }
+  });
+};
+
+// ─── Intercept Navigation & Card Clicks ────────
+document.addEventListener('click', e => {
+  const link = e.target.closest('a');
+  if (!link) return;
+
+  let cid = link.dataset.cid;
+  if (!cid && link.getAttribute('href')) {
+    const href = link.getAttribute('href').split('#')[0].split('?')[0];
+    const match = href.match(/^([a-zA-Z0-9_-]+)\.html$/);
+    if (match && match[1] !== 'index' && match[1] !== 'admin') {
+      cid = match[1];
+    }
+  }
+
+  if (cid && currentAllowedCards !== null && Array.isArray(currentAllowedCards)) {
+    if (!currentAllowedCards.includes(cid)) {
+      e.preventDefault();
+      e.stopPropagation();
+      toast('⛔ Bạn không có quyền truy cập!', 'e');
+    }
+  }
+});
+
+// ─── Auth state listener ──────────────────────
+auth.onAuthStateChanged(async user => {
+  if(user){
+    const isAdmEmail = isEmailAdmin(user);
+    try{ uData=await upsertUser(user); updatePresence(user.uid); }
+    catch{ uData={role:isAdmEmail?'admin':'guest',groupId:null}; }
+    if(isAdmEmail) uData.role='admin';
+    renderUI(user, uData); filterCards(uData);
+  } else { uData=null; renderUI(null,null); filterCards(null); }
+  $id('ldr').classList.add('gone');
+  setTimeout(()=>$id('ldr')?.remove(), 500);
+});
+
+// ─── Stagger scroll animation ─────────────────
+const initStagger = () => {
+  // Cards stagger (wave theo cột)
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('vis'); obs.unobserve(e.target); } });
+  }, {threshold:.12, rootMargin:'0px 0px -55px 0px'});
+  document.querySelectorAll('.card').forEach((c,i) => {
+    c.style.transitionDelay = (i%3)*85+'ms'; // sóng theo hàng 3 cột
+    obs.observe(c);
+  });
+  // Intro box reveal
+  const box=$id('intro-box');
+  if(box) new IntersectionObserver(([e],o)=>{ if(e.isIntersecting){box.classList.add('vis');o.disconnect();} },{threshold:.2}).observe(box);
+};
+
+// ─── Sidebar ──────────────────────────────────
+const initSidebar = () => {
+  const sb=$id('sb'), sov=$id('sov'), hmb=$id('hmb');
+  const open =()=>{ sb.classList.add('open'); sov.classList.add('open'); hmb.classList.add('open'); document.body.style.overflow='hidden'; };
+  const close=()=>{ sb.classList.remove('open'); sov.classList.remove('open'); hmb.classList.remove('open'); document.body.style.overflow=''; };
+  hmb.addEventListener('click',()=>sb.classList.contains('open')?close():open());
+  sov.addEventListener('click',close);
+  $id('sb-x').addEventListener('click',close);
+  document.querySelectorAll('.sni').forEach(n=>n.addEventListener('click',()=>{ if(window.innerWidth<1024)close(); }));
+};
+
+// ─── Language ─────────────────────────────────
+const initLang = () => {
+  const lsel = $id('lsel');
+  applyLanguage(lang);
+  document.querySelectorAll('.lopt').forEach(o => {
+    o.addEventListener('click', () => {
+      applyLanguage(o.dataset.l);
+      lsel.classList.remove('open');
+    });
+  });
+  $id('lbtn').addEventListener('click', e => { e.stopPropagation(); lsel.classList.toggle('open'); });
+  document.addEventListener('click', () => lsel.classList.remove('open'));
+};
+
+// ─── User dropdown ────────────────────────────
+const initUserMenu = () => {
+  const um=$id('umenu');
+  $id('uavbtn').addEventListener('click',e=>{ e.stopPropagation(); um.classList.toggle('open'); });
+  document.addEventListener('click',()=>um.classList.remove('open'));
+  $id('u-logout').addEventListener('click',()=>{ um.classList.remove('open'); doLogout(); });
+  $id('u-admin').addEventListener('click',()=>{ if(uData?.role==='admin') window.location.href='admin.html'; });
+};
+
+// ─── Modal events ─────────────────────────────
+const initModal = () => {
+  $id('auth-btn').addEventListener('click',openM);
+  $id('sb-auth-btn').addEventListener('click',openM);
+  $id('m-x').addEventListener('click',closeM);
+  mov.addEventListener('click',e=>{ if(e.target===mov) closeM(); });
+  $id('sb-logout').addEventListener('click',doLogout);
+  $id('sb-admin').addEventListener('click',()=>{
+    if(uData?.role==='admin') window.location.href='admin.html';
+    else toast(T('err_admin'),'e');
+  });
+  // Tabs
+  const showL=()=>{ $id('mp-login').style.display='block'; $id('mp-reg').style.display='none'; $id('mt-login').classList.add('act'); $id('mt-reg').classList.remove('act'); };
+  const showR=()=>{ $id('mp-reg').style.display='block'; $id('mp-login').style.display='none'; $id('mt-reg').classList.add('act'); $id('mt-login').classList.remove('act'); };
+  $id('mt-login').addEventListener('click',showL);
+  $id('mt-reg').addEventListener('click',showR);
+  // Google
+  $id('btn-gg').addEventListener('click',gLogin);
+  $id('btn-gg-reg').addEventListener('click',gLogin);
+  // Forms
+  $id('f-login').addEventListener('submit',e=>{ e.preventDefault(); eLogin($id('l-email').value.trim(),$id('l-pass').value); });
+  $id('f-reg').addEventListener('submit',e=>{
+    e.preventDefault();
+    const p=$id('r-pass').value;
+    if(p!==$id('r-conf').value) return showErr('Mật khẩu xác nhận không khớp.');
+    eReg($id('r-name').value.trim(),$id('r-email').value.trim(),p);
+  });
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeM(); });
+};
+
+// ─── Run ──────────────────────────────────────
+document.addEventListener('DOMContentLoaded',()=>{
+  initSidebar(); initLang(); initUserMenu(); initModal(); initStagger();
+});
+</script>
+</body>
+</html>
+
+
