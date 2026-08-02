@@ -51,8 +51,13 @@
   <main class="max-w-6xl mx-auto px-4 py-8 flex-1 w-full space-y-10">
     <section class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
       <div class="p-6 sm:p-8 flex flex-col md:flex-row items-center md:items-start gap-8">
-        <div class="w-full md:w-80 shrink-0 rounded-xl overflow-hidden shadow-md border border-slate-200">
-          <img src="https://res.cloudinary.com/dwqtplan3/image/upload/v1785638390/Logo_Tru%CC%9Bo%CC%9B%CC%80ng_THCS_Ta%CC%82n_Bi%CC%80nh_rmfvy1.jpg" alt="Tủ sách về Bác" class="w-full h-52 md:h-60 object-cover">
+        <div class="w-full md:w-80 shrink-0 relative group rounded-xl overflow-hidden shadow-md border border-slate-200">
+          <img id="tusach-hero-img" src="https://res.cloudinary.com/dwqtplan3/image/upload/v1785638390/Logo_Tru%CC%9Bo%CC%9B%CC%80ng_THCS_Ta%CC%82n_Bi%CC%80nh_rmfvy1.jpg" alt="Tủ sách về Bác" class="w-full h-52 md:h-60 object-cover">
+          <div id="hero-admin-controls" class="hidden absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 p-4 text-center">
+            <span class="text-white text-xs font-semibold uppercase tracking-wider">Quyền quản trị</span>
+            <button id="choose-hero-image-btn" type="button" class="bg-amber-400 hover:bg-amber-300 text-red-950 font-extrabold px-3.5 py-2 rounded-lg text-xs shadow-lg"><i class="fa-solid fa-camera mr-1"></i>Đổi ảnh bằng Cloudinary</button>
+            <input type="file" id="hero-file-input" accept="image/*" class="hidden">
+          </div>
         </div>
         <div class="flex-1">
           <h2 class="font-serif-title text-2xl text-red-800 font-bold mb-3">Tủ sách về Bác Hồ</h2>
@@ -111,12 +116,14 @@
           } catch (error) { console.error('Không thể kiểm tra quyền admin:', error); }
         }
         loadBooks();
+        loadHeroImage();
       });
     });
 
     function enableAdminMode() {
       isAdmin = true;
       ['admin-badge', 'add-book-btn', 'empty-add-book-btn'].forEach(id => document.getElementById(id).classList.remove('hidden'));
+      document.getElementById('hero-admin-controls').classList.remove('hidden');
       renderBooks();
     }
 
@@ -135,6 +142,13 @@
         books = JSON.parse(localStorage.getItem('tusach_books_local') || '[]');
       }
       renderBooks();
+    }
+
+    async function loadHeroImage() {
+      try {
+        const doc = await firebase.firestore().collection('settings').doc('tusach_hero').get();
+        if (doc.exists && doc.data().imageUrl) document.getElementById('tusach-hero-img').src = doc.data().imageUrl;
+      } catch (error) { console.warn('Không thể tải ảnh đại diện tủ sách:', error.message); }
     }
 
     function renderBooks() {
@@ -185,8 +199,11 @@
 
     function initImageUploader() {
       const fileInput = document.getElementById('book-file-input');
+      const heroInput = document.getElementById('hero-file-input');
       document.getElementById('choose-image-btn').addEventListener('click', () => fileInput.click());
       fileInput.addEventListener('change', event => { if (event.target.files[0]) uploadBookImage(event.target.files[0]); });
+      document.getElementById('choose-hero-image-btn').addEventListener('click', () => heroInput.click());
+      heroInput.addEventListener('change', event => { if (event.target.files[0]) uploadHeroImage(event.target.files[0]); });
       document.addEventListener('paste', event => {
         if (!document.getElementById('book-modal').classList.contains('modal-open')) return;
         const imageItem = [...(event.clipboardData?.items || [])].find(item => item.type.startsWith('image/'));
@@ -215,6 +232,25 @@
       } catch (error) {
         status.textContent = 'Không thể tải ảnh lên. Vui lòng thử lại.'; status.className = 'text-xs text-red-600 font-semibold';
         showToast('Lỗi tải ảnh lên Cloudinary.', true);
+      }
+    }
+
+    async function uploadHeroImage(file) {
+      if (!requireAdmin() || !file || !file.type.startsWith('image/')) { showToast('Vui lòng chọn một file ảnh hợp lệ.', true); return; }
+      const button = document.getElementById('choose-hero-image-btn');
+      button.disabled = true; button.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i>Đang tải...';
+      const formData = new FormData(); formData.append('file', file); formData.append('upload_preset', CLOUDINARY_PRESET);
+      try {
+        const response = await fetch(CLOUDINARY_URL, { method: 'POST', body: formData });
+        const result = await response.json();
+        if (!result.secure_url) throw new Error(result.error?.message || 'Upload failed');
+        await firebase.firestore().collection('settings').doc('tusach_hero').set({ imageUrl: result.secure_url }, { merge: true });
+        document.getElementById('tusach-hero-img').src = result.secure_url;
+        showToast('Đã cập nhật ảnh đại diện tủ sách!');
+      } catch (error) {
+        showToast('Không thể cập nhật ảnh đại diện.', true);
+      } finally {
+        button.disabled = false; button.innerHTML = '<i class="fa-solid fa-camera mr-1"></i>Đổi ảnh bằng Cloudinary';
       }
     }
   </script>
