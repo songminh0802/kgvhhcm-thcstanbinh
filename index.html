@@ -7,6 +7,7 @@
   <meta name="description" content="Không gian văn hóa Hồ Chí Minh - Nơi lưu giữ, tìm hiểu và lan tỏa tư tưởng, đạo đức, phong cách Hồ Chí Minh.">
   <!-- CUSTOMIZE [2]: Đổi tiêu đề tab trình duyệt -->
   <title>Không gian văn hóa Hồ Chí Minh</title>
+  <link rel="icon" href="https://res.cloudinary.com/dwqtplan3/image/upload/v1785638390/Logo_Tru%CC%9Bo%CC%9B%CC%80ng_THCS_Ta%CC%82n_Bi%CC%80nh_rmfvy1.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Baloo+2:wght@700;800&display=swap" rel="stylesheet">
@@ -152,6 +153,54 @@ ul{list-style:none}
 .card:hover .c-img-wrap img{transform:scale(1.06)}
 .c-fallback{display:none;width:100%;height:100%;align-items:center;justify-content:center;font-size:3.8rem;color:#fff}
 
+/* ── Nút Đổi ảnh Cloudinary trên thẻ ── */
+.c-edit-img-btn{
+  position:absolute;top:12px;right:12px;z-index:20;
+  background:rgba(15,23,42,0.85);color:#fff;
+  border:1px solid rgba(255,255,255,0.3);
+  padding:6px 12px;border-radius:10px;
+  font-size:0.75rem;font-weight:700;
+  display:flex;align-items:center;gap:6px;
+  cursor:pointer;backdrop-filter:blur(6px);
+  transition:all 0.25s cubic-bezier(.34,1.56,.64,1);
+  box-shadow:0 4px 12px rgba(0,0,0,0.3);
+  opacity:0;transform:translateY(-5px);
+}
+.card:hover .c-edit-img-btn, .c-edit-img-btn.always-show{
+  opacity:1;transform:translateY(0);
+}
+.c-edit-img-btn:hover{
+  background:var(--p1);border-color:#fff;
+  transform:scale(1.08) translateY(0);
+  box-shadow:0 6px 16px rgba(29,78,216,0.5);
+}
+@media(max-width:768px){ .c-edit-img-btn{opacity:1;transform:none;} }
+
+/* ── Modal Cloudinary ── */
+.cld-ov{position:fixed;inset:0;background:rgba(15,23,42,0.75);backdrop-filter:blur(6px);z-index:9999;display:none;align-items:center;justify-content:center;padding:16px}
+.cld-box{background:var(--bg2);border:1px solid var(--bd);border-radius:22px;width:100%;max-width:500px;box-shadow:0 25px 60px rgba(0,0,0,0.38);overflow:hidden;animation:popUp .3s cubic-bezier(.34,1.56,.64,1)}
+.cld-hdr{display:flex;align-items:center;justify-content:space-between;padding:18px 24px;border-bottom:1px solid var(--bd);background:rgba(29,78,216,0.04)}
+.cld-title{font-family:'Baloo 2',cursive;font-size:1.15rem;font-weight:800;color:var(--tx)}
+.cld-x{background:transparent;border:none;font-size:1.3rem;color:var(--mu);cursor:pointer;padding:4px}
+.cld-x:hover{color:var(--danger)}
+.cld-body{padding:24px}
+.cld-preview-wrap{width:100%;height:220px;border-radius:14px;overflow:hidden;background:#f8fafc;margin-bottom:18px;border:1px solid var(--bd);display:flex;align-items:center;justify-content:center;box-shadow:inset 0 2px 8px rgba(0,0,0,0.06)}
+.cld-preview-wrap img{width:100%;height:100%;object-fit:cover}
+.cld-dropzone{border:2px dashed var(--p1);border-radius:16px;padding:26px 18px;text-align:center;cursor:pointer;background:rgba(29,78,216,0.03);transition:all .25s ease;outline:none}
+.cld-dropzone:hover,.cld-dropzone:focus,.cld-dropzone.dragover{background:rgba(29,78,216,0.09);border-color:#2563eb;transform:scale(1.01)}
+.cld-dz-ico{font-size:2.8rem;margin-bottom:8px}
+.cld-dz-txt{font-size:.96rem;color:var(--tx);font-weight:700;line-height:1.5;margin-bottom:6px}
+.cld-dz-sub{font-size:.8rem;color:var(--mu)}
+.cld-status{margin-top:14px;font-size:.88rem;text-align:center;font-weight:700;min-height:24px}
+.cld-status.loading{color:var(--p1)}
+.cld-status.success{color:#10b981}
+.cld-status.error{color:var(--danger)}
+.cld-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}
+.cld-btn-cancel{padding:10px 18px;border-radius:12px;border:1px solid var(--bd);background:transparent;color:var(--tx2);font-weight:700;cursor:pointer}
+.cld-btn-cancel:hover{background:var(--bd)}
+.cld-btn-upload{padding:10px 22px;border-radius:12px;border:none;background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(29,78,216,0.35);transition:all .25s}
+.cld-btn-upload:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(29,78,216,0.45)}
+
 .c-content{padding:22px 20px 24px;display:flex;flex-direction:column;align-items:center;flex:1;width:100%}
 .c-title{font-family:'Baloo 2',cursive;font-size:1.15rem;font-weight:800;color:var(--tx);margin-bottom:8px}
 .c-desc{font-size:.88rem;color:var(--mu);line-height:1.55;font-style:italic;margin-bottom:20px;flex:1}
@@ -236,7 +285,10 @@ ul{list-style:none}
 <!-- LOADER -->
 <div class="ldr" id="ldr">
   <!-- CUSTOMIZE [5]: Đổi chữ loader -->
-  <div class="ldr-logo">🪷 Không Gian Văn Hóa HCM</div>
+  <div class="ldr-logo" style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+    <img src="https://res.cloudinary.com/dwqtplan3/image/upload/v1785638390/Logo_Tru%CC%9Bo%CC%9B%CC%80ng_THCS_Ta%CC%82n_Bi%CC%80nh_rmfvy1.jpg" alt="Logo THCS Tân Bình" style="width:72px;height:72px;border-radius:50%;object-fit:cover;box-shadow:0 4px 14px rgba(0,0,0,0.18);">
+    <span>Không Gian Văn Hóa HCM</span>
+  </div>
   <div class="spin"></div>
 </div>
 
@@ -248,7 +300,10 @@ ul{list-style:none}
 <nav class="sb" id="sb">
   <div class="sb-hdr">
     <!-- CUSTOMIZE [7]: Đổi tên trong sidebar -->
-    <span class="sb-logo">🪷 Không Gian Văn Hóa HCM</span>
+    <span class="sb-logo" style="display:flex;align-items:center;gap:10px;">
+      <img src="https://res.cloudinary.com/dwqtplan3/image/upload/v1785638390/Logo_Tru%CC%9Bo%CC%9B%CC%80ng_THCS_Ta%CC%82n_Bi%CC%80nh_rmfvy1.jpg" alt="Logo THCS Tân Bình" style="width:34px;height:34px;border-radius:50%;object-fit:cover;flex-shrink:0;">
+      <span>Không Gian Văn Hóa HCM</span>
+    </span>
     <button class="sb-x" id="sb-x" aria-label="Đóng menu">✕</button>
   </div>
 
@@ -295,13 +350,15 @@ ul{list-style:none}
   <button class="hmb" id="hmb" aria-label="Mở menu"><span></span><span></span><span></span></button>
 
   <!-- CUSTOMIZE [10]: Đổi icon (∑) và tên logo -->
-  <a href="index.html" class="logo" aria-label="Trang chủ">
-    <div class="logo-ico">🪷</div>Không Gian Văn Hóa HCM
+  <a href="index.html" class="logo" aria-label="Trang chủ" style="display:flex;align-items:center;gap:10px;">
+    <img src="https://res.cloudinary.com/dwqtplan3/image/upload/v1785638390/Logo_Tru%CC%9Bo%CC%9B%CC%80ng_THCS_Ta%CC%82n_Bi%CC%80nh_rmfvy1.jpg" alt="Logo THCS Tân Bình" style="width:38px;height:38px;border-radius:50%;object-fit:cover;box-shadow:0 2px 8px rgba(0,0,0,0.15);flex-shrink:0;">
+    <span>Không Gian Văn Hóa HCM</span>
   </a>
 
   <div class="hsp"></div>
   <div class="hactions">
     <button class="ibtn" id="theme-btn" title="Đổi giao diện">🌙</button>
+    <button class="ibtn" id="toggle-cld-btn" title="Bật/tắt nút đổi ảnh thẻ Cloudinary">🖼️</button>
 
     <div class="lsel" id="lsel">
       <div class="lbtn" id="lbtn" role="button"><span id="lcur">🇻🇳 VI</span> ▾</div>
@@ -336,7 +393,7 @@ ul{list-style:none}
   <section class="intro-sec">
     <div class="intro-box reveal" id="intro-box">
       <!-- CUSTOMIZE [11]: Đổi emoji, tiêu đề, mô tả -->
-      <div class="intro-emo">🏛️</div>
+      <img src="https://res.cloudinary.com/dwqtplan3/image/upload/v1785638390/Logo_Tru%CC%9Bo%CC%9B%CC%80ng_THCS_Ta%CC%82n_Bi%CC%80nh_rmfvy1.jpg" alt="Logo THCS Tân Bình" class="intro-logo" style="width:64px;height:64px;border-radius:50%;object-fit:cover;box-shadow:0 4px 14px rgba(0,0,0,0.15);flex-shrink:0;">
       <div>
         <div class="intro-title" data-i18n="intro_title">Chào mừng đến với <span class="hl">Không gian văn hóa Hồ Chí Minh!</span></div>
         <div class="intro-desc" data-i18n="intro_desc">Nơi lưu giữ, tìm hiểu và lan tỏa <span class="hl">tư tưởng, đạo đức, phong cách Hồ Chí Minh</span> trong nhà trường và cộng đồng.</div>
@@ -381,6 +438,7 @@ ul{list-style:none}
 
       <a href="tailieu.html" class="card" data-cid="tailieu">
         <div class="c-img-wrap">
+          <button class="c-edit-img-btn" title="Đổi ảnh bằng Cloudinary (Tải lên hoặc Ctrl+V)" onclick="openCloudinaryModal(event, 'tailieu', '📖 Tư liệu về Bác Hồ')">📷 Đổi ảnh</button>
           <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/Ho_Chi_Minh_1946.jpg/800px-Ho_Chi_Minh_1946.jpg" alt="Tư liệu về Bác Hồ" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
           <div class="c-fallback" style="display:none; width:100%; height:100%; background:linear-gradient(135deg,#c62828,#ffb300); align-items:center; justify-content:center; font-size:3.5rem;">📖</div>
         </div>
@@ -393,6 +451,7 @@ ul{list-style:none}
 
       <a href="hoctap.html" class="card" data-cid="tusach">
         <div class="c-img-wrap">
+          <button class="c-edit-img-btn" title="Đổi ảnh bằng Cloudinary (Tải lên hoặc Ctrl+V)" onclick="openCloudinaryModal(event, 'tusach', '📚 Tủ sách về Bác')">📷 Đổi ảnh</button>
           <img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800&auto=format&fit=crop&q=80" alt="Tủ sách về Bác" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
           <div class="c-fallback" style="display:none; width:100%; height:100%; background:linear-gradient(135deg,#1e40af,#3b82f6); align-items:center; justify-content:center; font-size:3.5rem;">📚</div>
         </div>
@@ -405,6 +464,7 @@ ul{list-style:none}
 
       <a href="hocsinh.html" class="card" data-cid="video">
         <div class="c-img-wrap">
+          <button class="c-edit-img-btn" title="Đổi ảnh bằng Cloudinary (Tải lên hoặc Ctrl+V)" onclick="openCloudinaryModal(event, 'video', '🎥 Video tư liệu')">📷 Đổi ảnh</button>
           <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Ho_Chi_Minh_with_children.jpg/800px-Ho_Chi_Minh_with_children.jpg" alt="Video tư liệu" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
           <div class="c-fallback" style="display:none; width:100%; height:100%; background:linear-gradient(135deg,#b45309,#f59e0b); align-items:center; justify-content:center; font-size:3.5rem;">🎥</div>
         </div>
@@ -417,6 +477,7 @@ ul{list-style:none}
 
       <a href="hinhanh.html" class="card" data-cid="hinhanh">
         <div class="c-img-wrap">
+          <button class="c-edit-img-btn" title="Đổi ảnh bằng Cloudinary (Tải lên hoặc Ctrl+V)" onclick="openCloudinaryModal(event, 'hinhanh', '🖼️ Hình ảnh')">📷 Đổi ảnh</button>
           <img src="https://images.unsplash.com/photo-1509062522246-3755977927d7?w=800&auto=format&fit=crop&q=80" alt="Hình ảnh" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
           <div class="c-fallback" style="display:none; width:100%; height:100%; background:linear-gradient(135deg,#047857,#10b981); align-items:center; justify-content:center; font-size:3.5rem;">🖼️</div>
         </div>
@@ -429,6 +490,7 @@ ul{list-style:none}
 
       <a href="gopy.html" class="card" data-cid="vuonhoa">
         <div class="c-img-wrap">
+          <button class="c-edit-img-btn" title="Đổi ảnh bằng Cloudinary (Tải lên hoặc Ctrl+V)" onclick="openCloudinaryModal(event, 'vuonhoa', '🌱 Vườn hoa nhớ Bác')">📷 Đổi ảnh</button>
           <img src="https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=800&auto=format&fit=crop&q=80" alt="Vườn hoa nhớ Bác" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
           <div class="c-fallback" style="display:none; width:100%; height:100%; background:linear-gradient(135deg,#ec4899,#f472b6); align-items:center; justify-content:center; font-size:3.5rem;">🌱</div>
         </div>
@@ -441,6 +503,7 @@ ul{list-style:none}
 
       <a href="luutru.html" class="card" data-cid="baotang">
         <div class="c-img-wrap">
+          <button class="c-edit-img-btn" title="Đổi ảnh bằng Cloudinary (Tải lên hoặc Ctrl+V)" onclick="openCloudinaryModal(event, 'baotang', '🏛️ Bảo tàng về Bác')">📷 Đổi ảnh</button>
           <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Ho_Chi_Minh_Museum_Hanoi.jpg/800px-Ho_Chi_Minh_Museum_Hanoi.jpg" alt="Bảo tàng về Bác" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
           <div class="c-fallback" style="display:none; width:100%; height:100%; background:linear-gradient(135deg,#991b1b,#dc2626); align-items:center; justify-content:center; font-size:3.5rem;">🏛️</div>
         </div>
@@ -1017,9 +1080,219 @@ const initModal = () => {
   document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeM(); });
 };
 
+<!-- ── Cloudinary Upload Modal ────────────────── -->
+<div class="cld-ov" id="cld-ov">
+  <div class="cld-box">
+    <div class="cld-hdr">
+      <div class="cld-title">🖼️ Đổi ảnh chuyên mục: <span id="cld-card-name" class="hl">...</span></div>
+      <button class="cld-x" id="cld-x" aria-label="Đóng">✕</button>
+    </div>
+    <div class="cld-body">
+      <div class="cld-preview-wrap">
+        <img id="cld-preview-img" src="" alt="Preview">
+      </div>
+
+      <!-- Vùng thả / Tải lên / Dán Ctrl+V -->
+      <div class="cld-dropzone" id="cld-dropzone" tabindex="0">
+        <div class="cld-dz-ico">☁️</div>
+        <div class="cld-dz-txt">Bấm để chọn file ảnh<br>hoặc <strong>nhấn Ctrl + V</strong> để dán ảnh vào</div>
+        <div class="cld-dz-sub">Tự động tải lên Cloudinary (<span class="hl">dwqtplan3</span> — preset: <span class="hl">canhan</span>)</div>
+        <input type="file" id="cld-file-input" accept="image/*" style="display:none;">
+      </div>
+
+      <!-- Trạng thái -->
+      <div id="cld-status" class="cld-status"></div>
+
+      <div class="cld-actions">
+        <button class="cld-btn-cancel" id="cld-btn-cancel">Đóng</button>
+        <button class="cld-btn-upload" id="cld-btn-choose">📂 Chọn ảnh từ máy...</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── CLOUDINARY UPLOAD MODAL ──────────────────
+let currentCldCardId = '';
+const CLD_NAME = 'dwqtplan3';
+const CLD_PRESET = 'canhan';
+const CLD_URL = `https://api.cloudinary.com/v1_1/${CLD_NAME}/image/upload`;
+
+function openCloudinaryModal(e, cid, title) {
+  if (e) { e.preventDefault(); e.stopPropagation(); }
+  currentCldCardId = cid;
+  $id('cld-card-name').textContent = title;
+  
+  const cardEl = document.querySelector(`.card[data-cid="${cid}"]`);
+  let curImgUrl = '';
+  if (cardEl) {
+    const imgEl = cardEl.querySelector('.c-img-wrap img');
+    if (imgEl) curImgUrl = imgEl.src;
+  }
+  $id('cld-preview-img').src = curImgUrl;
+  $id('cld-status').className = 'cld-status';
+  $id('cld-status').textContent = '';
+  $id('cld-ov').style.display = 'flex';
+  setTimeout(() => { if ($id('cld-dropzone')) $id('cld-dropzone').focus(); }, 100);
+}
+
+function closeCloudinaryModal() {
+  $id('cld-ov').style.display = 'none';
+}
+
+async function uploadToCloudinary(file) {
+  if (!file || !file.type.startsWith('image/')) {
+    $id('cld-status').className = 'cld-status error';
+    $id('cld-status').textContent = '❌ Vui lòng chọn file hình ảnh hợp lệ (PNG, JPG, WEBP...)';
+    return;
+  }
+  const statusEl = $id('cld-status');
+  statusEl.className = 'cld-status loading';
+  statusEl.innerHTML = '⏳ Đang tải ảnh lên Cloudinary (<span class="hl">canhan</span>)...';
+  
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('upload_preset', CLD_PRESET);
+  
+  try {
+    const res = await fetch(CLD_URL, {
+      method: 'POST',
+      body: formData
+    });
+    const data = await res.json();
+    if (data.secure_url) {
+      statusEl.className = 'cld-status success';
+      statusEl.innerHTML = '✅ Đã lưu vào Cloudinary thành công!';
+      
+      const newUrl = data.secure_url;
+      $id('cld-preview-img').src = newUrl;
+      
+      let saved = JSON.parse(localStorage.getItem('hcm_card_images') || '{}');
+      saved[currentCldCardId] = newUrl;
+      localStorage.setItem('hcm_card_images', JSON.stringify(saved));
+      
+      applyCardImages(saved);
+      
+      if (typeof db !== 'undefined') {
+        db.collection('settings').doc('card_images').set({
+          [currentCldCardId]: newUrl
+        }, { merge: true }).catch(() => {});
+      }
+      
+      if (typeof toast === 'function') toast('🎉 Đã cập nhật ảnh chuyên mục thành công!', 's');
+      setTimeout(() => { closeCloudinaryModal(); }, 1200);
+    } else {
+      throw new Error(data.error?.message || 'Lỗi từ Cloudinary');
+    }
+  } catch (err) {
+    statusEl.className = 'cld-status error';
+    statusEl.textContent = '❌ Lỗi: ' + (err.message || 'Không thể tải ảnh lên Cloudinary');
+    if (typeof toast === 'function') toast('Lỗi tải ảnh lên Cloudinary', 'e');
+  }
+}
+
+function applyCardImages(saved = {}) {
+  document.querySelectorAll('.card').forEach(c => {
+    const cid = c.dataset.cid;
+    const url = saved[cid];
+    if (url) {
+      const img = c.querySelector('.c-img-wrap img');
+      if (img) {
+        img.src = url;
+        img.style.display = 'block';
+      }
+      const fb = c.querySelector('.c-fallback');
+      if (fb) fb.style.display = 'none';
+    }
+  });
+}
+
+function initCloudinary() {
+  const saved = JSON.parse(localStorage.getItem('hcm_card_images') || '{}');
+  applyCardImages(saved);
+  if (typeof db !== 'undefined') {
+    db.collection('settings').doc('card_images').onSnapshot(snap => {
+      if (snap.exists) {
+        const data = snap.data();
+        let cur = JSON.parse(localStorage.getItem('hcm_card_images') || '{}');
+        Object.assign(cur, data);
+        localStorage.setItem('hcm_card_images', JSON.stringify(cur));
+        applyCardImages(cur);
+      }
+    });
+  }
+
+  const togBtn = $id('toggle-cld-btn');
+  if (togBtn) {
+    togBtn.addEventListener('click', () => {
+      const btns = document.querySelectorAll('.c-edit-img-btn');
+      const isShowing = btns.length && btns[0].classList.contains('always-show');
+      btns.forEach(b => b.classList.toggle('always-show', !isShowing));
+      if (typeof toast === 'function') {
+        toast(!isShowing ? '🖼️ Đã bật hiển thị nút Đổi ảnh thẻ' : '🖼️ Đã ẩn nút Đổi ảnh (hiện khi rẽ chuột)', 's');
+      }
+    });
+  }
+
+  const clX = $id('cld-x');
+  const clCancel = $id('cld-btn-cancel');
+  if (clX) clX.addEventListener('click', closeCloudinaryModal);
+  if (clCancel) clCancel.addEventListener('click', closeCloudinaryModal);
+
+  const dz = $id('cld-dropzone');
+  const fInp = $id('cld-file-input');
+  const chBtn = $id('cld-btn-choose');
+  if (dz && fInp) {
+    dz.addEventListener('click', () => fInp.click());
+    if (chBtn) chBtn.addEventListener('click', () => fInp.click());
+    fInp.addEventListener('change', e => {
+      const f = e.target.files?.[0];
+      if (f) uploadToCloudinary(f);
+    });
+
+    dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('dragover'); });
+    dz.addEventListener('dragleave', e => { e.preventDefault(); dz.classList.remove('dragover'); });
+    dz.addEventListener('drop', e => {
+      e.preventDefault();
+      dz.classList.remove('dragover');
+      const f = e.dataTransfer?.files?.[0];
+      if (f) uploadToCloudinary(f);
+    });
+  }
+
+  window.addEventListener('paste', e => {
+    const ov = $id('cld-ov');
+    if (!ov || ov.style.display === 'none') return;
+    const items = (e.clipboardData || e.originalEvent?.clipboardData)?.items;
+    if (!items) return;
+    for (let i = 0; i < items.length; i++) {
+      if (items[i].type.indexOf('image') !== -1) {
+        const file = items[i].getAsFile();
+        if (file) {
+          e.preventDefault();
+          uploadToCloudinary(file);
+          break;
+        }
+       }
+    }
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && $id('cld-ov') && $id('cld-ov').style.display !== 'none') {
+      closeCloudinaryModal();
+    }
+  });
+  const cldOv = $id('cld-ov');
+  if (cldOv) {
+    cldOv.addEventListener('click', e => {
+      if (e.target === cldOv) closeCloudinaryModal();
+    });
+  }
+}
+
 // ─── Run ──────────────────────────────────────
 document.addEventListener('DOMContentLoaded',()=>{
-  initSidebar(); initLang(); initUserMenu(); initModal(); initStagger();
+  initSidebar(); initLang(); initUserMenu(); initModal(); initStagger(); initCloudinary();
 });
 </script>
 </body>

@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Trang quản trị - Chd Maths">
-  <title>Quản trị — NVC Maths</title>
+  <meta name="description" content="Trang quản trị - Không gian văn hóa Hồ Chí Minh">
+  <title>Quản trị — Không gian văn hóa Hồ Chí Minh</title>
+  <link rel="icon" href="https://res.cloudinary.com/dwqtplan3/image/upload/v1785638390/Logo_Tru%CC%9Bo%CC%9B%CC%80ng_THCS_Ta%CC%82n_Bi%CC%80nh_rmfvy1.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Baloo+2:wght@700;800&display=swap" rel="stylesheet">
@@ -234,13 +235,16 @@ tr:hover td{background:rgba(103,126,234,.04)}
 </head>
 <body>
 
-<div class="ldr" id="ldr"><div class="ldr-logo">NVC Maths</div><div class="spin"></div></div>
+<div class="ldr" id="ldr"><div class="ldr-logo" style="display:flex;flex-direction:column;align-items:center;gap:12px;"><img src="https://res.cloudinary.com/dwqtplan3/image/upload/v1785638390/Logo_Tru%CC%9Bo%CC%9B%CC%80ng_THCS_Ta%CC%82n_Bi%CC%80nh_rmfvy1.jpg" alt="Logo THCS Tân Bình" style="width:72px;height:72px;border-radius:50%;object-fit:cover;box-shadow:0 4px 14px rgba(0,0,0,0.18);"><span>Không Gian Văn Hóa HCM</span></div><div class="spin"></div></div>
 <div class="sov" id="sov"></div>
 
 <!-- Sidebar -->
 <nav class="sb" id="sb">
   <div class="sb-hdr">
-    <span class="sb-logo">∑ NVC Maths</span>
+    <span class="sb-logo" style="display:flex;align-items:center;gap:10px;">
+      <img src="https://res.cloudinary.com/dwqtplan3/image/upload/v1785638390/Logo_Tru%CC%9Bo%CC%9B%CC%80ng_THCS_Ta%CC%82n_Bi%CC%80nh_rmfvy1.jpg" alt="Logo" style="width:34px;height:34px;border-radius:50%;object-fit:cover;flex-shrink:0;">
+      <span>Không Gian Văn Hóa HCM</span>
+    </span>
     <button class="sb-x" id="sb-x" aria-label="Đóng menu">✕</button>
   </div>
   <div class="sb-user" id="sb-user">
@@ -268,7 +272,7 @@ tr:hover td{background:rgba(103,126,234,.04)}
 <!-- Header -->
 <header class="hdr">
   <button class="hmb" id="hmb"><span></span><span></span><span></span></button>
-  <a href="index.html" class="logo" aria-label="Trang chủ"><div class="logo-ico">∑</div>NVC Maths</a>
+  <a href="index.html" class="logo" aria-label="Trang chủ" style="display:flex;align-items:center;gap:10px;"><img src="https://res.cloudinary.com/dwqtplan3/image/upload/v1785638390/Logo_Tru%CC%9Bo%CC%9B%CC%80ng_THCS_Ta%CC%82n_Bi%CC%80nh_rmfvy1.jpg" alt="Logo" style="width:38px;height:38px;border-radius:50%;object-fit:cover;box-shadow:0 2px 8px rgba(0,0,0,0.15);flex-shrink:0;"><span>Không Gian Văn Hóa HCM</span></a>
   <div class="hsp"></div>
   <div class="hactions">
     <button class="ibtn" id="theme-btn">🌙</button>
@@ -549,16 +553,12 @@ const ADMIN_EMAIL='songminh138@gmail.com';
 // CUSTOMIZE: Danh sách card (đồng bộ với index.html)
 // ════════════════════════════════════════════
 const CARDS=[
-  {id:'hocsinh',emoji:'👨‍🎓',name:'Hồ sơ Học sinh'},
-  {id:'diemdanh',emoji:'📋',name:'Điểm danh & Nề nếp'},
-  {id:'hoctap',emoji:'📈',name:'Kết quả Học tập'},
-  {id:'gopy',emoji:'💬',name:'Góp ý & chia sẻ'},
-  {id:'thoikhoabieu',emoji:'📅',name:'Thời khóa biểu & Sự kiện'},
-  {id:'hinhanh',emoji:'🖼️',name:'Nhật ký ảnh lớp'},
-  {id:'tailieu',emoji:'📚',name:'Tài liệu môn Toán'},
-  {id:'thongbao',emoji:'📢',name:'Bảng Thông báo'},
-  {id:'luutru',emoji:'🗄️',name:'Lưu trữ'},
-  // Thêm card mới ở đây: {id:'trang-moi',emoji:'🎯',name:'Tên thẻ'},
+  {id:'tailieu',emoji:'📖',name:'Tư liệu về Bác Hồ'},
+  {id:'tusach',emoji:'📚',name:'Tủ sách về Bác'},
+  {id:'video',emoji:'🎥',name:'Video tư liệu'},
+  {id:'hinhanh',emoji:'🖼️',name:'Hình ảnh'},
+  {id:'vuonhoa',emoji:'🌱',name:'Vườn hoa nhớ Bác'},
+  {id:'baotang',emoji:'🏛️',name:'Bảo tàng về Bác'},
 ];
 
 const ROLES=['admin','teacher','student','parent','guest'];
