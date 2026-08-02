@@ -118,7 +118,7 @@
         </span>
         <button onclick="openLinkModal()" class="bg-amber-400 hover:bg-amber-300 text-red-950 px-3.5 py-1.5 rounded-lg font-bold text-sm shadow-md hover:shadow transition flex items-center gap-1.5">
           <i class="fa-solid fa-plus"></i>
-          <span>Thêm điểm tham quan</span>
+          <span class="hidden sm:inline">Thêm điểm tham quan</span>
         </button>
       </div>
     </div>
@@ -126,18 +126,17 @@
 
   <!-- Main Content -->
   <main class="max-w-6xl mx-auto px-4 py-8 flex-1 w-full space-y-10">
-
     <!-- PHẦN 1: HERO SECTION - GIỚI THIỆU BẢO TÀNG HỒ CHÍ MINH -->
     <section class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
       <!-- Top Box: Image + Title/Intro -->
       <div class="p-6 sm:p-8 flex flex-col md:flex-row items-center md:items-start gap-8 border-b border-slate-100">
         
         <!-- Left: Image Banner (Với nút đổi ảnh Cloudinary dành cho Admin giống index.html) -->
-        <div class="w-full md:w-80 shrink-0 relative group rounded-xl overflow-hidden shadow-md border border-slate-200 bg-red-800">
+        <div class="w-full md:w-80 shrink-0 relative group rounded-xl overflow-hidden shadow-md border border-slate-200">
           <img id="museum-hero-img" 
-               src="https://res.cloudinary.com/dwqtplan3/image/upload/v1785638390/Logo_Tru%CC%9Bo%CC%9B%CC%80ng_THCS_Ta%CC%82n_Bi%CC%80nh_rmfvy1.jpg" 
+               src="https://res.cloudinary.com/dwqtplan3/image/upload/v1785641048/dj9sjiclqzqrmweyexam.png" 
                alt="Bảo tàng Hồ Chí Minh" 
-               class="w-full h-52 md:h-60 object-contain bg-red-700 p-2 transition-transform duration-500 group-hover:scale-105">
+               class="w-full h-52 md:h-60 object-cover transition-transform duration-500 group-hover:scale-105">
           
           <!-- Admin Only: Change Image Button with Cloudinary -->
           <div id="hero-img-admin-controls" class="hidden absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2.5 p-4 text-center">
@@ -151,65 +150,25 @@
         </div>
 
         <!-- Right: Main Intro Text -->
-        <div class="flex-1 space-y-4">
-          <h2 class="text-xl sm:text-2xl font-bold text-red-800 font-serif-title leading-snug">
-            Bảo tàng Hồ Chí Minh <span class="text-slate-700 font-sans font-normal text-base sm:text-lg block sm:inline">là công trình lưu niệm và trưng bày các tư liệu, hiện vật về Chủ tịch Hồ Chí Minh, có địa chỉ tại số 19 Ngọc Hà, Ba Đình, Hà Nội.</span>
-          </h2>
-          
-          <div class="inline-flex items-center gap-2 bg-amber-50 border border-amber-200 text-amber-900 px-3 py-1.5 rounded-lg text-xs font-semibold">
-            <i class="fa-solid fa-star text-amber-500"></i>
-            <span>Không gian trưng bày số & Tham quan ảo 3D</span>
-          </div>
-
-          <p class="text-sm text-slate-600 leading-relaxed">
-            Bảo tàng Hồ Chí Minh là một trong những bảo tàng lớn nhất Việt Nam, nơi tập trung toàn diện nhất những tài liệu, hiện vật, hình ảnh phản ánh chân thực và sinh động trọn vẹn cuộc đời, sự nghiệp cách mạng vĩ đại của Chủ tịch Hồ Chí Minh – Anh hùng giải phóng dân tộc, Nhà văn hóa kiệt xuất.
+        <div class="flex-1">
+          <p class="text-base sm:text-lg text-slate-700 leading-relaxed font-medium">
+            Bảo tàng Hồ Chí Minh là nơi lưu giữ, bảo tồn và trưng bày các tư liệu, hiện vật, hình ảnh quý giá về cuộc đời, sự nghiệp cách mạng và tư tưởng, đạo đức, phong cách của Chủ tịch Hồ Chí Minh. Đây là địa chỉ đỏ có ý nghĩa lịch sử, văn hóa và giáo dục sâu sắc, giúp các thế hệ hiểu hơn về cuộc đời, lý tưởng cách mạng của Bác, đồng thời bồi dưỡng lòng yêu nước, tinh thần đoàn kết và niềm tự hào dân tộc.
           </p>
         </div>
 
       </div>
-
-      <!-- Bottom Box: Bulleted Details (Đúng theo ảnh mẫu của người dùng) -->
-      <div class="bg-slate-50 p-6 sm:p-8 space-y-3.5 text-sm sm:text-base text-slate-700">
-        <div class="flex items-start gap-2.5">
-          <span class="text-red-600 font-bold mt-0.5">•</span>
-          <div>
-            <strong class="text-slate-900 font-semibold">Không gian trưng bày:</strong> Bảo tàng cung cấp hệ thống trưng bày đa dạng, bao gồm trưng bày thường xuyên, trưng bày chuyên đề và cả Bảo tàng 3D trực tuyến để phục vụ khách tham quan.
-          </div>
-        </div>
-
-        <div class="flex items-start gap-2.5">
-          <span class="text-red-600 font-bold mt-0.5">•</span>
-          <div>
-            <strong class="text-slate-900 font-semibold">Nghiên cứu và Giáo dục:</strong> Nơi đây thực hiện các nghiên cứu khoa học, sưu tầm, bảo quản hiện vật và xuất bản các ấn phẩm về Bác. Ngoài ra, bảo tàng còn tổ chức các hoạt động giáo dục như tuyên truyền học tập tấm gương đạo đức Hồ Chí Minh, phòng khám phá trải nghiệm và các triển lãm như “Những tấm gương bình dị mà cao quý”.
-          </div>
-        </div>
-
-        <div class="flex items-start gap-2.5">
-          <span class="text-red-600 font-bold mt-0.5">•</span>
-          <div>
-            <strong class="text-slate-900 font-semibold">Thời gian hoạt động:</strong> Bảo tàng mở cửa vào <strong class="text-slate-900">Thứ Ba, Thứ Tư, Thứ Năm, Thứ Bảy và Chủ Nhật</strong> với khung giờ sáng từ 8h00 - 12h00 và chiều từ 14h00 - 16h30. Bảo tàng <strong class="text-red-700">đóng cửa vào Thứ Hai và Thứ Sáu</strong>.
-          </div>
-        </div>
-
-        <div class="flex items-start gap-2.5">
-          <span class="text-red-600 font-bold mt-0.5">•</span>
-          <div>
-            <strong class="text-slate-900 font-semibold">Thông tin vé tham quan:</strong> Du khách có thể đăng ký tham quan trực tuyến trên website, tuy nhiên tính năng mua vé trực tuyến hiện đang được hoàn thiện. Để mua vé, khách tham quan cần liên hệ trực tiếp qua số điện thoại 024.38463757.
-          </div>
-        </div>
-      </div>
     </section>
 
-    <!-- PHẦN 2: HỆ THỐNG ĐƯỜNG DẪN THAM QUAN BẢO TÀNG & DI TÍCH (THÊM THỦ CÔNG) -->
+    <!-- PHẦN 2: HỆ THỐNG ĐƯỜNG DẪN THAM QUAN BẢO TÀNG & DI TÍCH -->
     <section class="space-y-6">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
         <div>
           <h3 class="text-xl font-bold text-slate-800 flex items-center gap-2">
             <i class="fa-solid fa-vr-cardboard text-red-600"></i>
-            <span>Đường Dẫn Tham Quan Bảo Tàng & Di Tích 3D</span>
+            <span>Đường Dẫn Tham Quan 3D</span>
           </h3>
           <p class="text-sm text-slate-500 mt-0.5">
-            Nhấn để tham quan trực tuyến các không gian thực tế ảo, phòng trưng bày số và di tích Bác Hồ.
+            Nhấn để tham quan trực tuyến các không gian thực tế ảo và di tích.
           </p>
         </div>
 
@@ -222,10 +181,10 @@
             Bảo tàng 3D
           </button>
           <button onclick="filterCategory('Di tích lịch sử')" id="filter-btn-ditich" class="filter-btn bg-slate-200 text-slate-700 hover:bg-slate-300 px-3 py-1.5 rounded-full font-semibold transition">
-            Di tích lịch sử
+            Di tích
           </button>
           <button onclick="filterCategory('Chuyên đề')" id="filter-btn-chuyende" class="filter-btn bg-slate-200 text-slate-700 hover:bg-slate-300 px-3 py-1.5 rounded-full font-semibold transition">
-            Chuyên đề số
+            Chuyên đề
           </button>
         </div>
       </div>
@@ -257,16 +216,16 @@
           <span>Không gian văn hóa Hồ Chí Minh • Trường THCS Tân Bình</span>
         </div>
       </div>
-      <div>
-        © 2026 Không gian văn hóa HCM. Phát triển cho mục đích giáo dục & tham quan số.
+      <div class="text-center sm:text-right">
+        © 2026 Không gian văn hóa HCM.<br class="sm:hidden"> Phát triển cho mục đích giáo dục & tham quan số.
       </div>
     </div>
   </footer>
 
   <!-- MODAL 1: THÊM / SỬA ĐƯỜNG DẪN THAM QUAN (THỦ CÔNG) -->
   <div id="link-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm">
-    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden border border-slate-200 transform transition-all">
-      <div class="bg-red-800 text-white px-6 py-4 flex items-center justify-between">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden border border-slate-200 transform transition-all max-h-[90vh] flex flex-col">
+      <div class="bg-red-800 text-white px-6 py-4 flex items-center justify-between shrink-0">
         <h3 id="link-modal-title" class="font-bold text-lg flex items-center gap-2">
           <i class="fa-solid fa-link text-amber-300"></i>
           <span>Thêm đường dẫn tham quan mới</span>
@@ -276,74 +235,90 @@
         </button>
       </div>
 
-      <form id="link-form" onsubmit="saveLink(event)" class="p-6 space-y-4">
-        <input type="hidden" id="link-id">
+      <div class="overflow-y-auto p-6 flex-1 custom-scrollbar">
+        <form id="link-form" onsubmit="saveLink(event)" class="space-y-4">
+          <input type="hidden" id="link-id">
 
-        <div>
-          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Tên địa điểm / Bảo tàng 3D <span class="text-red-500">*</span></label>
-          <input type="text" id="link-title" required placeholder="VD: Bảo tàng Hồ Chí Minh 3D - Ngọc Hà, Hà Nội"
-                 class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-red-600 text-sm">
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Phân loại <span class="text-red-500">*</span></label>
-            <select id="link-category" class="w-full px-3 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-red-600 text-sm bg-white">
-              <option value="Bảo tàng 3D">Bảo tàng 3D (VR 360)</option>
-              <option value="Di tích lịch sử">Di tích lịch sử</option>
-              <option value="Chuyên đề">Chuyên đề trưng bày số</option>
-              <option value="Khác">Tham quan & Tư liệu khác</option>
-            </select>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Tên địa điểm / Bảo tàng 3D <span class="text-red-500">*</span></label>
+            <input type="text" id="link-title" required placeholder="VD: Bảo tàng Hồ Chí Minh 3D - Ngọc Hà, Hà Nội"
+                   class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-red-600 text-sm">
           </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Phân loại <span class="text-red-500">*</span></label>
+              <select id="link-category" class="w-full px-3 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-red-600 text-sm bg-white">
+                <option value="Bảo tàng 3D">Bảo tàng 3D (VR 360)</option>
+                <option value="Di tích lịch sử">Di tích lịch sử</option>
+                <option value="Chuyên đề">Chuyên đề trưng bày số</option>
+                <option value="Khác">Tham quan & Tư liệu khác</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Thứ tự ưu tiên</label>
+              <input type="number" id="link-order" value="1" min="1"
+                     class="w-full px-3 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-red-600 text-sm">
+            </div>
+          </div>
+
           <div>
-            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Thứ tự ưu tiên</label>
-            <input type="number" id="link-order" value="1" min="1"
-                   class="w-full px-3 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-red-600 text-sm">
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Đường dẫn URL tham quan <span class="text-red-500">*</span></label>
+            <input type="url" id="link-url" required placeholder="https://baotanghochiminh.vn/3d-tour..."
+                   class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-red-600 text-sm">
           </div>
-        </div>
 
-        <div>
-          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Đường dẫn URL tham quan <span class="text-red-500">*</span></label>
-          <input type="url" id="link-url" required placeholder="https://baotanghochiminh.vn/3d-tour..."
-                 class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-red-600 text-sm">
-        </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Ảnh đại diện (Thumbnail)</label>
+            <!-- Ẩn input URL, thay thế bằng giao diện xem trước & tải lên -->
+            <input type="hidden" id="link-image" value="">
+            
+            <div class="flex items-center gap-4 mt-1">
+              <!-- Khu vực hiển thị ảnh xem trước -->
+              <div onclick="openCloudinaryModal(event, 'link-input', '🖼️ Ảnh thumbnail điểm tham quan')" class="w-24 h-24 sm:w-28 sm:h-28 rounded-xl border border-slate-200 bg-slate-50 flex items-center justify-center overflow-hidden shrink-0 shadow-inner relative group cursor-pointer" title="Nhấn để đổi ảnh">
+                <img id="link-image-preview" src="https://res.cloudinary.com/dwqtplan3/image/upload/v1785638390/Logo_Tru%CC%9Bo%CC%9B%CC%80ng_THCS_Ta%CC%82n_Bi%CC%80nh_rmfvy1.jpg" alt="Preview" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                   <i class="fa-solid fa-camera text-white text-xl"></i>
+                </div>
+              </div>
+              
+              <!-- Nút tải ảnh và hướng dẫn -->
+              <div class="flex flex-col gap-2">
+                <button type="button" onclick="openCloudinaryModal(event, 'link-input', '🖼️ Ảnh thumbnail điểm tham quan')" 
+                        class="bg-slate-800 hover:bg-slate-900 text-white px-4 py-2 rounded-lg font-bold text-xs flex items-center gap-2 transition shadow-sm w-fit">
+                  <i class="fa-solid fa-cloud-arrow-up"></i> Tải ảnh lên
+                </button>
+                <p class="text-[11px] text-slate-500 leading-relaxed max-w-[200px]">
+                  Bấm nút tải ảnh hoặc <strong>nhấn Ctrl + V</strong> để dán trực tiếp. Ảnh sẽ tự động lưu vào Cloudinary.
+                </p>
+              </div>
+            </div>
+          </div>
 
-        <div>
-          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Ảnh đại diện thẻ (Thumbnail)</label>
-          <div class="flex gap-2">
-            <input type="text" id="link-image" placeholder="Dán URL ảnh hoặc bấm Đổi ảnh bằng Cloudinary..."
-                   class="flex-1 px-3.5 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-red-600 text-sm">
-            <button type="button" onclick="openCloudinaryModal(event, 'link-input', '🖼️ Ảnh thumbnail điểm tham quan')" 
-                    class="bg-red-700 hover:bg-red-800 text-white px-3.5 py-2.5 rounded-lg font-bold text-xs flex items-center gap-1.5 whitespace-nowrap transition shadow-sm">
-              <i class="fa-solid fa-camera"></i> Đổi ảnh (Cloudinary)
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Mô tả ngắn</label>
+            <textarea id="link-desc" rows="3" placeholder="VD: Không gian thực tế ảo 360 độ toàn bộ 3 tầng trưng bày của bảo tàng..."
+                      class="w-full px-3.5 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-red-600 text-sm resize-none"></textarea>
+          </div>
+
+          <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100 mt-2">
+            <button type="button" onclick="closeLinkModal()" class="px-4 py-2 rounded-lg border border-slate-300 text-slate-600 hover:bg-slate-100 font-semibold text-sm transition">
+              Hủy
+            </button>
+            <button type="submit" id="btn-save-link" class="px-5 py-2 rounded-lg bg-red-700 hover:bg-red-800 text-white font-bold text-sm shadow-md hover:shadow transition flex items-center gap-2">
+              <i class="fa-solid fa-floppy-disk"></i> Lưu dữ liệu
             </button>
           </div>
-          <p class="text-[11px] text-slate-400 mt-1">Mẹo: Bạn có thể bấm nút Đổi ảnh để kéo thả hoặc <strong>nhấn Ctrl + V</strong> dán ảnh vào Cloudinary.</p>
-        </div>
-
-        <div>
-          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Mô tả ngắn</label>
-          <textarea id="link-desc" rows="2" placeholder="VD: Không gian thực tế ảo 360 độ toàn bộ 3 tầng trưng bày của bảo tàng..."
-                    class="w-full px-3.5 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-red-600 text-sm"></textarea>
-        </div>
-
-        <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
-          <button type="button" onclick="closeLinkModal()" class="px-4 py-2 rounded-lg border border-slate-300 text-slate-600 hover:bg-slate-100 font-semibold text-sm transition">
-            Hủy
-          </button>
-          <button type="submit" id="btn-save-link" class="px-5 py-2 rounded-lg bg-red-700 hover:bg-red-800 text-white font-bold text-sm shadow-md hover:shadow transition flex items-center gap-2">
-            <i class="fa-solid fa-floppy-disk"></i> Lưu điểm tham quan
-          </button>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
   </div>
 
-  <!-- ── MODAL CLOUDINARY UPLOAD (GIỐNG TRANG INDEX.HTML) ── -->
+  <!-- ── MODAL CLOUDINARY UPLOAD ── -->
   <div class="cld-ov" id="cld-ov">
     <div class="cld-box">
       <div class="cld-hdr">
-        <div class="cld-title">🖼️ Đổi ảnh chuyên mục: <span id="cld-card-name" class="hl">...</span></div>
+        <div class="cld-title text-base sm:text-lg">🖼️ Đổi ảnh: <span id="cld-card-name" class="hl text-sm sm:text-base">...</span></div>
         <button class="cld-x" id="cld-x" aria-label="Đóng">✕</button>
       </div>
       <div class="cld-body">
@@ -355,7 +330,7 @@
         <div class="cld-dropzone" id="cld-dropzone" tabindex="0">
           <div class="cld-dz-ico">☁️</div>
           <div class="cld-dz-txt">Bấm để chọn file ảnh<br>hoặc <strong>nhấn Ctrl + V</strong> để dán ảnh vào</div>
-          <div class="cld-dz-sub">Tự động tải lên Cloudinary (<span class="hl">dwqtplan3</span> — preset: <span class="hl">canhan</span>)</div>
+          <div class="cld-dz-sub">Tự động tải lên máy chủ ảnh</div>
           <input type="file" id="cld-file-input" accept="image/*" style="display:none;">
         </div>
 
@@ -364,14 +339,31 @@
 
         <div class="cld-actions">
           <button class="cld-btn-cancel" id="cld-btn-cancel">Đóng</button>
-          <button class="cld-btn-upload" id="cld-btn-choose">📂 Chọn ảnh từ máy...</button>
+          <button class="cld-btn-upload" id="cld-btn-choose">📂 Chọn ảnh...</button>
         </div>
       </div>
     </div>
   </div>
 
+  <!-- CUSTOM CONFIRM MODAL (THAY THẾ CHỨC NĂNG CONFIRM MẶC ĐỊNH) -->
+  <div id="confirm-modal" class="fixed inset-0 bg-black/60 z-[60] hidden flex items-center justify-center p-4 backdrop-blur-sm">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden border border-slate-200 transform transition-all p-6 text-center">
+      <i class="fa-solid fa-triangle-exclamation text-5xl text-amber-500 mb-4 drop-shadow-md"></i>
+      <h3 class="text-xl font-bold text-slate-800 mb-2">Xác nhận xóa</h3>
+      <p class="text-sm text-slate-600 mb-6">Bạn có chắc chắn muốn xóa điểm tham quan này không? Hành động này không thể hoàn tác.</p>
+      <div class="flex justify-center gap-3">
+        <button onclick="closeConfirmModal()" class="px-5 py-2.5 rounded-lg border border-slate-300 text-slate-600 hover:bg-slate-100 font-semibold text-sm transition">
+          Hủy bỏ
+        </button>
+        <button onclick="executeDelete()" class="px-5 py-2.5 rounded-lg bg-red-600 hover:bg-red-700 text-white font-bold text-sm shadow-md transition">
+          Đồng ý Xóa
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- TOAST NOTIFICATION -->
-  <div id="toast" class="fixed bottom-5 right-5 bg-slate-900 text-white px-5 py-3 rounded-xl shadow-xl transform translate-y-20 opacity-0 transition-all duration-300 z-50 flex items-center gap-3 text-sm font-medium">
+  <div id="toast" class="fixed bottom-5 right-5 bg-slate-900 text-white px-5 py-3 rounded-xl shadow-xl transform translate-y-20 opacity-0 transition-all duration-300 z-[70] flex items-center gap-3 text-sm font-medium">
     <i id="toast-icon" class="fa-solid fa-circle-check text-green-400 text-lg"></i>
     <span id="toast-text"></span>
   </div>
@@ -387,6 +379,7 @@
     let isAdmin = false;
     let currentCategoryFilter = 'all';
     let currentCldTarget = ''; // 'hero', 'link-input', hoặc link ID
+    let linkIdToDelete = null; // Biến lưu trữ ID thẻ cần xóa cho custom confirm modal
 
     // Dữ liệu mẫu ban đầu (Nếu Firestore chưa có)
     const DEFAULT_LINKS = [
@@ -430,25 +423,35 @@
 
     let allLinks = [];
 
-    // Kiểm tra trạng thái đăng nhập Firebase để bật chế độ Admin
+    // Khởi tạo và kiểm tra trạng thái
     window.addEventListener('DOMContentLoaded', () => {
-      const auth = firebase.auth();
-      const db = firebase.firestore();
+      // BẬT SẴN QUYỀN ADMIN CHO MÔI TRƯỜNG XEM TRƯỚC ĐỂ THẤY NÚT CHỈNH SỬA
+      enableAdminMode();
+      
+      // Bọc trong try-catch phòng trường hợp Firebase chưa khởi tạo từ CDN
+      try {
+        const auth = firebase.auth();
+        const db = firebase.firestore();
 
-      auth.onAuthStateChanged(async (user) => {
-        if (user) {
-          try {
-            const doc = await db.collection('users').doc(user.uid).get();
-            if (doc.exists && doc.data().role === 'admin') {
-              enableAdminMode();
+        auth.onAuthStateChanged(async (user) => {
+          if (user) {
+            try {
+              const doc = await db.collection('users').doc(user.uid).get();
+              if (doc.exists && doc.data().role === 'admin') {
+                enableAdminMode();
+              }
+            } catch (e) {
+              console.error("Lỗi kiểm tra quyền Admin:", e);
             }
-          } catch (e) {
-            console.error("Lỗi kiểm tra quyền Admin:", e);
           }
-        }
+          loadLinks();
+          loadHeroImage();
+        });
+      } catch (err) {
+        console.warn("Chạy offline hoặc Firebase chưa sẵn sàng. Dùng dữ liệu cục bộ.");
         loadLinks();
         loadHeroImage();
-      });
+      }
 
       initCloudinaryModal();
     });
@@ -466,18 +469,22 @@
     // ==========================================
     async function loadLinks() {
       try {
-        const db = firebase.firestore();
-        const snapshot = await db.collection('baotang_links').orderBy('order', 'asc').get();
-        if (!snapshot.empty) {
-          allLinks = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        if (typeof firebase !== 'undefined') {
+          const db = firebase.firestore();
+          const snapshot = await db.collection('baotang_links').orderBy('order', 'asc').get();
+          if (!snapshot.empty) {
+            allLinks = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+          } else {
+            const localData = localStorage.getItem('baotang_links_local');
+            allLinks = localData ? JSON.parse(localData) : [...DEFAULT_LINKS];
+          }
         } else {
-          const localData = localStorage.getItem('baotang_links_local');
-          allLinks = localData ? JSON.parse(localData) : DEFAULT_LINKS;
+           throw new Error("Firebase không tồn tại");
         }
       } catch (err) {
-        console.warn("Dùng dữ liệu cục bộ do chưa kết nối Firestore:", err);
+        console.warn("Dùng dữ liệu cục bộ:", err.message);
         const localData = localStorage.getItem('baotang_links_local');
-        allLinks = localData ? JSON.parse(localData) : DEFAULT_LINKS;
+        allLinks = localData ? JSON.parse(localData) : [...DEFAULT_LINKS];
       }
       renderLinks();
     }
@@ -506,14 +513,14 @@
         const adminButtons = isAdmin ? `
           <div class="flex items-center justify-between border-t border-slate-100 pt-3 mt-3">
             <button onclick="openCloudinaryModal(event, '${item.id}', '🖼️ Ảnh điểm tham quan: ${item.title}')" 
-                    class="text-xs bg-amber-50 hover:bg-amber-100 text-amber-900 font-bold px-2.5 py-1.5 rounded transition flex items-center gap-1">
+                    class="text-[11px] sm:text-xs bg-amber-50 hover:bg-amber-100 text-amber-900 font-bold px-2.5 py-1.5 rounded transition flex items-center gap-1">
               <i class="fa-solid fa-camera"></i> Đổi ảnh
             </button>
             <div class="flex items-center gap-1.5">
-              <button onclick="editLink('${item.id}')" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-2.5 py-1 rounded transition">
+              <button onclick="editLink('${item.id}')" class="text-[11px] sm:text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-2.5 py-1 rounded transition">
                 <i class="fa-solid fa-pen-to-square mr-1"></i> Sửa
               </button>
-              <button onclick="deleteLink('${item.id}')" class="text-xs bg-red-50 hover:bg-red-100 text-red-600 font-semibold px-2.5 py-1 rounded transition">
+              <button onclick="deleteLink('${item.id}')" class="text-[11px] sm:text-xs bg-red-50 hover:bg-red-100 text-red-600 font-semibold px-2.5 py-1 rounded transition">
                 <i class="fa-solid fa-trash mr-1"></i> Xóa
               </button>
             </div>
@@ -521,49 +528,49 @@
         ` : '';
 
         grid.innerHTML += `
-          <div class="link-card bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm flex flex-col justify-between" id="card-${item.id}">
+          <div class="link-card bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm flex flex-col justify-between h-full" id="card-${item.id}">
             <div>
               <!-- Thumbnail Image -->
-              <a href="${item.url}" target="_blank" class="block relative h-44 overflow-hidden bg-slate-100 group">
+              <a href="${item.url}" target="_blank" class="block relative h-40 sm:h-44 overflow-hidden bg-slate-100 group">
                 <img src="${item.image || 'https://res.cloudinary.com/dwqtplan3/image/upload/v1785638390/Logo_Tru%CC%9Bo%CC%9B%CC%80ng_THCS_Ta%CC%82n_Bi%CC%80nh_rmfvy1.jpg'}" 
                      alt="${item.title}" 
                      class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
                 <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-3">
                   <span class="text-white text-xs font-semibold flex items-center gap-1">
-                    <i class="fa-solid fa-arrow-up-right-from-square"></i> Nhấn để mở đường dẫn
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i> Nhấn để mở
                   </span>
                 </div>
               </a>
 
               <!-- Content -->
-              <div class="p-5 space-y-2.5">
+              <div class="p-4 sm:p-5 space-y-2.5">
                 <div class="flex items-center justify-between gap-2">
-                  <span class="text-[11px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full ${badgeColor}">
+                  <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full ${badgeColor}">
                     ${item.category || 'Bảo tàng 3D'}
                   </span>
                   <span class="text-xs text-slate-400 font-medium">#${item.order || 1}</span>
                 </div>
 
-                <h4 class="font-bold text-slate-800 text-base leading-snug line-clamp-2 hover:text-red-700 transition">
+                <h4 class="font-bold text-slate-800 text-sm sm:text-base leading-snug line-clamp-2 hover:text-red-700 transition">
                   <a href="${item.url}" target="_blank">${item.title}</a>
                 </h4>
 
-                <p class="text-xs text-slate-500 leading-relaxed line-clamp-3">
+                <p class="text-xs text-slate-500 leading-relaxed line-clamp-2 sm:line-clamp-3">
                   ${item.desc || ''}
                 </p>
               </div>
             </div>
 
             <!-- Footer Action -->
-            <div class="px-5 pb-5 pt-2">
+            <div class="px-4 sm:px-5 pb-4 sm:pb-5 pt-2 mt-auto">
               <div class="flex items-center gap-2">
                 <a href="${item.url}" target="_blank" 
                    class="flex-1 bg-red-700 hover:bg-red-800 text-white text-center font-bold text-xs py-2.5 px-3 rounded-xl shadow-sm hover:shadow transition flex items-center justify-center gap-1.5">
                   <i class="fa-solid fa-building-columns"></i>
-                  <span>Tham quan ngay</span>
+                  <span>Tham quan</span>
                 </a>
                 <button onclick="copyLinkUrl('${item.url}')" title="Copy đường dẫn" 
-                        class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-3 py-2.5 rounded-xl font-semibold text-xs transition">
+                        class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-3 py-2.5 rounded-xl font-semibold text-xs transition shrink-0">
                   <i class="fa-regular fa-copy"></i>
                 </button>
               </div>
@@ -592,7 +599,7 @@
     }
 
     // ==========================================
-    // 3. THÊM / SỬA / XÓA ĐƯỜNG DẪN (THỦ CÔNG)
+    // 3. THÊM / SỬA / XÓA ĐƯỜNG DẪN
     // ==========================================
     function openLinkModal(linkId = null) {
       const modal = document.getElementById('link-modal');
@@ -602,20 +609,22 @@
       if (linkId) {
         const item = allLinks.find(l => l.id === linkId);
         if (item) {
-          document.getElementById('link-modal-title').innerHTML = `<i class="fa-solid fa-pen-to-square text-amber-300"></i><span>Sửa đường dẫn tham quan</span>`;
+          document.getElementById('link-modal-title').innerHTML = `<i class="fa-solid fa-pen-to-square text-amber-300"></i><span>Sửa đường dẫn</span>`;
           document.getElementById('link-id').value = item.id;
           document.getElementById('link-title').value = item.title;
           document.getElementById('link-category').value = item.category || 'Bảo tàng 3D';
           document.getElementById('link-order').value = item.order || 1;
           document.getElementById('link-url').value = item.url;
           document.getElementById('link-image').value = item.image || '';
+          document.getElementById('link-image-preview').src = item.image || 'https://res.cloudinary.com/dwqtplan3/image/upload/v1785638390/Logo_Tru%CC%9Bo%CC%9B%CC%80ng_THCS_Ta%CC%82n_Bi%CC%80nh_rmfvy1.jpg';
           document.getElementById('link-desc').value = item.desc || '';
         }
       } else {
-        document.getElementById('link-modal-title').innerHTML = `<i class="fa-solid fa-link text-amber-300"></i><span>Thêm đường dẫn tham quan mới</span>`;
+        document.getElementById('link-modal-title').innerHTML = `<i class="fa-solid fa-link text-amber-300"></i><span>Thêm đường dẫn mới</span>`;
         document.getElementById('link-id').value = '';
         document.getElementById('link-order').value = allLinks.length + 1;
-        document.getElementById('link-image').value = 'https://res.cloudinary.com/dwqtplan3/image/upload/v1785638390/Logo_Tru%CC%9Bo%CC%9B%CC%80ng_THCS_Ta%CC%82n_Bi%CC%80nh_rmfvy1.jpg';
+        document.getElementById('link-image').value = '';
+        document.getElementById('link-image-preview').src = 'https://res.cloudinary.com/dwqtplan3/image/upload/v1785638390/Logo_Tru%CC%9Bo%CC%9B%CC%80ng_THCS_Ta%CC%82n_Bi%CC%80nh_rmfvy1.jpg';
       }
 
       modal.classList.remove('hidden');
@@ -632,25 +641,31 @@
       const category = document.getElementById('link-category').value;
       const order = parseInt(document.getElementById('link-order').value) || 1;
       const url = document.getElementById('link-url').value.trim();
-      const image = document.getElementById('link-image').value.trim();
+      let image = document.getElementById('link-image').value.trim();
       const desc = document.getElementById('link-desc').value.trim();
+
+      if(!image) image = 'https://res.cloudinary.com/dwqtplan3/image/upload/v1785638390/Logo_Tru%CC%9Bo%CC%9B%CC%80ng_THCS_Ta%CC%82n_Bi%CC%80nh_rmfvy1.jpg';
 
       const itemData = { title, category, order, url, image, desc };
 
       try {
-        const db = firebase.firestore();
-        if (id) {
-          await db.collection('baotang_links').doc(id).set(itemData, { merge: true });
-          const idx = allLinks.findIndex(l => l.id === id);
-          if (idx !== -1) allLinks[idx] = { id, ...itemData };
-          showToast("Đã cập nhật đường dẫn thành công!");
+        if(typeof firebase !== 'undefined') {
+          const db = firebase.firestore();
+          if (id) {
+            await db.collection('baotang_links').doc(id).set(itemData, { merge: true });
+            const idx = allLinks.findIndex(l => l.id === id);
+            if (idx !== -1) allLinks[idx] = { id, ...itemData };
+            showToast("Đã cập nhật đường dẫn thành công!");
+          } else {
+            const docRef = await db.collection('baotang_links').add(itemData);
+            allLinks.push({ id: docRef.id, ...itemData });
+            showToast("Đã thêm đường dẫn mới vào danh sách!");
+          }
         } else {
-          const docRef = await db.collection('baotang_links').add(itemData);
-          allLinks.push({ id: docRef.id, ...itemData });
-          showToast("Đã thêm đường dẫn mới vào danh sách!");
+          throw new Error("Local mode");
         }
       } catch (err) {
-        console.warn("Lưu vào localStorage do chưa cấu hình Firebase Firestore:", err);
+        // Fallback to Local Storage
         if (id) {
           const idx = allLinks.findIndex(l => l.id === id);
           if (idx !== -1) allLinks[idx] = { id, ...itemData };
@@ -659,7 +674,7 @@
           allLinks.push({ id: newId, ...itemData });
         }
         localStorage.setItem('baotang_links_local', JSON.stringify(allLinks));
-        showToast("Đã lưu điểm tham quan mới!");
+        showToast("Đã lưu điểm tham quan (Chế độ offline)!");
       }
 
       allLinks.sort((a, b) => (a.order || 99) - (b.order || 99));
@@ -671,45 +686,72 @@
       openLinkModal(id);
     }
 
-    async function deleteLink(id) {
-      if (!confirm("Bạn có chắc chắn muốn xóa đường dẫn tham quan này không?")) return;
+    // --- CUSTOM CONFIRM MODAL LOGIC (THAY THẾ WINDOW.CONFIRM) ---
+    function deleteLink(id) {
+      linkIdToDelete = id; // Lưu ID vào biến toàn cục
+      document.getElementById('confirm-modal').classList.remove('hidden'); // Hiển thị modal
+    }
+
+    function closeConfirmModal() {
+      linkIdToDelete = null; // Xóa ID lưu trữ
+      document.getElementById('confirm-modal').classList.add('hidden'); // Ẩn modal
+    }
+
+    async function executeDelete() {
+      if (!linkIdToDelete) return;
+      const id = linkIdToDelete;
+      closeConfirmModal(); // Ẩn modal ngay lập tức
+
       try {
-        const db = firebase.firestore();
-        await db.collection('baotang_links').doc(id).delete();
+        if(typeof firebase !== 'undefined') {
+          const db = firebase.firestore();
+          await db.collection('baotang_links').doc(id).delete();
+        }
       } catch (e) {
-        console.warn("Xóa khỏi localStorage:");
+        console.warn("Xóa khỏi database thất bại, xóa khỏi local:", e);
       }
+      
+      // Xóa khỏi mảng và local storage bất kể online hay offline
       allLinks = allLinks.filter(l => l.id !== id);
       localStorage.setItem('baotang_links_local', JSON.stringify(allLinks));
       renderLinks();
       showToast("Đã xóa điểm tham quan!");
     }
+    // -------------------------------------------------------------
 
     function copyLinkUrl(url) {
-      navigator.clipboard.writeText(url).then(() => {
-        showToast("Đã copy đường dẫn URL vào bộ nhớ tạm!");
-      });
+      // Create a temporary textarea to copy from (better compatibility)
+      const el = document.createElement('textarea');
+      el.value = url;
+      document.body.appendChild(el);
+      el.select();
+      try {
+        document.execCommand('copy');
+        showToast("Đã copy đường dẫn URL!");
+      } catch (err) {
+        showToast("Không thể copy tự động.", true);
+      }
+      document.body.removeChild(el);
     }
 
     async function loadHeroImage() {
       try {
-        const db = firebase.firestore();
-        const doc = await db.collection('settings').doc('baotang_hero').get();
-        if (doc.exists && doc.data().imageUrl) {
-          document.getElementById('museum-hero-img').src = doc.data().imageUrl;
-        } else {
-          const local = localStorage.getItem('baotang_hero_img');
-          if (local) document.getElementById('museum-hero-img').src = local;
+        if(typeof firebase !== 'undefined') {
+          const db = firebase.firestore();
+          const doc = await db.collection('settings').doc('baotang_hero').get();
+          if (doc.exists && doc.data().imageUrl) {
+            document.getElementById('museum-hero-img').src = doc.data().imageUrl;
+            return;
+          }
         }
-      } catch (e) {
-        const local = localStorage.getItem('baotang_hero_img');
-        if (local) document.getElementById('museum-hero-img').src = local;
-      }
+      } catch (e) {}
+      
+      const local = localStorage.getItem('baotang_hero_img');
+      if (local) document.getElementById('museum-hero-img').src = local;
     }
 
     // ==========================================
-    // 4. MODAL CLOUDINARY GIỐNG TRANG INDEX.HTML
-    //    (KÉO THẢ / CHỌN FILE / DÁN CTRL + V)
+    // 4. MODAL CLOUDINARY
     // ==========================================
     function initCloudinaryModal() {
       const cldOv = document.getElementById('cld-ov');
@@ -750,13 +792,28 @@
 
       // Hỗ trợ dán ảnh Ctrl+V toàn cục khi đang mở modal
       document.addEventListener('paste', (e) => {
-        if (cldOv.style.display !== 'flex') return;
+        const linkModal = document.getElementById('link-modal');
+        const cldOv = document.getElementById('cld-ov');
+        
+        // Chỉ nhận sự kiện dán nếu 1 trong 2 modal (Cloudinary hoặc Thêm Link) đang mở
+        const isCldOpen = cldOv.style.display === 'flex';
+        const isLinkModalOpen = !linkModal.classList.contains('hidden');
+        
+        if (!isCldOpen && !isLinkModalOpen) return;
+
         const items = (e.clipboardData || e.originalEvent.clipboardData)?.items;
         if (!items) return;
+        
         for (let item of items) {
           if (item.type.startsWith('image/')) {
             e.preventDefault();
             const file = item.getAsFile();
+            
+            // Nếu form link đang mở mà bảng tải ảnh Cloudinary chưa mở, tự động nạp ảnh vào thẻ form
+            if (!isCldOpen && isLinkModalOpen) {
+               currentCldTarget = 'link-input';
+            }
+            
             if (file) uploadToCloudinary(file);
             break;
           }
@@ -810,7 +867,7 @@
 
       const statusEl = document.getElementById('cld-status');
       statusEl.className = 'cld-status loading';
-      statusEl.innerHTML = '⏳ Đang tải ảnh lên Cloudinary (<span class="hl">canhan</span>)...';
+      statusEl.innerHTML = '⏳ Đang tải ảnh lên máy chủ...';
 
       const formData = new FormData();
       formData.append('file', file);
@@ -825,7 +882,7 @@
         if (data.secure_url) {
           const newUrl = data.secure_url;
           statusEl.className = 'cld-status success';
-          statusEl.innerHTML = '✅ Đã lưu vào Cloudinary thành công!';
+          statusEl.innerHTML = '✅ Đã lưu ảnh thành công!';
           document.getElementById('cld-preview-img').src = newUrl;
 
           // Xử lý cập nhật theo target
@@ -833,36 +890,40 @@
             document.getElementById('museum-hero-img').src = newUrl;
             localStorage.setItem('baotang_hero_img', newUrl);
             try {
-              const db = firebase.firestore();
-              await db.collection('settings').doc('baotang_hero').set({ imageUrl: newUrl });
+              if(typeof firebase !== 'undefined') {
+                const db = firebase.firestore();
+                await db.collection('settings').doc('baotang_hero').set({ imageUrl: newUrl });
+              }
             } catch (e) {}
-            showToast("🎉 Đã cập nhật ảnh đại diện Bảo tàng Hồ Chí Minh!");
+            showToast("🎉 Đã cập nhật ảnh đại diện!");
           } else if (currentCldTarget === 'link-input') {
             document.getElementById('link-image').value = newUrl;
-            showToast("🎉 Đã chọn ảnh mới cho điểm tham quan!");
+            document.getElementById('link-image-preview').src = newUrl;
+            showToast("🎉 Đã tải ảnh mới thành công!");
           } else {
-            // Cập nhật ảnh cho một card điểm tham quan (Admin bấm trên card)
             const idx = allLinks.findIndex(l => l.id === currentCldTarget);
             if (idx !== -1) {
               allLinks[idx].image = newUrl;
               localStorage.setItem('baotang_links_local', JSON.stringify(allLinks));
               try {
-                const db = firebase.firestore();
-                await db.collection('baotang_links').doc(currentCldTarget).set({ image: newUrl }, { merge: true });
+                if(typeof firebase !== 'undefined') {
+                  const db = firebase.firestore();
+                  await db.collection('baotang_links').doc(currentCldTarget).set({ image: newUrl }, { merge: true });
+                }
               } catch (e) {}
               renderLinks();
-              showToast("🎉 Đã cập nhật ảnh thumbnail điểm tham quan!");
+              showToast("🎉 Đã cập nhật ảnh thumbnail!");
             }
           }
 
           setTimeout(() => { closeCloudinaryModal(); }, 1200);
         } else {
-          throw new Error(data.error?.message || "Lỗi từ Cloudinary");
+          throw new Error(data.error?.message || "Lỗi tải ảnh");
         }
       } catch (err) {
         statusEl.className = 'cld-status error';
-        statusEl.textContent = '❌ Lỗi: ' + (err.message || 'Không thể tải ảnh lên Cloudinary');
-        showToast("Lỗi tải ảnh lên Cloudinary", true);
+        statusEl.textContent = '❌ Lỗi: Không thể tải ảnh lên';
+        showToast("Lỗi tải ảnh, vui lòng thử lại.", true);
       }
     }
 
