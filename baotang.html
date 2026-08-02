@@ -498,6 +498,16 @@
           } else {
             const localData = localStorage.getItem('baotang_links_local');
             allLinks = localData ? JSON.parse(localData) : [...DEFAULT_LINKS];
+
+            // Các mục từng được lưu khi trang chạy offline chỉ tồn tại trong
+            // trình duyệt của admin. Khi Firestore chưa có dữ liệu, chuyển
+            // chúng lên server để mọi khách đều nhìn thấy cùng một danh sách.
+            if (isAdmin && localData) {
+              await Promise.all(allLinks.map(({ id, ...data }) =>
+                db.collection('baotang_links').doc(id).set(data)
+              ));
+              showToast('Đã đồng bộ danh sách bảo tàng lên máy chủ!');
+            }
           }
         } else {
            throw new Error("Firebase không tồn tại");
