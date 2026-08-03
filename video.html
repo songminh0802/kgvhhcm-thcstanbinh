@@ -24,6 +24,61 @@
     async function saveVideo(event){event.preventDefault();if(!requireAdmin())return;const id=document.getElementById('video-id').value,image=document.getElementById('video-image').value.trim();if(!image){showToast('Vui lòng tải ảnh video lên trước khi lưu.',true);return}const data={image,desc:document.getElementById('video-desc').value.trim(),updatedAt:firebase.firestore.FieldValue.serverTimestamp()};try{if(id)await firebase.firestore().collection('video_items').doc(id).set(data,{merge:true});else await firebase.firestore().collection('video_items').add({...data,createdAt:firebase.firestore.FieldValue.serverTimestamp()});showToast(id?'Đã cập nhật video!':'Đã thêm video mới!');closeVideoModal();await loadVideos()}catch(error){showToast('Không thể lưu. Hãy kiểm tra Firestore Rules.',true)}}function deleteVideo(id){if(!requireAdmin())return;videoIdToDelete=id;document.getElementById('confirm-modal').classList.add('modal-open')}function closeConfirmModal(){videoIdToDelete=null;document.getElementById('confirm-modal').classList.remove('modal-open')}async function executeDelete(){if(!requireAdmin()||!videoIdToDelete)return;try{await firebase.firestore().collection('video_items').doc(videoIdToDelete).delete();closeConfirmModal();showToast('Đã xóa video!');await loadVideos()}catch(error){showToast('Không thể xóa. Hãy kiểm tra Firestore Rules.',true)}}
     function initImageUploader(){const input=document.getElementById('video-file-input'),heroInput=document.getElementById('hero-file-input');document.getElementById('choose-image-btn').addEventListener('click',()=>input.click());input.addEventListener('change',e=>{if(e.target.files[0])uploadVideoImage(e.target.files[0])});document.getElementById('choose-hero-image-btn').addEventListener('click',()=>heroInput.click());heroInput.addEventListener('change',e=>{if(e.target.files[0])uploadHeroImage(e.target.files[0])});document.addEventListener('paste',e=>{if(!document.getElementById('video-modal').classList.contains('modal-open'))return;const item=[...(e.clipboardData?.items||[])].find(x=>x.type.startsWith('image/'));if(item){e.preventDefault();uploadVideoImage(item.getAsFile())}})}function setImagePreview(url){document.getElementById('video-image-preview').src=url||PLACEHOLDER_IMAGE;const status=document.getElementById('upload-status');status.textContent=url?'✓ Ảnh đã sẵn sàng để lưu.':'Chọn ảnh hoặc nhấn Ctrl+V để dán ảnh.';status.className=url?'text-xs text-emerald-600 font-semibold':'text-xs text-slate-500'}
     async function uploadToCloudinary(file){if(!file||!file.type.startsWith('image/'))throw new Error('Invalid image');const data=new FormData();data.append('file',file);data.append('upload_preset',CLOUDINARY_PRESET);const response=await fetch(CLOUDINARY_URL,{method:'POST',body:data}),result=await response.json();if(!result.secure_url)throw new Error(result.error?.message||'Upload failed');return result.secure_url}async function uploadVideoImage(file){if(!requireAdmin())return;const status=document.getElementById('upload-status');status.textContent='Đang tải ảnh lên Cloudinary...';status.className='text-xs text-blue-600 font-semibold';try{const url=await uploadToCloudinary(file);document.getElementById('video-image').value=url;setImagePreview(url);showToast('Đã tải ảnh lên Cloudinary!')}catch(error){status.textContent='Không thể tải ảnh lên. Vui lòng thử lại.';status.className='text-xs text-red-600 font-semibold';showToast('Lỗi tải ảnh lên Cloudinary.',true)}}async function uploadHeroImage(file){if(!requireAdmin())return;const button=document.getElementById('choose-hero-image-btn');button.disabled=true;button.innerHTML='<i class="fa-solid fa-spinner fa-spin mr-1"></i>Đang tải...';try{const url=await uploadToCloudinary(file);await firebase.firestore().collection('settings').doc('video_hero').set({imageUrl:url},{merge:true});document.getElementById('video-hero-img').src=url;showToast('Đã cập nhật ảnh đại diện video!')}catch(error){showToast('Không thể cập nhật ảnh đại diện.',true)}finally{button.disabled=false;button.innerHTML='<i class="fa-solid fa-camera mr-1"></i>Đổi ảnh bằng Cloudinary'}}function escapeHtml(value){const el=document.createElement('div');el.textContent=value;return el.innerHTML}function showToast(message,isError=false){const toast=document.getElementById('toast');document.getElementById('toast-text').textContent=message;document.getElementById('toast-icon').className=isError?'fa-solid fa-circle-exclamation text-red-400 text-lg':'fa-solid fa-circle-check text-green-400 text-lg';toast.classList.remove('translate-y-20','opacity-0');setTimeout(()=>toast.classList.add('translate-y-20','opacity-0'),3500)}
+    // Bổ sung đường dẫn URL cho từng video.
+    document.addEventListener('DOMContentLoaded', initVideoUrlField);
+
+    function initVideoUrlField() {
+      const descGroup = document.getElementById('video-desc').closest('div');
+      descGroup.insertAdjacentHTML('beforebegin', `<div><label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Đường dẫn URL <span class="text-red-500">*</span></label><input type="url" id="video-url" required placeholder="https://www.youtube.com/..." class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-red-600 text-sm"><p class="text-xs text-slate-500 mt-1">Dán liên kết đến video YouTube, Facebook hoặc nguồn video khác.</p></div>`);
+    }
+
+    function safeVideoUrl(value) {
+      try {
+        const url = new URL(value);
+        return ['http:', 'https:'].includes(url.protocol) ? url.href : '';
+      } catch { return ''; }
+    }
+
+    function renderVideos() {
+      const grid = document.getElementById('videos-grid'), empty = document.getElementById('empty-state');
+      grid.innerHTML = '';
+      empty.classList.toggle('hidden', videos.length !== 0);
+      videos.forEach(item => {
+        const url = safeVideoUrl(item.url || '');
+        const controls = isAdmin ? `<div class="flex items-center justify-end gap-1.5 border-t border-slate-100 pt-3 mt-3"><button onclick="editVideo('${item.id}')" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-2.5 py-1.5 rounded"><i class="fa-solid fa-pen-to-square mr-1"></i>Sửa</button><button onclick="deleteVideo('${item.id}')" class="text-xs bg-red-50 hover:bg-red-100 text-red-600 font-semibold px-2.5 py-1.5 rounded"><i class="fa-solid fa-trash mr-1"></i>Xóa</button></div>` : '';
+        const watch = url ? `<a href="${url}" target="_blank" rel="noopener noreferrer" class="mt-4 bg-red-700 hover:bg-red-800 text-white text-center font-bold text-xs py-2.5 px-3 rounded-xl transition"><i class="fa-solid fa-circle-play mr-1"></i>Xem video</a>` : '';
+        grid.innerHTML += `<article class="video-card bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm flex flex-col"><a ${url ? `href="${url}" target="_blank" rel="noopener noreferrer"` : ''} class="relative block"><img src="${item.image || PLACEHOLDER_IMAGE}" alt="Video tư liệu" class="w-full h-64 object-cover" onerror="this.src='${PLACEHOLDER_IMAGE}'"><span class="absolute inset-0 flex items-center justify-center"><i class="fa-solid fa-circle-play text-white/90 text-5xl drop-shadow-lg"></i></span></a><div class="p-4 sm:p-5 flex flex-col flex-1"><div class="flex items-center gap-2 text-red-700 text-xs font-bold uppercase tracking-wider mb-3"><i class="fa-solid fa-video"></i> Video tư liệu</div><p class="text-sm text-slate-600 leading-relaxed whitespace-pre-line flex-1">${escapeHtml(item.desc || '')}</p>${watch}${controls}</div></article>`;
+      });
+    }
+
+    function openVideoModal(id = null) {
+      if (!requireAdmin()) return;
+      const form = document.getElementById('video-form'); form.reset(); setImagePreview('');
+      document.getElementById('video-id').value = id || '';
+      document.getElementById('modal-title').innerHTML = `<i class="fa-solid fa-video text-amber-300 mr-2"></i>${id ? 'Sửa thông tin video' : 'Thêm video mới'}`;
+      if (id) {
+        const item = videos.find(x => x.id === id); if (!item) return;
+        document.getElementById('video-image').value = item.image || ''; setImagePreview(item.image || '');
+        document.getElementById('video-url').value = item.url || '';
+        document.getElementById('video-desc').value = item.desc || '';
+      }
+      document.getElementById('video-modal').classList.add('modal-open');
+    }
+
+    async function saveVideo(event) {
+      event.preventDefault(); if (!requireAdmin()) return;
+      const id = document.getElementById('video-id').value;
+      const image = document.getElementById('video-image').value.trim();
+      const url = safeVideoUrl(document.getElementById('video-url').value.trim());
+      if (!image) { showToast('Vui lòng tải ảnh video lên trước khi lưu.', true); return; }
+      if (!url) { showToast('Vui lòng nhập đường dẫn URL hợp lệ.', true); return; }
+      const data = { image, url, desc: document.getElementById('video-desc').value.trim(), updatedAt: firebase.firestore.FieldValue.serverTimestamp() };
+      try {
+        if (id) await firebase.firestore().collection('video_items').doc(id).set(data, { merge: true });
+        else await firebase.firestore().collection('video_items').add({ ...data, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+        showToast(id ? 'Đã cập nhật video!' : 'Đã thêm video mới!'); closeVideoModal(); await loadVideos();
+      } catch { showToast('Không thể lưu. Hãy kiểm tra Firestore Rules.', true); }
+    }
   </script>
 </body>
 </html>
